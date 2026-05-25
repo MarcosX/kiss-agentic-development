@@ -1,0 +1,5 @@
+.tmp
+*.plan.md
+.playwright-mcp
+test/tmp/
+*.tgz
