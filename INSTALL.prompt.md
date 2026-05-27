@@ -72,6 +72,8 @@ After installation, configure your agent to load `using-skills` at the start of 
 
 ### OpenCode
 
+The `instructions` field injects the SKILL.md content directly into every session — the agent will already have the skill loaded and does **not** need to invoke the `skill` tool.
+
 Add to `~/.config/opencode/opencode.json`:
 
 ```json
@@ -87,7 +89,15 @@ If `npx skills` was not used and skills were installed manually, adjust the path
 Add to `~/.claude/CLAUDE.md`:
 
 ```markdown
-> Read `~/.claude/skills/using-skills/SKILL.md` and follow it before responding
+<CRITICAL>
+You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
+
+1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
+2. Follow all instructions in the loaded skill before proceeding
+3. Only after steps 1–2, respond to the user
+
+This is not negotiable and cannot be bypassed.
+</CRITICAL>
 ```
 
 ### GitHub Copilot
@@ -95,7 +105,15 @@ Add to `~/.claude/CLAUDE.md`:
 Create or edit `~/.copilot/copilot-instructions.md`:
 
 ```markdown
-Read `~/.agents/skills/using-skills/SKILL.md` and follow it before responding.
+<CRITICAL>
+You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
+
+1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
+2. Follow all instructions in the loaded skill before proceeding
+3. Only after steps 1–2, respond to the user
+
+This is not negotiable and cannot be bypassed.
+</CRITICAL>
 ```
 
 ### Cursor
@@ -104,7 +122,15 @@ Read `~/.agents/skills/using-skills/SKILL.md` and follow it before responding.
 2. Add:
 
 ```markdown
-Read `~/.agents/skills/using-skills/SKILL.md` and follow it before responding.
+<CRITICAL>
+You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
+
+1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
+2. Follow all instructions in the loaded skill before proceeding
+3. Only after steps 1–2, respond to the user
+
+This is not negotiable and cannot be bypassed.
+</CRITICAL>
 ```
 
 For project-level only, create `.cursor/rules/using-skills.mdc`:
@@ -114,7 +140,15 @@ For project-level only, create `.cursor/rules/using-skills.mdc`:
 description: Always check and invoke skills before acting
 alwaysApply: true
 ---
-Read `~/.agents/skills/using-skills/SKILL.md` and follow it before responding.
+<CRITICAL>
+You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
+
+1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
+2. Follow all instructions in the loaded skill before proceeding
+3. Only after steps 1–2, respond to the user
+
+This is not negotiable and cannot be bypassed.
+</CRITICAL>
 ```
 
 ---

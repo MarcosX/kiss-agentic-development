@@ -42,49 +42,82 @@ Add to `~/.config/opencode/opencode.json`:
 }
 ```
 
-The path points to where `npx skills` installs the skill globally. See [opencode config docs](https://opencode.ai/docs/config) for more details.
+The path points to where `npx skills` installs the skill globally. Because `instructions` directly injects the SKILL.md content into every session, the agent automatically has the skill in context — it does **not** need to invoke the `skill` tool to load it (and the skill's built-in recursion guard prevents re-invocation). See [opencode config docs](https://opencode.ai/docs/config) for more details.
 
 ### Claude Code
 
 To ensure `using-skills` is always present, add a reference in your global [`CLAUDE.md`](https://code.claude.com/docs/en/memory) at `~/.claude/CLAUDE.md`:
 
 ```markdown
-> Read `~/.claude/skills/using-skills/SKILL.md` and follow it before responding
+<CRITICAL>
+You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
+
+1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
+2. Follow all instructions in the loaded skill before proceeding
+3. Only after steps 1–2, respond to the user
+
+This is not negotiable and cannot be bypassed.
+</CRITICAL>
 ```
 
 This instructs Claude to load the skill at the start of every session. See [Claude Code memory docs](https://code.claude.com/docs/en/memory) for more details.
 
-### GitHub Copilot
+### GitHub Copilot CLI
 
 GitHub Copilot reads a global custom instructions file at `~/.copilot/copilot-instructions.md`. Add a reference to load `using-skills` in every session.
 
 Create `~/.copilot/copilot-instructions.md`:
 
 ```markdown
-Read `~/.agents/skills/using-skills/SKILL.md` and follow it before responding.
+<CRITICAL>
+You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
+
+1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
+2. Follow all instructions in the loaded skill before proceeding
+3. Only after steps 1–2, respond to the user
+
+This is not negotiable and cannot be bypassed.
+</CRITICAL>
 ```
 
-The `~/.agents/skills/` path is where `npx skills --global` installs skills. See [GitHub Copilot custom instructions docs](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions-in-your-ide/add-repository-instructions-in-your-ide) and [agent skills docs](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/add-skills) for more details.
+This instructs Copilot to load the skill at the start of every session. See [Copilot CLI reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference).
 
 ### Cursor
 
 To auto-load `using-skills` globally, add a [User Rule](https://cursor.com/docs/rules#user-rules) in Cursor Settings > Rules > User Rules with content:
 
 ```markdown
-Read `~/.agents/skills/using-skills/SKILL.md` and follow it before responding.
+<CRITICAL>
+You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
+
+1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
+2. Follow all instructions in the loaded skill before proceeding
+3. Only after steps 1–2, respond to the user
+
+This is not negotiable and cannot be bypassed.
+</CRITICAL>
 ```
 
 For project-level auto-loading, create `.cursor/rules/using-skills.mdc`:
 
-```yaml
+```markdown
 ---
 description: Always check and invoke skills before acting
 alwaysApply: true
 ---
-Read `~/.agents/skills/using-skills/SKILL.md` and follow it before responding.
+
+<CRITICAL>
+You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
+
+1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
+2. Follow all instructions in the loaded skill before proceeding
+3. Only after steps 1–2, respond to the user
+
+This is not negotiable and cannot be bypassed.
+</CRITICAL>
 ```
 
-The `~/.agents/skills/` path is where `npx skills --global` installs skills. See [Cursor rules docs](https://cursor.com/docs/rules) and [skills docs](https://cursor.com/help/customization/skills) for more details.
+This instructs Cursor to load the skill at the start of every session. See [Cursor rules docs](https://cursor.com/docs/rules) for more details.
 
 ## Local development
 
