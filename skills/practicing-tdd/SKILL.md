@@ -21,7 +21,7 @@ Write one minimal test showing desired behavior. One behavior per test — if th
 
 ## Verify RED — Watch It Fail
 
-Mandatory. Run the test and confirm it fails because the feature is missing, not because of typos or errors. A test that passes immediately proves nothing — you tested existing behavior or the wrong thing.
+Mandatory. Run the test now — fresh output only. Confirm it fails because the feature is missing, not because of typos or errors. A test that passes immediately proves nothing — you tested existing behavior or the wrong thing.
 
 ## GREEN — Write Minimal Code
 
@@ -29,7 +29,7 @@ Write the simplest code to pass the test. No extra features, no refactoring, no 
 
 ## Verify GREEN — Watch It Pass
 
-Mandatory. Run the test and confirm it passes. Then run the full suite and check for regressions. Fix any broken tests immediately.
+Mandatory. Run the test now — previous runs do not count. Confirm it passes. Then run the full suite and check for regressions. Fix any broken tests immediately.
 
 ## REFACTOR — Clean Up
 
