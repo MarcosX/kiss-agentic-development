@@ -1,6 +1,6 @@
 ---
-name: test-driven-development
-description: Use when implementing any feature, fixing any bug, refactoring, or changing behavior. Enforces test-first discipline — no production code without a failing test first.
+name: practicing-tdd
+description: Use when implementing any feature, fixing any bug, refactoring, or changing behavior.
 ---
 
 <HARD-GATE>
