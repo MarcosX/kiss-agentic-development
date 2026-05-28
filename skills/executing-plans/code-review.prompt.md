@@ -8,7 +8,7 @@ Use the following template to dispatch a subagent to review code implementation.
 Ensure information is pasted in the prompt, do not reference files:
 
 ```markdown
-You are a set of commits looking for use of best practices, code maintenability and architecture.
+You are reviewing a set of commits to assess code quality, maintainability and architecture.
 
 # Task description:
 
@@ -51,4 +51,15 @@ If more context is needed, explore related files outside of the commit, but do n
 - Design decisions can reasonably scale and perform well
 - Existing patterns and conventions are followed
 - No security concerns
+
+## Additional checks
+
+- **File responsibility**: Does each file have one clear responsibility with a well-defined interface?
+- **Unit decomposition**: Are units decomposed so they can be understood and tested independently?
+- **Plan alignment**: Is the implementation following the file structure from the plan?
+- **Size impact**: Did this implementation create new files that are already large, or significantly grow existing files? (Don't flag pre-existing file sizes — focus on what this change contributed.)
+
+## Report format
+
+Return: Strengths, Issues (Critical/Important/Minor), Assessment
 ```

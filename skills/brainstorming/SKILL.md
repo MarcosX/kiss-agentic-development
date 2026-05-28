@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: MUST be used for ideation prompts or creative work. Use this skill to explore intent for modifying or adding new features, components, or functionality. Load this skill before checking or exploring the current project.
+description: MUST be used before any creative work — creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements, and design before implementation. Load this skill before checking or exploring the current project.
 ---
 
 Help turn ideas into complete design and specs through collaborative conversation.
@@ -9,9 +9,13 @@ Start by understanding the current context, then come up with questions and ask 
 
 Once you are confident in your understanding, present the design to request feedback and approval.
 
-<IMPORTANT>
-No implementation skill should be invoked before presenting the design and receiving approval! Do not write any code or take any action until user has approved it, regardless of how simple the idea might be.
-</IMPORTANT>
+<HARD-GATE>
+Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
+</HARD-GATE>
+
+## Anti-Pattern: "This Is Too Simple To Need A Design"
+
+Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
 
 # RULE
 
@@ -25,9 +29,14 @@ No implementation skill should be invoked before presenting the design and recei
 2. **Ask clarifying questions** - one question at a time to understand purpose, goals, constraints, and success criteria
 3. **Propose 2-3 approaches** - including trade-offs along with your recommendation for the user
 4. **Present the design** - use sections, based on the complexity, and get user approval after each of them
-5. **Write design doc** - create a plan (using `writing-plans` if available)
+5. **Write design doc** - write the design to a file, then:
+   1. **Spec self-review**: scan for placeholders (TBD/TODO), contradictions, ambiguity, scope bloat. Fix inline.
+   2. **User review gate**: ask the user to review the written spec before proceeding. Wait for approval or changes.
+   3. **Create implementation plan**: only after user approves the spec, invoke `writing-plans` to create the plan.
 
 **Always end with creating implementation plan**: Ensure an implementation plan is created based on the proposed design
+
+**Terminal state**: `writing-plans` is the ONLY skill to invoke after brainstorming. Do NOT invoke any implementation skill (e.g. `executing-plans`) from within this skill.
 
 # The Process
 
@@ -42,6 +51,8 @@ No implementation skill should be invoked before presenting the design and recei
 - Prefer multiple choice questions over open-ended
 - Ensure you understand purpose, constraints and success criteria
 
+**Assess scope first**: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Help the user decompose into sub-projects before diving into details. Each sub-project gets its own brainstorm → spec → plan → implementation cycle.
+
 ## Explore approaches
 
 - Come up with 2 or 3 different approaches and their trade-offs
@@ -53,6 +64,14 @@ No implementation skill should be invoked before presenting the design and recei
 - Scale design sections based on their complexity, keep it straightforward but add nuances when needed
 - Check with the user after presenting each section to ensure the design is in the right path
 - Ask clarifying questions and go back if something doesn't make sense
+
+## Design for isolation and clarity
+
+Break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently. For each unit, be able to answer: what does it do, how do you use it, and what does it depend on? Smaller, well-bounded units are easier to implement reliably — agents reason better about code they can hold in context at once, and edits are more reliable when files are focused. When a file grows large, that's often a signal it's doing too much.
+
+## Working in existing codebases
+
+Explore the current structure before proposing changes. Follow existing patterns. Where existing code has problems that affect the work (e.g., a file grown too large, unclear boundaries), include targeted improvements as part of the design. Do not propose unrelated refactoring — stay focused on what serves the current goal.
 
 ## Write documentation
 

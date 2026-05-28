@@ -23,7 +23,7 @@ The plan should instruct the agent to commit frequently, follow DRY, YAGNI and T
 
 **Ensure all ACs are covered**: Map every AC to tasks as they are created. If ACs are left with no task assigned, review the plan to idenfity gaps/duplication.
 
-**Plan handover**: Once the plan is in place, use `subagent-driven-development` to transition to implementation.
+**Plan handover**: Once the plan is in place, use `executing-plans` to transition to implementation.
 
 # Plan document
 
