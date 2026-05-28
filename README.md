@@ -1,17 +1,60 @@
-# Keep it Short and Simple
+# Keep it Short and Simple Agentic Development Framework
 
-Collection of AI agent skills that enforce skill-first workflows across coding agents (OpenCode, Claude Code, Cursor, etc.).
+A library of skills that make AI agents more reliable without the complexity of multi-agent setups, custom commands, or role-specific orchestration. Keep it Short and Simple!
 
-This work is heavily influenced by [Superpowers](https://github.com/obra/superpowers) and Anthropic's [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
+Drop them into any coding agent — OpenCode, Claude Code, Cursor — and the agent follows your team's practices instead of guessing what "good" looks like. One agent, a library of skills. That's the idea.
+
+Heavily influenced by [Superpowers](https://github.com/obra/superpowers) and Anthropic's [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
+
+## Table of Contents
+
+- [Skills](#skills)
+- [Installation](#installation)
+  - [OpenCode](#opencode)
+  - [Claude Code](#claude-code)
+  - [GitHub Copilot CLI](#github-copilot-cli)
+  - [Cursor](#cursor)
+- [Contributing](#contributing)
 
 ## Skills
 
-| Skill             | Description                                                                    |
-| ----------------- | ------------------------------------------------------------------------------ |
-| `using-skills`    | Meta-skill that teaches agents to discover and invoke skills before any action |
-| `brainstorming`   | Ideation and creative exploration for new features or changes                  |
-| `writing-plans`   | Structured plan creation once specs are clear                                  |
-| `executing-plans` | Execute and verify plans using subagents with review checkpoints               |
+Every session starts with `using-skills` — a guardrail that forces the agent to find and load the right skill before doing anything else. From there the workflow follows a natural rhythm: `brainstorming` to explore and design, `writing-plans` to turn the design into tasks, `practicing-tdd` to implement with tests first, and `reviewing-code` to catch issues before merge. When something breaks, `debugging` makes sure the agent finds the root cause before proposing a fix.
+
+```mermaid
+flowchart LR
+    A[using-skills] --> B[brainstorming]
+    B --> C[writing-plans]
+    C --> D[practicing-tdd]
+    D --> E[reviewing-code]
+    D -.-> F[debugging]
+    F --> D
+```
+
+| Skill | What it enforces |
+|---|---|
+| `using-skills` | Skill discovery and invocation before any action |
+| `brainstorming` | Design before implementation — explore, question, get approval |
+| `writing-plans` | Executable plans with acceptance criteria per task |
+| `executing-plans` | Isolated subagent tasks with spec and code review gates |
+| `practicing-tdd` | Test-first discipline — no code without a failing test |
+| `reviewing-code` | Five-axis review with structured severity-labeled feedback |
+| `debugging` | Root cause investigation before any fix |
+
+## Why it works
+
+This framework throws out the multi-agent playbook. No swarms, no role-specific agents, no custom commands to wire up. One agent, a library of skills. The agent figures out what needs to be done — the skill makes sure it follows best practices doing it. That's what Keep it Short and Simple means: fewer agents, fewer abstractions, fewer things to break.
+
+**`using-skills` is the secret sauce.** Directly inspired by [obra/superpowers](https://github.com/obra/superpowers), the meta-skill forces agents to discover and invoke skills before acting. Instead of letting agents fall back to their default behavior, `using-skills` routes every session through the framework — skill adoption is enforced, not optional. This is what makes the library more than a collection of files.
+
+**When an agent is about to cut a corner — skip the failing test, guess at a root cause — the skill catches it.** Red flags and HARD-GATEs turn "I know it works" into "prove it." It sounds rigid, but it saves the time you'd waste on wrong fixes.
+
+**Write a skill once and every session across every agent benefits.** The library pays for itself faster than you can maintain it.
+
+## When it doesn't
+
+**This approach assumes a generalist agent that picks up skills as needed.** If you've already tuned agents for specific roles — a frontend agent, a devops agent — the generic skill dispatcher can step on their toes. Skip `using-skills` when your agent's instructions are already tight enough.
+
+**It also assumes your agent can follow multi-step instructions reliably.** Some models treat process steps as suggestions and will blow past a HARD-GATE without reading it.
 
 ## Installation
 
@@ -121,61 +164,6 @@ This is not negotiable and cannot be bypassed.
 
 This instructs Cursor to load the skill at the start of every session. See [Cursor rules docs](https://cursor.com/docs/rules) for more details.
 
-## Local development
+## Contributing
 
-Clone the repo and work from it. The repo includes:
-
-- `.opencode/skills → ../skills` — symlink for native OpenCode skill discovery
-- `.opencode/opencode.json` — loads `using-skills` into every session via `instructions`
-- `test/fixtures/test-project/.opencode/opencode.json` — template for isolated test projects
-
-Run validation after making changes:
-
-```bash
-node test/validate.mjs
-```
-
-Temp directories for per-skill validation are created under `test/tmp/` and cleaned up automatically.
-
-## Adding a new skill
-
-1. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
-2. Create `skills/<name>/VALIDATE.prompt.md` (optional, for AI-driven validation)
-3. Run `node test/validate.mjs` to confirm frontmatter is valid
-4. Install from the repo to test: `npx skills add . --agent opencode --skill <name>`
-
-## VALIDATE.prompt.md Strategy
-
-Each skill can include a `VALIDATE.prompt.md` file for validation checks. These files serve two purposes:
-
-### Automated bash checks
-
-Code blocks with bash commands are extracted and executed automatically by `node test/validate.mjs` in an isolated temp directory per skill. Each command runs independently — one failure doesn't cascade.
-
-```bash
-# Example from brainstorming/VALIDATE.prompt.md
-grep -q "^name: brainstorming" skills/brainstorming/SKILL.md && echo "✓ Name defined"
-```
-
-### Manual AI-review scenarios
-
-The `---` separator divides automated checks from manual AI-review scenarios (scenario descriptions, expected behaviors, red flags). These can't be automated — they're instructions for developers or AI agents to review a skill manually.
-
-### Running validation during development
-
-```bash
-# Full validation (all skills)
-node test/validate.mjs
-
-# Run specific skill's bash checks manually
-cd test/tmp/your-skill-test
-ln -s ../../skills skills
-grep -q "^name: your-skill" skills/your-skill/SKILL.md && echo "✓ Name defined"
-```
-
-When working on a specific skill, you can feed its `VALIDATE.prompt.md` to an AI agent:
-
-```bash
-opencode run --file skills/your-skill/VALIDATE.prompt.md \
-  "Execute the attached VALIDATE.prompt.md and report PASS/FAIL for every check."
-```
+For local development setup, adding new skills, and validation strategy, see [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md).

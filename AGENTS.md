@@ -185,11 +185,30 @@ Version `0.0.1`. Bump with `git tag v<semver>` and `git push --tags`.
 Use [Conventional Commits](https://www.conventionalcommits.org/):
 `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
 
-## Validation
+## VALIDATE.prompt.md Strategy
+
+Each skill can include a `VALIDATE.prompt.md` file for validation checks. These files serve two purposes:
+
+### Automated bash checks
+
+Code blocks with bash commands are extracted and executed automatically by `node test/validate.mjs` in an isolated temp directory per skill. Each command runs independently — one failure does not cascade.
+
+```bash
+# Example from brainstorming/VALIDATE.prompt.md
+grep -q "^name: brainstorming" skills/brainstorming/SKILL.md && echo "✓ Name defined"
+```
+
+### Manual AI-review scenarios
+
+The `---` separator divides automated checks from manual AI-review scenarios (scenario descriptions, expected behaviors, red flags). These cannot be automated — they are instructions for developers or AI agents to review a skill manually.
+
+### Running validation
 
 ```bash
 node test/validate.mjs
 ```
+
+When working on a specific skill, feed its `VALIDATE.prompt.md` to an AI agent to execute the checks and report PASS/FAIL.
 
 ## Ethics and safety
 
