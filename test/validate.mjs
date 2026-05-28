@@ -119,6 +119,13 @@ function validateSkills() {
       fail(`skills/${dir}/SKILL.md: missing "description" in frontmatter`);
     } else {
       pass(`skills/${dir}/SKILL.md: description present`);
+      if (!frontmatter.description.startsWith("Use ")) {
+        fail(`skills/${dir}/SKILL.md: description should start with "Use when..." (got: "${frontmatter.description.slice(0, 40)}...")`);
+      }
+      const wordCount = frontmatter.description.split(/\s+/).length;
+      if (wordCount > 100) {
+        fail(`skills/${dir}/SKILL.md: description word count ${wordCount} exceeds 100`);
+      }
     }
   }
 }

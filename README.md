@@ -2,7 +2,7 @@
 
 Collection of AI agent skills that enforce skill-first workflows across coding agents (OpenCode, Claude Code, Cursor, etc.).
 
-This work is heavily influenced by [Superpowers](https://github.com/obra/superpowers) and Anthropic's [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices#workflows-and-feedback-loops).
+This work is heavily influenced by [Superpowers](https://github.com/obra/superpowers) and Anthropic's [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
 
 ## Skills
 

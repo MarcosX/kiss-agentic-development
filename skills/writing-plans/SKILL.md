@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: Use after specs or requirements are clear, and before moving to implementation
+description: Use when specs or requirements are clear and before moving to implementation
 ---
 
 Write agent-executable implementation plans, assuming zero codebase context.

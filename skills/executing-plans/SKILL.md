@@ -1,6 +1,6 @@
 ---
 name: executing-plans
-description: Use to execute and verify writen plans, leveraging subagents with review checkpoints.
+description: Use when executing implementation plans with independent tasks in the current session.
 ---
 
 Execute the plan by dispatching fresh subagents per task, then run spec compliance and code quality reviews after completion.
