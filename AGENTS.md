@@ -238,7 +238,7 @@ Skills must not contain malware, exploit code, or content that compromises syste
 
 **Deployment:**
 - [ ] Run `node test/validate.mjs`
-- [ ] Commit to git
+- [ ] Commit to git (check for session artifacts — e2e/, tmp/, generated reports)
 - [ ] Bump version tag
 
 ## Red flags (skill development)
@@ -248,6 +248,7 @@ Skills must not contain malware, exploit code, or content that compromises syste
 - **Forgetting to run validation**: RUN `node test/validate.mjs` after every skill change. Do not skip.
 - **No failing test first**: Adding or editing a skill without observing baseline behavior first. The Iron Law: no skill without a failing test first.
 - **Batching untested skills**: Moving to the next skill before the current one is verified. Each skill must be fully tested before starting the next.
+- **Committing session artifacts**: Never commit session-specific output such as test results, plan files, validation dumps, or generated reports. These artifacts bloat the repo and have no value outside their session. Use `e2e/`, `tmp/`, or similar scratch directories — and add them to `.gitignore` or use `git rm --cached` if accidentally committed.
 
 ### Quality red flags — STOP if any of these are true
 
