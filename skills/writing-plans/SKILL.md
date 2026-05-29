@@ -8,20 +8,22 @@ Write agent-executable implementation plans, assuming zero codebase context.
 <IMPORTANT>
 Tasks must be self-contained: file paths, code, exact commands with expected outputs, and clear definition of done.
 
-The plan should instruct the agent to commit frequently, follow DRY, YAGNI and TDD.
+The plan must instruct the agent to commit frequently, follow TDD, and stay minimal.
 </IMPORTANT>
 
 # RULE
 
 **Save plans before starting**: Save plans to `<prefix>-plan.md`, where prefix is 2-3 key words, never use generic names, like `plan.md`.
 
-**AC coverage**: Before writing anything, extract acceptance criterion from design, prompt or other sources, and build a coverage list.
+**Scope reduction**: Before extracting ACs, identify features not justified by the design or requirements and remove them. Scope creep wastes implementation effort — YAGNI is an active filter, not a footnote.
+
+**AC coverage**: Extract acceptance criteria from the design, prompt, or other sources and build a coverage list.
 
 **Each Task is self-contained**: Tasks contain clear steps to implement them, along with verification steps and completion steps.
 
 **Each step is one atomic action**: No judgment is required to complete a step. Any ambiguity should be addressed by revisting the plan. Steps should be minimalistic bite-sized actions to complete just one part of a task.
 
-**Ensure all ACs are covered**: Map every AC to tasks as they are created. If ACs are left with no task assigned, review the plan to idenfity gaps/duplication.
+**Ensure all ACs are covered**: Map every AC to tasks as they are created. If ACs are left with no task assigned, review the plan to identify gaps/duplication.
 
 **Plan handover**: Once the plan is in place, use `executing-plans` to transition to implementation.
 

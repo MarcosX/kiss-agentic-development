@@ -26,20 +26,21 @@ If no plan is provided, use `brainstorming` before proceeding.
 **Understand plan**: Load and review plan to identify questions, concerns and assumptions.
 If there are concerns, raise them and do not proceed. If the plan is clear, proceed with execution of each task.
 
-**Execute plan**: Identify what tasks can be executed independently and what tasks have dependencies, then for each task:
+**Execute plan**: Identify what tasks can be executed independently and what tasks have dependencies. Group independent tasks into batches for parallel dispatch. Dependent tasks execute sequentially (each forms its own batch).
 
-1. **Read the plan once**: Extract all tasks with full text and context. Save to TodoWrite.
-2. **Dispatch a fresh subagent** using `dispatch-agent.prompt.md` with the full task text pasted in — do not make the subagent read the plan file.
-3. **Handle implementer status**:
-   - **DONE**: Proceed to spec compliance review.
-   - **DONE_WITH_CONCERNS**: Read concerns before proceeding. If about correctness, address first. If observations, note and proceed.
-   - **NEEDS_CONTEXT**: Provide missing context and re-dispatch.
-   - **BLOCKED**: Assess the blocker — provide context, upgrade model, split task, or escalate.
-4. **Verify completion**: Review subagent report and inspect implementation.
-   - Use `spec-review.prompt.md` to validate task goals against implementation
-   - Use `code-review.prompt.md` to ensure code quality concerns are addressed early on
-5. **Run review loops**: If reviewer finds issues, have implementer fix them, then re-review until approved. Do not skip re-review.
-6. **Mark task complete** in TodoWrite and proceed to the next task.
+For each batch, follow the fan-out/fan-in pattern:
+
+1. **Extract tasks**: Read the plan once and extract all tasks in this batch with full text and context. Save to TodoWrite.
+
+2. **Fan-out (parallel dispatch)**: Dispatch ALL tasks in the batch simultaneously, each as a fresh subagent using `dispatch-agent.prompt.md` with the full task text pasted in. Do not make subagents read the plan file or inherit session context.
+
+3. **Fan-in (review after completion)**: Wait for all subagents to complete. For each completed task:
+   a. Handle implementer status (DONE, DONE_WITH_CONCERNS, NEEDS_CONTEXT, BLOCKED)
+   b. Verify completion using `spec-review.prompt.md` and `code-review.prompt.md`
+   c. Run review loops if issues found — fix, re-review, repeat until approved
+   d. Mark task complete in TodoWrite
+
+Proceed to the next batch. After all batches complete, go to **Complete development**.
 
 **Complete development**: Review execution output to determine if the plan was completed successfully.
 If it is, report status and provide proof of completion.
@@ -93,8 +94,6 @@ Do not rely on guessing and do not force through blockers.
 **Previous steps prevent proper implementation**: when an implementation decision made earlier impacts the next tasks, stop and present the problem to ask for clarification.
 
 **Instruction isn't clear or can't be performed**: when actions on a step can't be executed, due to environment or any other limitation, stop and present the problem to ask for clarification.
-
-**Do not dispatch multiple implementation subagents in parallel** — they will conflict.
 
 **Do not skip reviews** (spec compliance OR code quality).
 

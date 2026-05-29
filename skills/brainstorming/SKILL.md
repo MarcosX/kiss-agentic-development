@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: Use before any creative work — creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements, and design before implementation. Load this skill before checking or exploring the current project.
+description: Use when the prompt asks to brainstorm, requirements are unclear, or before any creative work — creating features, building components, modifying behavior. Explores user intent and design before implementation. Load this skill before checking or exploring the current project.
 ---
 
 Help turn ideas into complete design and specs through collaborative conversation.
