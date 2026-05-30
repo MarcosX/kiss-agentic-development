@@ -57,6 +57,8 @@ git clone https://github.com/MarcosX/kiss-agentic-development.git /tmp/kiss-agen
 cp -r /tmp/kiss-agentic-dev/skills/* <TARGET_PATH>/
 ```
 
+After the initial install, keep a reference to the clone location or the remote URL so you can re-pull later for updates.
+
 | Agent          | Global (all projects)                       | Project (repo-scoped) |
 | -------------- | ------------------------------------------- | --------------------- |
 | OpenCode       | `~/.config/opencode/skills/`                | `.opencode/skills/`   |
@@ -159,11 +161,45 @@ Open a new session with your agent and ask:
 
 > What skills are available?
 
-The agent should list:
+The agent should list all 7 skills:
 
-- `using-skills` — Meta-skill to discover and invoke skills before any action
-- `brainstorming` — Ideation and creative exploration
-- `writing-plans` — Structured plan creation
-- `executing-plans` — Execute and verify plans with review checkpoints
+- `using-skills` — Skill discovery and invocation before any action
+- `brainstorming` — Design before implementation
+- `writing-plans` — Executable plans with acceptance criteria
+- `executing-plans` — Isolated subagent tasks with review gates
+- `practicing-tdd` — Test-first discipline
+- `reviewing-code` — Five-axis structured review
+- `debugging` — Root cause investigation before fixes
 
 If the agent immediately checks for skills before responding to your question, `using-skills` is loading correctly.
+
+You can also verify the installed version directly:
+
+```bash
+head -4 ~/.agents/skills/brainstorming/SKILL.md
+```
+
+The description field should match the table above (e.g. "Use when the prompt asks to brainstorm...").
+
+---
+
+## 5. Updating
+
+To update the skills to the latest version:
+
+### If installed via `npx skills`
+
+`npx skills update` may fail for this repo. Instead, re-add to force a fresh clone:
+
+```bash
+npx skills add MarcosX/kiss-agentic-development --global --all -y
+```
+
+### If installed via fallback clone
+
+```bash
+cd /tmp/kiss-agentic-dev && git pull origin main
+cp -r /tmp/kiss-agentic-dev/skills/* <TARGET_PATH>/
+```
+
+After updating, verify the version with the `head` command above.

@@ -14,6 +14,8 @@ Heavily influenced by [Superpowers](https://github.com/obra/superpowers) and Ant
   - [Claude Code](#claude-code)
   - [GitHub Copilot CLI](#github-copilot-cli)
   - [Cursor](#cursor)
+- [Verification](#verification)
+- [Updating](#updating)
 - [Contributing](#contributing)
 
 ## Skills
@@ -73,7 +75,7 @@ npx skills add MarcosX/kiss-agentic-development --global --agent claude-code
 
 If you don't want to use `npx skills`, point your agent to `https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/heads/main/INSTALL.prompt.md` and it will clone the repo according to your coding agent.
 
-Skills are installed via `npx skills` into `~/.agents/skills/` and symlinked across all supported agents. To avoid having to always instruct agents to use the `using-skills` skill, configure your agent to auto-load it when starting a new session.
+Skills are installed via `npx skills` into `~/.agents/skills/` and symlinked across all supported agents. The `--all` flag auto-discovers all skill subdirectories at the repo root — no need to list them individually. To avoid having to always instruct agents to use the `using-skills` skill, configure your agent to auto-load it when starting a new session.
 
 ### OpenCode
 
@@ -163,6 +165,26 @@ This is not negotiable and cannot be bypassed.
 ```
 
 This instructs Cursor to load the skill at the start of every session. See [Cursor rules docs](https://cursor.com/docs/rules) for more details.
+
+## Verification
+
+After installation, confirm the skills are the expected version:
+
+```bash
+head -4 ~/.agents/skills/brainstorming/SKILL.md
+```
+
+Check that the `description` field matches the table above. If it looks stale or you see fewer than 7 skill directories under `~/.agents/skills/`, run the update command below.
+
+## Updating
+
+`npx skills update` may fail for this repo (SSH fetch issues). The reliable workaround is a clean re-install:
+
+```bash
+npx skills add MarcosX/kiss-agentic-development --global --all -y
+```
+
+This re-clones the repo and replaces all skill files. To verify the update landed, check the brainstorming description or any other changed content.
 
 ## Contributing
 
