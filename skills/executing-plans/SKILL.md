@@ -71,7 +71,7 @@ Use the least powerful model that can handle each role to conserve cost and incr
 ## Advantages
 
 **vs. Manual execution:**
-- Subagents follow TDD naturally
+- Each task is categorized (Coding/Non-coding) — subagents follow the task steps as written
 - Fresh context per task (no confusion)
 - Parallel-safe (subagents don't interfere)
 - Subagent can ask questions before AND during work

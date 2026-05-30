@@ -8,7 +8,9 @@ Write agent-executable implementation plans, assuming zero codebase context.
 <IMPORTANT>
 Tasks must be self-contained: file paths, code, exact commands with expected outputs, and clear definition of done.
 
-The plan must instruct the agent to commit frequently, follow TDD, and stay minimal.
+TDD is the default. Coding tasks MUST include test-first lifecycle steps. Non-coding tasks (docs, config, CI/CD) skip TDD — use simple change→verify→commit steps.
+
+The template below is authoritative. If the project has local ticket conventions (e.g. `project-management.md`), merge them INTO this template — do not omit the Test: file section or TDD lifecycle steps.
 </IMPORTANT>
 
 # RULE
@@ -42,13 +44,15 @@ The plan must instruct the agent to commit frequently, follow TDD, and stay mini
 
 ## Task N: [Task Name]
 
+**Category:** Coding | Non-coding
+
 **Files:**
 
 - Create: [path to files that need to be created]
 - Modify: [path to files that should be modified]
-- Test: [path to test files to be created/modified]
+- Test: [path to test files — REQUIRED for Coding tasks]
 
-**Steps:**
+**Coding template** — use when Category is Coding:
 
 1. Write failing test:
 
@@ -78,4 +82,27 @@ git commit -m 'feat: add feature'
 - All tests pass
 - Lint shows no errors or warning
 - Application builds locally
+
+---
+
+**Non-coding template** — use when Category is Non-coding (docs, config, CI/CD, dependency bumps):
+
+1. Make change
+
+[description of what to change, with exact values]
+
+2. Verify
+
+[how to confirm — read output, parse file, dry run, etc.]
+
+3. Commit
+
+```bash
+git add path/to/files
+git commit -m 'chore: description'
+```
+
+**Done when**:
+
+- Change is confirmed correct
 ````

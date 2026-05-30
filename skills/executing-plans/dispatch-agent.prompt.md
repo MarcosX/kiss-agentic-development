@@ -33,7 +33,7 @@ If you have questions about:
 Once you're clear on requirements:
 
 1. Implement exactly what the task specifies
-2. Write tests (following TDD if task says to)
+2. Follow the task steps as specified. Coding tasks include TDD lifecycle; Non-coding tasks use simple steps.
 3. Verify implementation works
 4. Commit your work
 5. Self-review (see below)
@@ -93,7 +93,7 @@ Review your work with fresh eyes. Ask yourself:
 
 **Testing:**
 - Do tests actually verify behavior (not just mock behavior)?
-- Did I follow TDD if required?
+- Did I follow TDD (for Coding tasks)?
 - Are tests comprehensive?
 
 If you find issues during self-review, fix them now before reporting.

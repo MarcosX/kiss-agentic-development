@@ -20,16 +20,24 @@ Heavily influenced by [Superpowers](https://github.com/obra/superpowers) and Ant
 
 ## Skills
 
-Every session starts with `using-skills` — a guardrail that forces the agent to find and load the right skill before doing anything else. From there the workflow follows a natural rhythm: `brainstorming` to explore and design, `writing-plans` to turn the design into tasks, `practicing-tdd` to implement with tests first, and `reviewing-code` to catch issues before merge. When something breaks, `debugging` makes sure the agent finds the root cause before proposing a fix.
+Every session starts with `using-skills` — a guardrail that forces the agent to find and load the right skill before doing anything else. From there the workflow follows a natural rhythm: `brainstorming` to explore and design, `writing-plans` to turn the design into categorized tasks (coding vs non-coding), `executing-plans` to dispatch each task to an isolated subagent, `practicing-tdd` which each subagent follows to implement with tests first, and `reviewing-code` to catch issues before merge. When something breaks, `debugging` makes sure the agent finds the root cause before proposing a fix.
 
 ```mermaid
-flowchart LR
+flowchart TB
     A[using-skills] --> B[brainstorming]
     B --> C[writing-plans]
-    C --> D[practicing-tdd]
+    C --> D[executing-plans]
     D --> E[reviewing-code]
-    D -.-> F[debugging]
-    F --> D
+    
+    subgraph "Fan-out: per-task subagents"
+        D -.->|dispatch N| F[practicing-tdd]
+        F -.-> G[debugging]
+        G -.-> F
+    end
+    
+    subgraph "Fan-in: after all complete"
+        F -.->|results| E
+    end
 ```
 
 | Skill | What it enforces |
