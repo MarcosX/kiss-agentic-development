@@ -35,8 +35,8 @@ flowchart TB
         G -.-> F
     end
     
-    subgraph "Fan-in: after all complete"
-        F -.->|results| E
+    subgraph "Fan-in: spec & code review per task"
+        F -.->|results| D
     end
 ```
 
