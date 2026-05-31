@@ -198,7 +198,7 @@ npx skills add MarcosX/kiss-agentic-development --global --all -y
 ### If installed via fallback clone
 
 ```bash
-cd /tmp/kiss-agentic-dev && git pull origin main
+cd /tmp/kiss-agentic-dev && git pull origin latest
 cp -r /tmp/kiss-agentic-dev/skills/* <TARGET_PATH>/
 ```
 

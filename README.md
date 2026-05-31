@@ -81,7 +81,7 @@ npx skills add MarcosX/kiss-agentic-development --global --agent opencode
 npx skills add MarcosX/kiss-agentic-development --global --agent claude-code
 ```
 
-If you don't want to use `npx skills`, point your agent to `https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/heads/main/INSTALL.prompt.md` and it will clone the repo according to your coding agent.
+If you don't want to use `npx skills`, point your agent to `https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/INSTALL.prompt.md` and it will clone the repo according to your coding agent.
 
 Skills are installed via `npx skills` into `~/.agents/skills/` and symlinked across all supported agents. The `--all` flag auto-discovers all skill subdirectories at the repo root — no need to list them individually. To avoid having to always instruct agents to use the `using-skills` skill, configure your agent to auto-load it when starting a new session.
 

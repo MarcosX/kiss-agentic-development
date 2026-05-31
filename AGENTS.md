@@ -180,6 +180,17 @@ Skill development is an iterative loop: draft → test → review → improve �
 
 Version `0.0.1`. Bump with `git tag v<semver>` and `git push --tags`.
 
+When bumping to `v<major>.<minor>.<patch>`, also create and push tags for the major-minor, major, and latest aliases:
+
+```bash
+git tag v<major>.<minor> v<major>.<minor>.<patch>
+git tag v<major> v<major>.<minor>.<patch>
+git tag -f latest v<major>.<minor>.<patch>
+git push --tags --force
+```
+
+This allows consumers to pin to `latest`, `v1`, or `v1.2` instead of a full semver.
+
 ## Commit convention
 
 Use [Conventional Commits](https://www.conventionalcommits.org/):
