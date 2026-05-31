@@ -27,17 +27,18 @@ flowchart TB
     A[using-skills] --> B[brainstorming]
     B --> C[writing-plans]
     C --> D[executing-plans]
-    D --> E[reviewing-code]
     
-    subgraph "Fan-out: per-task subagents"
-        D -.->|dispatch N| F[practicing-tdd]
-        F -.-> G[debugging]
-        G -.-> F
+    subgraph "Per-task loop: dispatch, implement, review"
+        direction TB
+        E[dispatch-agent N] --> F[practicing-tdd]
+        F --> G[spec-review]
+        G --> H[code-review]
+        H -->|next task| E
     end
     
-    subgraph "Fan-in: spec & code review per task"
-        F -.->|results| D
-    end
+    D -.->|fan-out| E
+    H -.->|fan-in| D
+    D --> I[reviewing-code]
 ```
 
 | Skill | What it enforces |
