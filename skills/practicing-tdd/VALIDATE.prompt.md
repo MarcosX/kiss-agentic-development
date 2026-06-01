@@ -16,8 +16,6 @@ grep -q "Verify GREEN" skills/practicing-tdd/SKILL.md && echo "✓ GREEN verific
 grep -q "Prove-It Pattern" skills/practicing-tdd/SKILL.md && echo "✓ Prove-It Pattern for bugs"
 grep -q "Red Flags" skills/practicing-tdd/SKILL.md && echo "✓ Red flags section present"
 grep -q "Verification Checklist" skills/practicing-tdd/SKILL.md && echo "✓ Verification checklist present"
-grep -q "brainstorming" skills/practicing-tdd/SKILL.md && echo "✓ Cross-references brainstorming"
-grep -q "writing-plans" skills/practicing-tdd/SKILL.md && echo "✓ Cross-references writing-plans"
 grep -q "must be deleted" skills/practicing-tdd/SKILL.md && echo "✓ Deletion rule enforced"
 ```
 

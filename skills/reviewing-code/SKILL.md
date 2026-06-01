@@ -6,10 +6,8 @@ description: Use when reviewing code from any source (your own, another agent, o
 ## When to Use
 
 - Before merging any change
-- After completing a feature implementation
 - When another agent or model produced code you need to evaluate
 - When receiving review feedback from a human or peer
-- After refactoring
 
 ## Giving Review
 
@@ -84,11 +82,7 @@ If a reviewer suggests productionizing code that is not currently used, grep for
 
 ### Push Back When Wrong
 
-Push back when a suggestion breaks existing functionality, the reviewer lacks full context, it violates YAGNI, or it is technically incorrect. Use technical reasoning backed by code and tests, not defensiveness.
-
-### Acknowledge Correct Feedback
-
-When feedback is correct, acknowledge it factually and fix it. Actions speak louder than performative agreement.
+Push back when a suggestion breaks existing functionality, the reviewer lacks full context, it violates YAGNI, or it is technically incorrect. Use technical reasoning backed by code and tests.
 
 ## Red Flags
 
@@ -99,8 +93,5 @@ When feedback is correct, acknowledge it factually and fix it. Actions speak lou
 - Bug fixes without reproduction tests
 - Accepting "I will fix it later"
 - Implementing unclear feedback without clarification
-- Performative agreement instead of technical evaluation
 
-## Integration with Other Skills
 
-This skill pairs with `executing-plans` (which includes spec-compliance and code-quality reviews in its dispatch workflow) and `brainstorming` (ensuring code has a clear spec before review).

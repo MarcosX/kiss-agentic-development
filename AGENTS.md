@@ -18,7 +18,7 @@ Collection of AI agent skills that enforce skill-first workflows.
 
 ## Local development
 
-When working on skills in this repo, the local config (`.opencode/opencode.json`) loads `using-skills` into every opencode session, while the symlink provides native discovery for all 4 skills via the `skill` tool.
+When working on skills in this repo, the local config (`.opencode/opencode.json`) loads `using-skills` into every opencode session, while the symlink provides native discovery for all skills via the `skill` tool.
 
 ## Working with Skills
 
@@ -97,11 +97,11 @@ Agents pay for every token in a skill. Optimize ruthlessly.
 - **MUST NOT use visual formatting**: no tables, no ASCII charts, no graphviz diagrams, no complex formatting. These add token overhead for zero agent benefit.
 - **MUST use flat structures**: lists, short paragraphs, code blocks. Avoid nesting beyond 2 levels.
 - **Reference files over 100 lines**: MUST include a table of contents at the top so agents can scope partial reads.
+- **Cross-reference cost**: "Integration with Other Skills" sections aid discoverability but consume word budget. Include only when an agent is unlikely to infer the relationship. Prefer implicit links via shared terminology over explicit sections.
 - **Word count targets** (SKILL.md body):
-  - Frequently-loaded skills (always-loaded meta-skills): **<200 words**
-  - General skills: **<500 words**
+  - Frequently-loaded skills (always-loaded meta-skills): **<300 words**
+  - General skills: **<650 words**
   - Reference files: **<500 words** per file
-- **Range gates** for word counts:
 - **Range gates** for word counts:
   - ≤50% over target: warning — investigate improvements, justify or cut
   - >50% above target: blocked — restructure or split content before proceeding
@@ -179,18 +179,23 @@ Skill development is an iterative loop: draft → test → review → improve �
 
 ## Versioning
 
-Version `0.0.1`. Bump with `git tag v<semver>` and `git push --tags`.
-
-When bumping to `v<major>.<minor>.<patch>`, also create and push tags for the major-minor, major, and latest aliases:
+Version tags are the source of truth. Inspect git tags to find the latest version:
 
 ```bash
+git tag -l | sort -V | tail -1
+```
+
+When bumping, create and push tags for the semver, major-minor, major, and latest aliases:
+
+```bash
+git tag v<major>.<minor>.<patch>
 git tag v<major>.<minor> v<major>.<minor>.<patch>
 git tag v<major> v<major>.<minor>.<patch>
 git tag -f latest v<major>.<minor>.<patch>
 git push --tags --force
 ```
 
-This allows consumers to pin to `latest`, `v1`, or `v1.2` instead of a full semver.
+This allows consumers to pin to `latest`, `v1`, or `v1.2` instead of a full semver. Do not embed a version string in this file — tags are the single source of truth.
 
 ## Commit convention
 
@@ -213,6 +218,8 @@ grep -q "^name: brainstorming" skills/brainstorming/SKILL.md && echo "✓ Name d
 ### Manual AI-review scenarios
 
 The `---` separator divides automated checks from manual AI-review scenarios (scenario descriptions, expected behaviors, red flags). These cannot be automated — they are instructions for developers or AI agents to review a skill manually.
+
+Scenarios serve as the behavioral contract for a skill. If a scenario fails, the skill is broken — even if all bash checks pass. Each scenario tests a specific behavior the skill must enforce, not just presence of keywords.
 
 ### Running validation
 
@@ -242,6 +249,7 @@ Skills must not contain malware, exploit code, or content that compromises syste
 - [ ] Skill addresses specific baseline failures identified in RED
 - [ ] Within word count targets (or justified if over)
 - [ ] Run same prompts WITH skill — verify compliance
+- [ ] Run manual AI-review scenarios from VALIDATE.prompt.md — all must pass
 
 **REFACTOR phase — Close loopholes:**
 - [ ] Identify new rationalizations from testing

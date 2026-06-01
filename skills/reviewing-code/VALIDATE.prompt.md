@@ -20,8 +20,6 @@ grep -q "Clarify Before Implementing" skills/reviewing-code/SKILL.md && echo "�
 grep -q "YAGNI on Suggestions" skills/reviewing-code/SKILL.md && echo "✓ YAGNI on feedback"
 grep -q "Push Back When Wrong" skills/reviewing-code/SKILL.md && echo "✓ Push-back guidance"
 grep -q "Red Flags" skills/reviewing-code/SKILL.md && echo "✓ Red flags section present"
-grep -q "executing-plans" skills/reviewing-code/SKILL.md && echo "✓ Cross-references executing-plans"
-grep -q "brainstorming" skills/reviewing-code/SKILL.md && echo "✓ Cross-references brainstorming"
 ```
 
 ## Integration Test

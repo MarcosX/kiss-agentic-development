@@ -4,7 +4,7 @@ A library of skills that make AI agents more reliable without the complexity of 
 
 Drop them into any coding agent — OpenCode, Claude Code, Cursor — and the agent follows your team's practices instead of guessing what "good" looks like. One agent, a library of skills. That's the idea.
 
-Heavily influenced by [Superpowers](https://github.com/obra/superpowers) and Anthropic's [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
+Heavily influenced by [Superpowers](https://github.com/obra/superpowers), [skills](https://github.com/mattpocock/skills), and Anthropic's [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
 
 ## Table of Contents
 

@@ -10,14 +10,14 @@ Tasks must be self-contained: file paths, code, exact commands with expected out
 
 TDD is the default. Coding tasks MUST include test-first lifecycle steps. Non-coding tasks (docs, config, CI/CD) skip TDD — use simple change→verify→commit steps.
 
-The template below is authoritative. If the project has local ticket conventions (e.g. `project-management.md`), merge them INTO this template — do not omit the Test: file section or TDD lifecycle steps.
+The template below is authoritative. Merge local ticket conventions into it — do not omit Test: file or TDD steps.
 </IMPORTANT>
 
 # RULE
 
-**Save plans before starting**: Save plans to `<prefix>-plan.md`, where prefix is 2-3 key words, never use generic names, like `plan.md`.
+**Save plans before starting**: Save to `<prefix>-plan.md` (2-3 key words, never `plan.md`).
 
-**Scope reduction**: Before extracting ACs, identify features not justified by the design or requirements and remove them. Scope creep wastes implementation effort — YAGNI is an active filter, not a footnote.
+**Scope reduction**: Before extracting ACs, remove features not justified by design or requirements. Scope creep wastes effort — YAGNI is an active filter.
 
 **AC coverage**: Extract acceptance criteria from the design, prompt, or other sources and build a coverage list.
 
@@ -25,9 +25,9 @@ The template below is authoritative. If the project has local ticket conventions
 
 **Quiz the user**: After presenting the proposed breakdown, ask about granularity, dependency correctness, and HITL/AFK assignments. Iterate until approved.
 
-**Each Task is self-contained**: Tasks contain clear steps to implement them, along with verification steps and completion steps.
+**Each Task is self-contained**: Tasks contain clear implementation, verification, and completion steps.
 
-**Each step is one atomic action**: No judgment is required to complete a step. Any ambiguity should be addressed by revisting the plan. Steps should be minimalistic bite-sized actions to complete just one part of a task.
+**Each step is one atomic action**: No judgment required. Ambiguity means revisit the plan. Each step completes one atomic action.
 
 **Ensure all ACs are covered**: Map every AC to tasks as they are created. If ACs are left with no task assigned, review the plan to identify gaps/duplication.
 

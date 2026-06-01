@@ -6,14 +6,14 @@ description: Use when implementing any feature, fixing any bug, refactoring, or 
 <HARD-GATE>
 NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST.
 
-Production code written before a test must be deleted. Not kept as reference, not adapted while writing tests, not looked at. Implement fresh from tests.
+Production code written before a test must be deleted — not kept as reference, not adapted, not looked at. Implement fresh from tests.
 </HARD-GATE>
 
 ## When to Use
 
 Always: new features, bug fixes, refactoring, behavior changes.
 
-Exceptions (ask your human partner first): throwaway prototypes, generated code, configuration files.
+Exceptions (ask first): throwaway prototypes, generated code, configuration files.
 
 ## RED — Write a Failing Test
 
@@ -37,7 +37,7 @@ Only after GREEN. Remove duplication, improve names, extract helpers. Keep tests
 
 ## Prove-It Pattern (Bug Fixes)
 
-Bug reported? Write a reproduction test first. Watch it fail (confirming the bug). Then fix the code. Watch it pass (proving the fix). Never fix bugs without a test — the test proves the fix and prevents regression.
+Bug reported? Write a reproduction test and watch it fail. Then fix the code and watch it pass. Never fix bugs without a test — the test proves the fix and prevents regression.
 
 ## Red Flags — STOP and Start Over
 
@@ -65,6 +65,4 @@ Before marking work complete:
 - [ ] Edge cases and errors are covered
 - [ ] Bug fixes include a reproduction test
 
-## Integration with Other Skills
 
-This skill pairs with `brainstorming` (design before building) and `writing-plans` (implementation plans with built-in TDD steps).

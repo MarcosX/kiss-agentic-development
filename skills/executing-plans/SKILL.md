@@ -55,56 +55,11 @@ If not, determine next steps:
   - propose 2-3 options for addressing the cause
   - report current status of plan along with suggestions
 
-## Model Selection
-
-Use the least powerful model that can handle each role to conserve cost and increase speed.
-
-- **Mechanical implementation tasks** (isolated functions, clear specs, 1-2 files): use a fast, cheap model.
-- **Integration and judgment tasks** (multi-file coordination, pattern matching, debugging): use a standard model.
-- **Architecture, design, and review tasks**: use the most capable available model.
-
-**Task complexity signals:**
-- Touches 1-2 files with a complete spec → cheap model
-- Touches multiple files with integration concerns → standard model
-- Requires design judgment or broad codebase understanding → most capable model
-
-## Advantages
-
-**vs. Manual execution:**
-- Each task is categorized (Coding/Non-coding) — subagents follow the task steps as written
-- Fresh context per task (no confusion)
-- Parallel-safe (subagents don't interfere)
-- Subagent can ask questions before AND during work
-
-**Quality gates:**
-- Self-review catches issues before handoff
-- Two-stage review: spec compliance, then code quality
-- Review loops ensure fixes actually work
-- Spec compliance prevents over/under-building
-- Code quality ensures implementation is well-built
-
 # Red flags
 
-Do not rely on guessing and do not force through blockers.
-
-**Verification step continues to fail**: stop and ask for clarification to ensure the verification step is actually correct.
-
-**Critical gaps are found**: when implementing, even though the plan was reviewed, stop and ask for clarification when needed.
-
-**Previous steps prevent proper implementation**: when an implementation decision made earlier impacts the next tasks, stop and present the problem to ask for clarification.
-
-**Instruction isn't clear or can't be performed**: when actions on a step can't be executed, due to environment or any other limitation, stop and present the problem to ask for clarification.
-
-**Do not skip reviews** (spec compliance OR code quality).
-
-**Do not proceed with unfixed issues** — reviewer found issues = implementer fixes = review again.
-
-**Do not skip re-review** after fixes are applied.
-
-**Do not let implementer self-review replace actual review** — both are needed.
-
-**Do not start code quality review before spec compliance is ✅** — wrong order.
-
-**Never ignore subagent questions** — answer before letting them proceed.
-
-**Never accept "close enough" on spec compliance** — spec reviewer found issues = not done.
+- **Verification step continues to fail** — stop and ask for clarification
+- **Critical gaps or blockers** — stop and present the problem, do not force through
+- **Instruction unclear** — stop and ask for clarification
+- **Do not skip reviews** — spec compliance first, then code quality. Both required. No exceptions.
+- **Never ignore subagent questions** — answer before letting them proceed.
+- **Never accept "close enough"** — reviewer found issues means not done.
