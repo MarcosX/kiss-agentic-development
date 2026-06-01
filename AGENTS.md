@@ -115,6 +115,7 @@ Agents pay for every token in a skill. Optimize ruthlessly.
 ### Structure principles
 
 - **Progressive disclosure**: SKILL.md is an overview. Split detailed content into separate reference files that agents read on demand.
+- **When-conditioned references**: When SKILL.md references a reference file, prefix with a *when* condition so the agent knows when to load it. "When slicing tickets, see `references/slicing-guide.md`" instead of "See `references/slicing-guide.md`". This prevents eager loading — the agent defers reading until the condition is met.
 - **One level deep**: All reference files MUST link directly from SKILL.md. Deeply nested references (`SKILL.md → file-a.md → file-b.md`) cause agents to skip content.
 - **Domain organization**: When a skill covers multiple domains or frameworks, organize reference files by variant so agents read only what is relevant.
 

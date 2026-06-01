@@ -25,11 +25,11 @@ Every project goes through this process. A todo list, a single-function utility,
 
 **Brainstorming workflow**: You MUST create tasks for the following items and complete them:
 
-1. **Explore context** - check for files, documents, references, recent commits
-2. **Ask clarifying questions** - one question at a time to understand purpose, goals, constraints, and success criteria
+1. **Explore context** - check for files, documents, CONTEXT.md/ADRs, references, recent commits
+2. **Stress-test understanding** - one question at a time. Interview relentlessly, walk decision tree branches, sharpen domain language against existing glossary and code. When domain terms need capturing, use `references/CONTEXT-FORMAT.md`. When a hard decision emerges, use `references/ADR-FORMAT.md`.
 3. **Propose 2-3 approaches** - including trade-offs along with your recommendation for the user
 4. **Present the design** - use sections, based on the complexity, and get user approval after each of them
-5. **Write design doc** - write the design to a file, then:
+5. **Write design doc** - when writing the design doc, use `references/prd-template.md` as the structure. Write to a file, then:
    1. **Spec self-review**: scan for placeholders (TBD/TODO), contradictions, ambiguity, scope bloat. Fix inline.
    2. **User review gate**: ask the user to review the written spec before proceeding. Wait for approval or changes.
    3. **Create implementation plan**: only after user approves the spec, invoke `writing-plans` to create the plan.
@@ -42,14 +42,21 @@ Every project goes through this process. A todo list, a single-function utility,
 
 ## Explore context
 
-- Check out the current state (files, docs, references, recent commit)
+- Check out the current state (files, docs, CONTEXT.md/ADRs, references, recent commits)
+- Note existing domain language in CONTEXT.md to catch conflicts later
 - Understand existing recommendations, conventions and patterns
 
-## Explore understanding
+## Stress-test understanding
 
-- Ask questions, one at a time, to refine the idea
-- Prefer multiple choice questions over open-ended
-- Ensure you understand purpose, constraints and success criteria
+Interview relentlessly about every aspect until shared understanding is reached. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer. Prefer multiple choice.
+
+During this phase, also sharpen domain language:
+- When the user uses a term that conflicts with CONTEXT.md or code, call it out immediately
+- Propose precise canonical terms for vague/overloaded ones
+- Discuss concrete scenarios that probe edge cases and force precision about boundaries
+- Cross-reference claims against code — when the user states how something works, check if the code agrees
+- When domain terms need capturing, use `references/CONTEXT-FORMAT.md`
+- When a hard decision emerges, use `references/ADR-FORMAT.md` to check if an ADR is warranted
 
 **Assess scope first**: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Help the user decompose into sub-projects before diving into details. Each sub-project gets its own brainstorm → spec → plan → implementation cycle.
 
@@ -75,6 +82,8 @@ Explore the current structure before proposing changes. Follow existing patterns
 
 ## Write documentation
 
+- When writing the design doc, use `references/prd-template.md` as the structure — includes problem statement, user stories, implementation decisions, testing decisions (seam-first), and out of scope
+- Adopt the anti-stale principle — avoid file paths and code snippets in the output. Exception: prototype-produced decision-rich snippets (state machines, schemas, type shapes) can be inlined
 - Use `writing-plans` to turn the design into an implementation plan
 - Do NOT commit design documents or plans to git (they are session artifacts only)
 

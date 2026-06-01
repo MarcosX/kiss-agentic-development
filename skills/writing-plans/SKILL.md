@@ -21,6 +21,10 @@ The template below is authoritative. If the project has local ticket conventions
 
 **AC coverage**: Extract acceptance criteria from the design, prompt, or other sources and build a coverage list.
 
+**Vertical slices**: When slicing tickets, use `references/slicing-guide.md` to break work into thin end-to-end slices. Each slice cuts through all layers, is demoable on its own, and is typed as HITL (needs human) or AFK (agent can implement independently). Publish blockers first.
+
+**Quiz the user**: After presenting the proposed breakdown, ask about granularity, dependency correctness, and HITL/AFK assignments. Iterate until approved.
+
 **Each Task is self-contained**: Tasks contain clear steps to implement them, along with verification steps and completion steps.
 
 **Each step is one atomic action**: No judgment is required to complete a step. Any ambiguity should be addressed by revisting the plan. Steps should be minimalistic bite-sized actions to complete just one part of a task.
