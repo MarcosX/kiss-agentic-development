@@ -17,6 +17,9 @@ grep -q "Create implementation plan" skills/brainstorming/SKILL.md && echo "✓ 
 grep -q "writing-plans" skills/brainstorming/SKILL.md && echo "✓ References writing-plans for plan creation"
 grep -q "YAGNI" skills/brainstorming/SKILL.md && echo "✓ YAGNI principle enforced"
 grep -q "one at a time" skills/brainstorming/SKILL.md && echo "✓ One question at a time rule"
+grep -q "explore-context.prompt.md" skills/brainstorming/SKILL.md && echo "✓ References explore-context.prompt.md for subagent dispatch"
+test -f skills/brainstorming/references/explore-context.prompt.md && echo "✓ explore-context.prompt.md reference file exists"
+grep -q "dispatch a subagent to scan" skills/brainstorming/SKILL.md && echo "✓ Spec self-review uses subagent dispatch"
 ```
 
 ## Integration Test

@@ -25,12 +25,12 @@ Every project goes through this process. A todo list, a single-function utility,
 
 **Brainstorming workflow**: You MUST create tasks for the following items and complete them:
 
-1. **Explore context** - check for files, documents, CONTEXT.md/ADRs, references, recent commits
+1. **Explore context** - dispatch an explore subagent using `references/explore-context.prompt.md`
 2. **Stress-test understanding** - one question at a time. Interview relentlessly, walk decision tree branches, sharpen domain language against existing glossary and code. When domain terms need capturing, use `references/CONTEXT-FORMAT.md`. When a hard decision emerges, use `references/ADR-FORMAT.md`.
 3. **Propose 2-3 approaches** - including trade-offs along with your recommendation for the user
 4. **Present the design** - use sections, based on the complexity, and get user approval after each of them
 5. **Write design doc** - when writing the design doc, use `references/prd-template.md` as the structure. Write to a file, then:
-   1. **Spec self-review**: scan for placeholders (TBD/TODO), contradictions, ambiguity, scope bloat. Fix inline.
+   1. **Spec self-review**: dispatch a subagent to scan for placeholders (TBD/TODO), contradictions, ambiguity, and scope bloat. The subagent returns issues with locations and suggested fixes. Apply them in the main session. Skip if spec is under 50 lines.
    2. **User review gate**: ask the user to review the written spec before proceeding. Wait for approval or changes.
    3. **Create implementation plan**: only after user approves the spec, invoke `writing-plans` to create the plan.
 
@@ -42,9 +42,13 @@ Every project goes through this process. A todo list, a single-function utility,
 
 ## Explore context
 
-- Check out the current state (files, docs, CONTEXT.md/ADRs, references, recent commits)
-- Note existing domain language in CONTEXT.md to catch conflicts later
-- Understand existing recommendations, conventions and patterns
+Use `references/explore-context.prompt.md` to dispatch an explore-type subagent.
+Paste the project domain/goal into the template. The subagent returns a structured
+report covering domain language, relevant changes, file structure, patterns,
+and references.
+
+Note domain language conflicts and relevant patterns from the report.
+Targeted file reads are still fine for specific questions the report raises.
 
 ## Stress-test understanding
 
