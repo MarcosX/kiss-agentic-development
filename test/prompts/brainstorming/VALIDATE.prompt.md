@@ -48,7 +48,7 @@ cd ~ && rm -rf .tmp/brainstorm-test
 
 **Prompt for AI Assistants:**
 
-> Run the validation commands in `brainstorming/VALIDATE.prompt.md` and report any issues found with the brainstorming skill.
+> Run the validation commands in `test/prompts/brainstorming/VALIDATE.prompt.md` and report any issues found with the brainstorming skill.
 
 ## Test Scenarios
 

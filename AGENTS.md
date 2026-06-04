@@ -8,8 +8,9 @@ Collection of AI agent skills that enforce skill-first workflows.
 ├── skills/                           # All skill directories (source of truth)
 │   ├── [skill name]/
 │   │   ├── SKILL.md
-│   │   └── VALIDATE.prompt.md
 ├── test/
+│   ├── prompts/[skill name]/         # Each skill has a directory under test/prompt
+│   │   └── VALIDATE.prompt.md        # VALIDATE prompt contains test instructions
 │   └── validate.mjs                  # Frontmatter + VALIDATE.prompt.md checks
 └── .opencode/
     ├── skills/ → ../skills           # Symlink for native discovery
@@ -27,7 +28,7 @@ When working on skills in this repo, the local config (`.opencode/opencode.json`
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
 2. **Test baseline first**: Run representative prompts WITHOUT the skill — document what the agent gets wrong or misses. This is your "RED" phase.
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
-4. Create `skills/<name>/VALIDATE.prompt.md` (optional, for AI-driven validation)
+4. Create `test/prompts/<name>/VALIDATE.prompt.md` (optional, for AI-driven validation)
 5. **Symlink is automatic** — `.opencode/skills → ../skills` covers all subdirectories
 6. Run `node test/validate.mjs` to confirm frontmatter and symlink
 
@@ -41,8 +42,7 @@ When working on skills in this repo, the local config (`.opencode/opencode.json`
 ### Skill structure conventions
 
 - `SKILL.md` **requires** YAML frontmatter with `name` and `description` — both must be present
-- `VALIDATE.prompt.md` provides AI agents with self-check instructions for the skill
-- Prompt files (`.prompt.md`) under `executing-plans/` are loaded by the skill itself, not auto-discovered
+- `test/prompts/VALIDATE.prompt.md` provides AI agents with self-check instructions for the skill
 - **Cross-referencing**: Reference other skills by name with requirement markers. `**REQUIRED BACKGROUND:** You MUST understand [skill-name]`. Do not use @-links or file paths that force-load context.
 
 ## Skill authoring guidelines
@@ -72,6 +72,7 @@ Skills MUST work with any coding agent, not just one provider. This is non-negot
 - If a skill inherently requires a provider-specific feature, it MUST be wrapped in a `<provider-specific>` block with a clear warning
 
 **You are violating this rule if:**
+
 - The skill says "use the `skill` tool" or any tool by name
 - The skill references a path that only exists in one provider's filesystem
 - The skill would silently fail when used with a different provider
@@ -84,6 +85,7 @@ Skills MUST work with any coding agent, not just one provider. This is non-negot
 - **Avoid time-sensitive info**: Hard-coded dates or versions force maintenance. Use "old patterns" sections instead.
 
 **You are violating this rule if:**
+
 - A line explains something an agent already knows
 - The same concept has different names in different parts of the skill
 - A date or version number appears without an "old patterns" escape hatch
@@ -104,9 +106,10 @@ Agents pay for every token in a skill. Optimize ruthlessly.
   - Reference files: **<500 words** per file
 - **Range gates** for word counts:
   - ≤50% over target: warning — investigate improvements, justify or cut
-  - >50% above target: blocked — restructure or split content before proceeding
+  - > 50% above target: blocked — restructure or split content before proceeding
 
 **You are violating this rule if:**
+
 - A table or diagram is found in a skill file
 - Nested bullet points go 3+ levels deep
 - A reference file has no ToC and exceeds 100 lines
@@ -115,7 +118,7 @@ Agents pay for every token in a skill. Optimize ruthlessly.
 ### Structure principles
 
 - **Progressive disclosure**: SKILL.md is an overview. Split detailed content into separate reference files that agents read on demand.
-- **When-conditioned references**: When SKILL.md references a reference file, prefix with a *when* condition so the agent knows when to load it. "When slicing tickets, see `references/slicing-guide.md`" instead of "See `references/slicing-guide.md`". This prevents eager loading — the agent defers reading until the condition is met.
+- **When-conditioned references**: When SKILL.md references a reference file, prefix with a _when_ condition so the agent knows when to load it. "When slicing tickets, see `references/slicing-guide.md`" instead of "See `references/slicing-guide.md`". This prevents eager loading — the agent defers reading until the condition is met.
 - **One level deep**: All reference files MUST link directly from SKILL.md. Deeply nested references (`SKILL.md → file-a.md → file-b.md`) cause agents to skip content.
 - **Domain organization**: When a skill covers multiple domains or frameworks, organize reference files by variant so agents read only what is relevant.
 
@@ -127,6 +130,7 @@ Agents pay for every token in a skill. Optimize ruthlessly.
       ├── gcp.md
       └── azure.md
   ```
+
 - **Forward slashes**: Always use Unix-style paths (`reference/guide.md`), never backslashes.
 
 ### Workflow design
@@ -148,6 +152,7 @@ These patterns MUST be caught and corrected. If you find yourself writing any of
 - **Narrative storytelling**: "In session 2025-10-03, we found..." is too specific to be reusable. Extract the general pattern.
 
 **You are violating this rule if:**
+
 - You present multiple options without a clear default
 - A script or command fails without a helpful error message
 - You write `pip install` without listing the actual packages needed
@@ -204,14 +209,14 @@ Use [Conventional Commits](https://www.conventionalcommits.org/):
 
 ## VALIDATE.prompt.md Strategy
 
-Each skill can include a `VALIDATE.prompt.md` file for validation checks. These files serve two purposes:
+Each skill can include a `VALIDATE.prompt.md` in `test/prompts/<skill name>` file for validation checks. These files serve two purposes:
 
 ### Automated bash checks
 
 Code blocks with bash commands are extracted and executed automatically by `node test/validate.mjs` in an isolated temp directory per skill. Each command runs independently — one failure does not cascade.
 
 ```bash
-# Example from brainstorming/VALIDATE.prompt.md
+# Example from test/prompts/brainstorming/VALIDATE.prompt.md
 grep -q "^name: brainstorming" skills/brainstorming/SKILL.md && echo "✓ Name defined"
 ```
 
@@ -238,11 +243,13 @@ Skills must not contain malware, exploit code, or content that compromises syste
 ### TDD-adapted checklist
 
 **RED phase — Write failing test (baseline):**
+
 - [ ] Create representative test prompts (2-3 realistic scenarios)
 - [ ] Run prompts WITHOUT the skill — document baseline behavior
 - [ ] Identify patterns in failures and rationalizations
 
 **GREEN phase — Write the skill:**
+
 - [ ] Frontmatter has required `name` and `description`
 - [ ] Description starts with "Use when..." (trigger conditions)
 - [ ] Description written in third person, no workflow summary
@@ -252,11 +259,13 @@ Skills must not contain malware, exploit code, or content that compromises syste
 - [ ] Run manual AI-review scenarios from VALIDATE.prompt.md — all must pass
 
 **REFACTOR phase — Close loopholes:**
+
 - [ ] Identify new rationalizations from testing
 - [ ] Add explicit counters for known workarounds
 - [ ] Re-test until bulletproof
 
 **Deployment:**
+
 - [ ] Run `node test/validate.mjs`
 - [ ] Commit to git (check for session artifacts — e2e/, tmp/, generated reports)
 - [ ] Bump version tag

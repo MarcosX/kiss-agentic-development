@@ -32,11 +32,11 @@ For each batch, follow the fan-out/fan-in pattern:
 
 1. **Extract tasks**: Read the plan once and extract all tasks in this batch with full text and context. Save to TodoWrite.
 
-2. **Fan-out (parallel dispatch)**: Dispatch ALL tasks in the batch simultaneously, each as a fresh subagent using `dispatch-agent.prompt.md` with the full task text pasted in. Do not make subagents read the plan file or inherit session context.
+2. **Fan-out (parallel dispatch)**: Dispatch ALL tasks in the batch simultaneously, each as a fresh subagent using `references/dispatch-agent.prompt.md` with the full task text pasted in. Do not make subagents read the plan file or inherit session context.
 
 3. **Fan-in (review after completion)**: Wait for all subagents to complete. For each completed task:
    a. Handle implementer status (DONE, DONE_WITH_CONCERNS, NEEDS_CONTEXT, BLOCKED)
-   b. Verify completion using `spec-review.prompt.md` and `code-review.prompt.md`
+   b. Verify completion using `references/spec-review.prompt.md` and `references/code-review.prompt.md`
    c. Run review loops if issues found — fix, re-review, repeat until approved
    d. Mark task complete in TodoWrite
 

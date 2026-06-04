@@ -110,3 +110,16 @@ git commit -m 'chore: description'
 
 - Change is confirmed correct
 ````
+
+## Plan Self-Review
+
+Dispatch a subagent using `references/plan-review.prompt.md` with the full plan text pasted in. Apply all fixes in the main session
+
+## Checklist
+
+- Every AC maps to a named task
+- Each task has a Category and Type
+- Exact file paths always
+- Complete code (never "add code here")
+- Exact commands with expected output
+- Every task has a "Done when:" statement

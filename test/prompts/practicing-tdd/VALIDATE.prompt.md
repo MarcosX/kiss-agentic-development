@@ -29,7 +29,7 @@ echo "✓ Practicing TDD skill validation complete"
 
 **Prompt for AI Assistants:**
 
-> Run the validation commands in `practicing-tdd/VALIDATE.prompt.md` and report any issues found with the practicing-tdd skill.
+> Run the validation commands in `test/prompts/practicing-tdd/VALIDATE.prompt.md` and report any issues found with the practicing-tdd skill.
 
 ## Test Scenarios
 

@@ -13,26 +13,15 @@ Root cause must be identified and confirmed before any fix is implemented. Sympt
 
 Use for any technical issue: test failures, production bugs, unexpected behavior, build failures, performance problems. Do not skip because of time pressure — systematic debugging is faster than guess-and-check.
 
-## Phase 1: Reproduce and Investigate
+## Phase 1: Gather Evidence
 
-Before attempting any fix:
+When investigating a bug or failure, dispatch a subagent using `references/gather-evidence.prompt.md`, providing: the error message, relevant file paths, and recent git diff. The subagent returns a structured evidence report. Bring the report back to the main session before forming hypotheses.
 
-- **Read error messages** — Read stack traces completely. Note line numbers, file paths, error codes.
-- **Reproduce consistently** — Determine exact steps. Does it happen every time? If not, gather more data instead of guessing.
-- **Check recent changes** — Git diff, recent commits, new dependencies, config changes, environmental differences.
+If subagent dispatch is not avialable, follow the prompt directly. Bring findings into the next phase before forming hypotheses.
 
-When a system spans multiple components, add diagnostic instrumentation at each component boundary before proposing fixes. Log what enters and exits each component. Run once to gather evidence, then investigate the specific component where it breaks.
+When a system spans multiple components, instruct the subagent to add diagnostic instrumentation at each component boundary and run once to gather boundary-level evidence before returning.
 
-## Phase 2: Compare and Analyze
-
-Find the pattern before fixing:
-
-- **Find working examples** — Locate similar working code in the same codebase.
-- **Compare against references** — Read the reference implementation completely. Do not adapt from partial understanding.
-- **Identify differences** — List every difference between working and broken code. Do not assume something cannot matter.
-- **Understand dependencies** — What other components, config, or environment does this depend on?
-
-## Phase 3: Hypothesize and Test
+## Phase 2: Hypothesize and Test
 
 Apply the scientific method:
 
@@ -41,7 +30,7 @@ Apply the scientific method:
 - **Verify before continuing** — Confirmed? Proceed to Phase 4. Not confirmed? Form a new hypothesis. Do not stack fixes.
 - **When stuck** — Acknowledge uncertainty and research more.
 
-## Phase 4: Fix and Verify
+## Phase 3: Fix and Verify
 
 Fix the root cause, not the symptom:
 

@@ -38,54 +38,68 @@ echo "Test: Write a plan for adding user authentication"
 
 **Prompt for AI Assistants:**
 
-> Run the validation commands in `writing-plans/VALIDATE.prompt.md` and report any issues found with the writing-plans skill.
+> Run the validation commands in `test/prompts/writing-plans/VALIDATE.prompt.md` and report any issues found with the writing-plans skill.
 
 ## Test Scenarios
 
 ### Scenario 1: Generic Plan Name
+
 **Input**: "Write a plan for adding a feature"
-**Expected**: 
+**Expected**:
+
 - Plan named `feature-name-plan.md` (with actual prefix)
 - NOT just `plan.md`
 - Prefix should be 2-3 key words
 
 ### Scenario 2: Missing AC Coverage
+
 **Input**: "Write a plan based on this spec" (with partial acceptance criteria)
 **Expected**:
+
 - AI identifies missing ACs before writing plan
 - Builds AC coverage list
 - Ensures no AC is left without task mapping
 
 ### Scenario 3: Non-Atomic Step
+
 **Input**: "Write a plan with step 'Implement the feature'"
 **Expected**:
+
 - Skill detects non-atomic step
 - Breaks into: failing test, verify fails, implementation, verify passes, commit
 
 ### Scenario 4: TDD Enforcement
+
 **Input**: "Write a plan for a new feature"
 **Expected**:
+
 - Every task starts with "Write failing test"
 - Followed by "Verify test fails"
 - Then implementation, then verify pass, then commit
 
 ### Scenario 5: Self-Contained Requirement
+
 **Input**: "Write a plan assuming you know nothing about the codebase"
 **Expected**:
+
 - All file paths are explicit
 - All commands include expected outputs
 - Done criteria are clear and verifiable
 
 ### Scenario 6: DRY/YAGNI Principle
+
 **Input**: "Write a plan that includes all possible features"
 **Expected**:
+
 - Skill applies YAGNI to reduce scope
 - Focuses on minimal viable implementation
 - Identifies unnecessary scope
 
 ### Scenario 7: Plan Document Structure
+
 **Input**: "Write a plan"
 **Expected document structure**:
+
 ```
 # [Feature] Implementation Plan
 **Goal**: ...
@@ -106,22 +120,28 @@ echo "Test: Write a plan for adding user authentication"
 ```
 
 ### Scenario 8: Ambiguity Detection
+
 **Input**: Plan with vague step like "check the code"
 **Expected**:
+
 - Identifies ambiguity
 - Revises plan to make step unambiguous
 - Provides clear commands and expected outputs
 
 ### Scenario 9: AC to Task Mapping
+
 **Input**: Plan with ACs left without tasks
 **Expected**:
+
 - Skill identifies gaps in coverage
 - Adds tasks to cover all ACs
 - Reports any duplication
 
 ### Scenario 10: Context Assumptions
+
 **Input**: "Write a plan" without any context
 **Expected**:
+
 - Assumes zero codebase context
 - All file paths and commands are explicit
 - No assumptions about existing code structure

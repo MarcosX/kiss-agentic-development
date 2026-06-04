@@ -18,7 +18,7 @@ Temp directories for per-skill validation are created under `test/tmp/` and clea
 ## Adding a new skill
 
 1. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
-2. Create `skills/<name>/VALIDATE.prompt.md` (optional, for AI-driven validation)
+2. Create `test/prompts/<name>/VALIDATE.prompt.md` (optional, for AI-driven validation)
 3. Run `node test/validate.mjs` to confirm frontmatter is valid
 4. Install from the repo to test: `npx skills add . --agent opencode --skill <name>`
 
