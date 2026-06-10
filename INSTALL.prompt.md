@@ -34,14 +34,14 @@ npx skills --help
 If it works, install all skills globally:
 
 ```bash
-npx skills add MarcosX/kiss-agentic-development --global --all
+npx skills add MarcosX/kiss-agentic-development#latest --global --all
 ```
 
 Or install to a specific agent:
 
 ```bash
-npx skills add MarcosX/kiss-agentic-development --global --agent opencode
-npx skills add MarcosX/kiss-agentic-development --global --agent claude-code
+npx skills add MarcosX/kiss-agentic-development#latest --global --agent opencode
+npx skills add MarcosX/kiss-agentic-development#latest --global --agent claude-code
 ```
 
 ### Fallback: clone the repo
@@ -192,13 +192,13 @@ To update the skills to the latest version:
 `npx skills update` may fail for this repo. Instead, re-add to force a fresh clone:
 
 ```bash
-npx skills add MarcosX/kiss-agentic-development --global --all -y
+npx skills add MarcosX/kiss-agentic-development#latest --global --all -y
 ```
 
 ### If installed via fallback clone
 
 ```bash
-cd /tmp/kiss-agentic-dev && git pull origin latest
+cd /tmp/kiss-agentic-dev && git fetch origin && git checkout latest
 cp -r /tmp/kiss-agentic-dev/skills/* <TARGET_PATH>/
 ```
 
