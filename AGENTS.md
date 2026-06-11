@@ -200,14 +200,6 @@ git tag -f latest v<major>.<minor>.<patch>
 git push --tags --force
 ```
 
-Consumers pin to a tag by appending `#<tag>` to the repo when installing:
-
-```bash
-npx skills add MarcosX/kiss-agentic-development#latest --global --all
-npx skills add MarcosX/kiss-agentic-development#v1 --global --all
-npx skills add MarcosX/kiss-agentic-development#v1.2 --global --all
-```
-
 This allows consumers to pin to `latest`, `v1`, or `v1.2` instead of a full semver. Do not embed a version string in this file — tags are the single source of truth.
 
 ## Commit convention

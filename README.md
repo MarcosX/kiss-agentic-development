@@ -27,7 +27,7 @@ flowchart TB
     A[using-skills] --> B[brainstorming]
     B --> C[writing-plans]
     C --> D[executing-plans]
-    
+
     subgraph "Per-task loop: dispatch, implement, review"
         direction TB
         E[dispatch-agent N] --> F[practicing-tdd]
@@ -35,21 +35,21 @@ flowchart TB
         G --> H[code-review]
         H -->|next task| E
     end
-    
+
     D -.->|fan-out| E
     H -.->|fan-in| D
     D --> I[reviewing-code]
 ```
 
-| Skill | What it enforces |
-|---|---|
-| `using-skills` | Skill discovery and invocation before any action |
-| `brainstorming` | Design before implementation — explore, question, get approval |
-| `writing-plans` | Executable plans with acceptance criteria per task |
-| `executing-plans` | Isolated subagent tasks with spec and code review gates |
-| `practicing-tdd` | Test-first discipline — no code without a failing test |
-| `reviewing-code` | Five-axis review with structured severity-labeled feedback |
-| `debugging` | Root cause investigation before any fix |
+| Skill             | What it enforces                                               |
+| ----------------- | -------------------------------------------------------------- |
+| `using-skills`    | Skill discovery and invocation before any action               |
+| `brainstorming`   | Design before implementation — explore, question, get approval |
+| `writing-plans`   | Executable plans with acceptance criteria per task             |
+| `executing-plans` | Isolated subagent tasks with spec and code review gates        |
+| `practicing-tdd`  | Test-first discipline — no code without a failing test         |
+| `reviewing-code`  | Five-axis review with structured severity-labeled feedback     |
+| `debugging`       | Root cause investigation before any fix                        |
 
 ## Why it works
 
@@ -72,14 +72,14 @@ This framework throws out the multi-agent playbook. No swarms, no role-specific 
 **Recommended**: Use [skills.sh](https://www.skills.sh/) via `npx skills`:
 
 ```bash
-npx skills add MarcosX/kiss-agentic-development#latest --global --all
+npx skills add MarcosX/kiss-agentic-development --global --all
 ```
 
 Or install to specific agents:
 
 ```bash
-npx skills add MarcosX/kiss-agentic-development#latest --global --agent opencode
-npx skills add MarcosX/kiss-agentic-development#latest --global --agent claude-code
+npx skills add MarcosX/kiss-agentic-development --global --agent opencode
+npx skills add MarcosX/kiss-agentic-development --global --agent claude-code
 ```
 
 If you don't want to use `npx skills`, point your agent to `https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/INSTALL.prompt.md` and it will clone the repo according to your coding agent.
@@ -190,7 +190,7 @@ Check that the `description` field matches the table above. If it looks stale or
 `npx skills update` may fail for this repo (SSH fetch issues). The reliable workaround is a clean re-install:
 
 ```bash
-npx skills add MarcosX/kiss-agentic-development#latest --global --all -y
+npx skills add MarcosX/kiss-agentic-development --global --all -y
 ```
 
 This re-clones the repo and replaces all skill files. To verify the update landed, check the brainstorming description or any other changed content.
