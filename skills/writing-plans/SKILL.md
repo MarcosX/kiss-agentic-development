@@ -8,20 +8,20 @@ Write agent-executable implementation plans, assuming zero codebase context.
 <IMPORTANT>
 Tasks must be self-contained: file paths, code, exact commands with expected outputs, and clear definition of done.
 
-TDD is the default. Coding tasks MUST include test-first lifecycle steps. Non-coding tasks (docs, config, CI/CD) skip TDD — use simple change→verify→commit steps.
+TDD prevents regressions — coding tasks follow test-first lifecycle steps below. Non-coding tasks (docs, config, CI/CD) skip TDD — use simple change→verify→commit steps.
 
-The template below is authoritative. Merge local ticket conventions into it — do not omit Test: file or TDD steps.
+The template below guarantees every task is agent-executable. Merge local ticket conventions into it — keep Test: file and TDD steps.
 </IMPORTANT>
 
 # RULE
 
 **Save plans before starting**: Save to `<prefix>-plan.md` (2-3 key words, never `plan.md`).
 
-**Scope reduction**: Before extracting ACs, remove features not justified by design or requirements. Scope creep wastes effort — YAGNI is an active filter.
+**Scope reduction**: Before extracting ACs, remove features not justified by design or requirements. Scope creep wastes effort — YAGNI (You Ain't Gonna Need It) is an active filter.
 
 **AC coverage**: Extract acceptance criteria from the design, prompt, or other sources and build a coverage list.
 
-**Vertical slices**: When slicing tickets, use `references/slicing-guide.md` to break work into thin end-to-end slices. Each slice cuts through all layers, is demoable on its own, and is typed as HITL (needs human) or AFK (agent can implement independently). Publish blockers first.
+**Vertical slices**: Break work into thin end-to-end slices. Each slice cuts through ALL layers (schema → API → logic → tests → UI), is demoable on its own. Type each as HITL (needs human) or AFK (agent can implement independently). Publish blockers first. Only load `references/slicing-guide.md` for the full template and edge cases around ordering — do not read it proactively.
 
 **Quiz the user**: After presenting the proposed breakdown, ask about granularity, dependency correctness, and HITL/AFK assignments. Iterate until approved.
 
@@ -31,7 +31,7 @@ The template below is authoritative. Merge local ticket conventions into it — 
 
 **Ensure all ACs are covered**: Map every AC to tasks as they are created. If ACs are left with no task assigned, review the plan to identify gaps/duplication.
 
-**Plan handover**: Once the plan is in place, use `executing-plans` to transition to implementation.
+**Plan handover**: Once the plan is in place, transition to implementation. **REQUIRED BACKGROUND:** You MUST understand executing-plans.
 
 # Plan document
 
@@ -113,7 +113,7 @@ git commit -m 'chore: description'
 
 ## Plan Self-Review
 
-Dispatch a subagent using `references/plan-review.prompt.md` with the full plan text pasted in. Apply all fixes in the main session
+Before finalizing, dispatch a subagent to review the plan against the checklist below. Include the checklist categories and ask the subagent to report any AC coverage gaps, ambiguous steps, incomplete specs, or HITL tasks missing human instructions. Apply all fixes in the main session.
 
 ## Checklist
 

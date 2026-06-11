@@ -29,7 +29,7 @@ Create TODOs to track each step. Complete them in order.
 
    Explore the existing structure before proposing changes. Follow existing patterns. Where existing code has problems that affect the work, include targeted improvements. Do not propose unrelated refactoring.
 
-5. **Write design doc** — use `references/prd-template.md` (problem statement, user stories, implementation decisions, testing decisions, out of scope). Adopt the anti-stale principle — avoid file paths and code snippets. Exception: prototype-produced decision-rich snippets (state machines, schemas, type shapes) can be inlined. Do NOT commit design documents to git.
+5. **Write PRD** — use `references/prd-template.md` (problem statement, user stories, implementation decisions, testing decisions, out of scope). Adopt the anti-stale principle — avoid file paths and code snippets. Exception: prototype-produced decision-rich snippets (state machines, schemas, type shapes) can be inlined. Do NOT commit PRD documents to git.
 
    After writing:
    1. **Spec self-review**: dispatch a subagent to scan for placeholders (TBD/TODO), contradictions, ambiguity, and scope bloat. Apply fixes in the main session. Skip if spec is under 50 lines.

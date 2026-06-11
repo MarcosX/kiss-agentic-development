@@ -1,6 +1,6 @@
 # PRD Template
 
-Use when writing the design doc after user approval of the approach. Scale sections to complexity — simple projects need a sentence per section, not paragraphs.
+Use when writing the PRD after user approval of the approach. Scale sections to complexity — simple projects need a sentence per section, not paragraphs.
 
 ## Problem Statement
 
