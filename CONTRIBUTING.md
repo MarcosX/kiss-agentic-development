@@ -4,8 +4,8 @@
 
 Clone the repo and work from it. The repo includes:
 
-- `.opencode/skills → ../skills` — symlink for native OpenCode skill discovery
-- `.opencode/opencode.json` — loads `using-skills` into every session via `instructions`
+- `.opencode/skills → ../skills` — symlink for native OpenCode skill discovery (domain skills only)
+- `.opencode/opencode.json` — loads `instructions/using-skills.md` into every session via `instructions`
 
 Run validation after making changes:
 

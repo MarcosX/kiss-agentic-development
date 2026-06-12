@@ -1,50 +1,30 @@
 # Using Skills Validation
 
-Run these commands to validate the skill framework.
-
-## Integration Test
-
-Test that the skill framework is properly loaded and enforced:
-
-```bash
-# Start opencode with a test session
-cd .tmp && mkdir -p skill-test && cd skill-test
-
-# Run a test prompt that should trigger skill checking
-echo "Test prompt: What files are in this directory?"
-
-# Verify the response follows skill framework rules:
-# 1. Skill is announced before action
-# 2. TODOs are created
-# 3. Red flags are detected
-
-# Cleanup
-cd ~ && rm -rf .tmp/skill-test
-```
+Validate the `using-skills` global instruction file.
 
 ## Content Checks
 
 ```bash
-grep -q "IMPORTANT" skills/using-skills/SKILL.md && echo "✓ Critical rule: ABSOLUTELY MUST invoke skills"
-grep -q "DO NOT re-invoke" skills/using-skills/SKILL.md && echo "✓ Recursion guard present"
-grep -q "Announce what skill" skills/using-skills/SKILL.md && echo "✓ Skill announcement requirement"
-grep -q "Red Flags" skills/using-skills/SKILL.md && echo "✓ Red flags section present"
-grep -q 'This is just a simple question' skills/using-skills/SKILL.md && echo "✓ Red flag: simple question"
-grep -q "I'll quickly check files" skills/using-skills/SKILL.md && echo "✓ Red flag: quickly check files"
-grep -q "I need more context first" skills/using-skills/SKILL.md && echo "✓ Red flag: need more context"
-grep -q "I'll just do this thing first" skills/using-skills/SKILL.md && echo "✓ Red flag: just do this thing"
-grep -q "Let me explore the codebase first" skills/using-skills/SKILL.md && echo "✓ Red flag: explore codebase first"
-grep -q "Let me gather information first" skills/using-skills/SKILL.md && echo "✓ Red flag: gather information first"
-grep -q "I know what that means" skills/using-skills/SKILL.md && echo "✓ Red flag: know what that means"
-grep -q "This doesn't need a skill" skills/using-skills/SKILL.md && echo "✓ Red flag: doesn't need a skill"
-grep -q "The skill is overkill" skills/using-skills/SKILL.md && echo "✓ Red flag: skill is overkill"
+test -f instructions/using-skills.md && echo "✓ Instructions file exists"
+grep -q "ABSOLUTELY MUST invoke skills" instructions/using-skills.md && echo "✓ Critical rule: ABSOLUTELY MUST invoke skills"
+grep -q "Announce what skill" instructions/using-skills.md && echo "✓ Skill announcement requirement"
+grep -q "Red Flags" instructions/using-skills.md && echo "✓ Red flags section present"
+grep -q 'This is just a simple question' instructions/using-skills.md && echo "✓ Red flag: simple question"
+grep -q "I'll quickly check files" instructions/using-skills.md && echo "✓ Red flag: quickly check files"
+grep -q "I need more context first" instructions/using-skills.md && echo "✓ Red flag: need more context"
+grep -q "I'll just do this thing first" instructions/using-skills.md && echo "✓ Red flag: just do this thing"
+grep -q "Let me explore the codebase first" instructions/using-skills.md && echo "✓ Red flag: explore codebase first"
+grep -q "Let me gather information first" instructions/using-skills.md && echo "✓ Red flag: gather information first"
+grep -q "I know what that means" instructions/using-skills.md && echo "✓ Red flag: know what that means"
+grep -q "This doesn't need a skill" instructions/using-skills.md && echo "✓ Red flag: doesn't need a skill"
+grep -q "The skill is overkill" instructions/using-skills.md && echo "✓ Red flag: skill is overkill"
 ```
 
 ---
 
 **Prompt for AI Assistants:**
 
-> Run the validation commands in `using-skills/VALIDATE.md` and report any issues found with the skill framework.
+> Validate that `instructions/using-skills.md` exists, contains no YAML frontmatter, no recursion guard ("DO NOT re-invoke"), and no preamble text beyond the header. All red flags from the original must be present.
 
 ## Test Scenarios (To Be Added)
 

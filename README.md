@@ -9,6 +9,7 @@ Heavily influenced by [Superpowers](https://github.com/obra/superpowers), [skill
 ## Table of Contents
 
 - [Skills](#skills)
+- [How it works](#how-it-works)
 - [Installation](#installation)
   - [OpenCode](#opencode)
   - [Claude Code](#claude-code)
@@ -20,12 +21,11 @@ Heavily influenced by [Superpowers](https://github.com/obra/superpowers), [skill
 
 ## Skills
 
-Every session starts with `using-skills` — a guardrail that forces the agent to find and load the right skill before doing anything else. From there the workflow follows a natural rhythm: `brainstorming` to explore and design, `writing-plans` to turn the design into categorized tasks (coding vs non-coding), `executing-plans` to dispatch each task to an isolated subagent, `practicing-tdd` which each subagent follows to implement with tests first, and `reviewing-code` to catch issues before merge. When something breaks, `debugging` makes sure the agent finds the root cause before proposing a fix.
+Every session is gated by a global instruction that forces the agent to find and invoke the right skill before doing anything else. From there the workflow follows a natural rhythm: `brainstorming` to explore and design, `writing-plans` to turn the design into categorized tasks (coding vs non-coding), `executing-plans` to dispatch each task to an isolated subagent, `practicing-tdd` which each subagent follows to implement with tests first, and `reviewing-code` to catch issues before merge. When something breaks, `debugging` makes sure the agent finds the root cause before proposing a fix.
 
 ```mermaid
 flowchart TB
-    A[using-skills] --> B[brainstorming]
-    B --> C[writing-plans]
+    B[brainstorming] --> C[writing-plans]
     C --> D[executing-plans]
 
     subgraph "Per-task loop: dispatch, implement, review"
@@ -43,7 +43,6 @@ flowchart TB
 
 | Skill             | What it enforces                                               |
 | ----------------- | -------------------------------------------------------------- |
-| `using-skills`    | Skill discovery and invocation before any action               |
 | `brainstorming`   | Design before implementation — explore, question, get approval |
 | `writing-plans`   | Executable plans with acceptance criteria per task             |
 | `executing-plans` | Isolated subagent tasks with spec and code review gates        |
@@ -51,11 +50,11 @@ flowchart TB
 | `reviewing-code`  | Five-axis review with structured severity-labeled feedback     |
 | `debugging`       | Root cause investigation before any fix                        |
 
-## Why it works
+## How it works
 
 This framework throws out the multi-agent playbook. No swarms, no role-specific agents, no custom commands to wire up. One agent, a library of skills. The agent figures out what needs to be done — the skill makes sure it follows best practices doing it. That's what Keep it Short and Simple means: fewer agents, fewer abstractions, fewer things to break.
 
-**`using-skills` is the secret sauce.** Directly inspired by [obra/superpowers](https://github.com/obra/superpowers), the meta-skill forces agents to discover and invoke skills before acting. Instead of letting agents fall back to their default behavior, `using-skills` routes every session through the framework — skill adoption is enforced, not optional. This is what makes the library more than a collection of files.
+**The secret sauce is a global instruction.** Every session starts with a simple rule: check for skills before you do anything. This instruction is loaded automatically — the agent doesn't need to discover or load it. It's always there, forcing every interaction through the skill framework. Skill adoption is enforced, not optional.
 
 **When an agent is about to cut a corner — skip the failing test, guess at a root cause — the skill catches it.** Red flags and HARD-GATEs turn "I know it works" into "prove it." It sounds rigid, but it saves the time you'd waste on wrong fixes.
 
@@ -63,137 +62,104 @@ This framework throws out the multi-agent playbook. No swarms, no role-specific 
 
 ## When it doesn't
 
-**This approach assumes a generalist agent that picks up skills as needed.** If you've already tuned agents for specific roles — a frontend agent, a devops agent — the generic skill dispatcher can step on their toes. Skip `using-skills` when your agent's instructions are already tight enough.
+**This approach assumes a generalist agent that picks up skills as needed.** If you've already tuned agents for specific roles — a frontend agent, a devops agent — the global skill-checking instruction can step on their toes. Skip it when your agent's instructions are already tight enough.
 
 **It also assumes your agent can follow multi-step instructions reliably.** Some models treat process steps as suggestions and will blow past a HARD-GATE without reading it.
 
 ## Installation
 
-**Recommended**: Use [skills.sh](https://www.skills.sh/) via `npx skills`:
+**Recommended**: Point your agent to the install prompt URL — it handles everything:
+
+```
+https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/INSTALL.prompt.md
+```
+
+The agent will detect your tool, install domain skills, and configure the global `using-skills` instruction.
+
+### Manual: use `npx skills` (requires extra step)
 
 ```bash
 npx skills add MarcosX/kiss-agentic-development --global --all
 ```
 
-Or install to specific agents:
-
-```bash
-npx skills add MarcosX/kiss-agentic-development --global --agent opencode
-npx skills add MarcosX/kiss-agentic-development --global --agent claude-code
-```
-
-If you don't want to use `npx skills`, point your agent to `https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/INSTALL.prompt.md` and it will clone the repo according to your coding agent.
-
-Skills are installed via `npx skills` into `~/.agents/skills/` and symlinked across all supported agents. The `--all` flag auto-discovers all skill subdirectories at the repo root — no need to list them individually. To avoid having to always instruct agents to use the `using-skills` skill, configure your agent to auto-load it when starting a new session.
+This installs 6 domain skills to `~/.agents/skills/`. You then need to manually add the `using-skills` global instruction to your tool's config (see per-tool sections below).
 
 ### OpenCode
 
-Configure your global opencode config to inject it into every session via the [`instructions`](https://opencode.ai/docs/config#instructions) field.
-
-Add to `~/.config/opencode/opencode.json`:
+Add the `using-skills` instruction file to your config:
 
 ```json
 {
-  "instructions": ["~/.agents/skills/using-skills/SKILL.md"]
+  "instructions": ["~/.config/opencode/instructions/using-skills.md"]
 }
 ```
 
-The path points to where `npx skills` installs the skill globally. Because `instructions` directly injects the SKILL.md content into every session, the agent automatically has the skill in context — it does **not** need to invoke the `skill` tool to load it (and the skill's built-in recursion guard prevents re-invocation). See [opencode config docs](https://opencode.ai/docs/config) for more details.
+Then copy the instructions file to that path:
+
+```bash
+mkdir -p ~/.config/opencode/instructions/
+curl -o ~/.config/opencode/instructions/using-skills.md \
+  https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md
+```
+
+The `instructions` field injects the file content into every session automatically. See [opencode config docs](https://opencode.ai/docs/config) for more details.
 
 ### Claude Code
 
-To ensure `using-skills` is always present, add a reference in your global [`CLAUDE.md`](https://code.claude.com/docs/en/memory) at `~/.claude/CLAUDE.md`:
+Append the content of [`instructions/using-skills.md`](https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md) to `~/.claude/CLAUDE.md`.
 
-```markdown
-<CRITICAL>
-You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
-
-1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
-2. Follow all instructions in the loaded skill before proceeding
-3. Only after steps 1–2, respond to the user
-
-This is not negotiable and cannot be bypassed.
-</CRITICAL>
-```
-
-This instructs Claude to load the skill at the start of every session. See [Claude Code memory docs](https://code.claude.com/docs/en/memory) for more details.
+This ensures the instruction is present at the start of every session. See [Claude Code memory docs](https://code.claude.com/docs/en/memory) for more details.
 
 ### GitHub Copilot CLI
 
-GitHub Copilot reads a global custom instructions file at `~/.copilot/copilot-instructions.md`. Add a reference to load `using-skills` in every session.
+Append the content of [`instructions/using-skills.md`](https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md) to `~/.copilot/copilot-instructions.md`.
 
-Create `~/.copilot/copilot-instructions.md`:
-
-```markdown
-<CRITICAL>
-You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
-
-1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
-2. Follow all instructions in the loaded skill before proceeding
-3. Only after steps 1–2, respond to the user
-
-This is not negotiable and cannot be bypassed.
-</CRITICAL>
-```
-
-This instructs Copilot to load the skill at the start of every session. See [Copilot CLI reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference).
+See [Copilot CLI reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference).
 
 ### Cursor
 
-To auto-load `using-skills` globally, add a [User Rule](https://cursor.com/docs/rules#user-rules) in Cursor Settings > Rules > User Rules with content:
+Append the content of [`instructions/using-skills.md`](https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md) to:
 
-```markdown
-<CRITICAL>
-You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
+- **Global**: Cursor Settings > Rules > User Rules
+- **Project-level**: Create `.cursor/rules/using-skills.mdc` with `alwaysApply: true` and the content
 
-1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
-2. Follow all instructions in the loaded skill before proceeding
-3. Only after steps 1–2, respond to the user
-
-This is not negotiable and cannot be bypassed.
-</CRITICAL>
-```
-
-For project-level auto-loading, create `.cursor/rules/using-skills.mdc`:
-
-```markdown
----
-description: Always check and invoke skills before acting
-alwaysApply: true
----
-
-<CRITICAL>
-You MUST load and follow the `using-skills` skill before responding to the user. This is mandatory.
-
-1. Use the `skill` tool to load `using-skills` — reading this file is NOT enough
-2. Follow all instructions in the loaded skill before proceeding
-3. Only after steps 1–2, respond to the user
-
-This is not negotiable and cannot be bypassed.
-</CRITICAL>
-```
-
-This instructs Cursor to load the skill at the start of every session. See [Cursor rules docs](https://cursor.com/docs/rules) for more details.
+See [Cursor rules docs](https://cursor.com/docs/rules) for more details.
 
 ## Verification
 
-After installation, confirm the skills are the expected version:
+After installation, restart your agent session and run:
+
+> What should you do before responding to me?
+
+**Expected**: The agent explains it checks for and invokes skills before acting. It does NOT mention loading a skill called "using-skills" — the behavior is automatic.
+
+You can also confirm the domain skills are installed:
 
 ```bash
-head -4 ~/.agents/skills/brainstorming/SKILL.md
+ls ~/.agents/skills/
+# Expected: brainstorming  debugging  executing-plans  practicing-tdd  reviewing-code  writing-plans
 ```
-
-Check that the `description` field matches the table above. If it looks stale or you see fewer than 7 skill directories under `~/.agents/skills/`, run the update command below.
 
 ## Updating
 
-`npx skills update` may fail for this repo (SSH fetch issues). The reliable workaround is a clean re-install:
+### Domain skills
 
 ```bash
 npx skills add MarcosX/kiss-agentic-development --global --all -y
 ```
 
-This re-clones the repo and replaces all skill files. To verify the update landed, check the brainstorming description or any other changed content.
+### using-skills instruction
+
+Re-fetch and replace `instructions/using-skills.md`:
+
+```bash
+curl -o ~/.config/opencode/instructions/using-skills.md \
+  https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md
+```
+
+For other tools, replace the old content in your global instructions file with the latest from the URL above.
+
+Restart your session for changes to take effect.
 
 ## Contributing
 

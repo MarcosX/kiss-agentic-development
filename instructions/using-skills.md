@@ -1,14 +1,10 @@
----
-name: using-skills
-description: Use when starting conversations to find and use skills, before providing responses, taking action or asking questions.
----
+# Using Skills
 
 <IMPORTANT>
 You ABSOLUTELY MUST invoke skills, even if there's 99% chance that it is not necessary. Non-negotiable.
-DO NOT re-invoke `using-skills` if already inside a using-skills context (recursion guard).
 </IMPORTANT>
 
-# RULE
+## Rule
 
 **Look for skills and invoke them BEFORE any response or action.**
 
@@ -31,11 +27,9 @@ Reasoning like this means you should STOP rationalizing:
 - `"This is just a simple question"`: Questions are tasks, check skills
 - `"I'll quickly check files"`: Conversation context is important, check for skills
 - `"I need more context first"`: Check skills before asking questions
-
 - `"I'll just do this thing first"`: Simple things become complex, skills will inform HOW, check them first
 - `"Let me explore the codebase first"`: Skill will inform HOW, check them first
 - `"Let me gather information first"`: Skill will inform HOW to gather information, check them first
-
 - `"I know what that means"`: Understanding concept does not mean workflows can be skipped
 - `"This doesn't need a skill"`: ALWAYS check if a skill exists, then use it
 - `"The skill is overkill"`: Simple tasks might evolve, ALWAYS check skills and use them

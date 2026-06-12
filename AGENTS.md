@@ -5,6 +5,8 @@ Collection of AI agent skills that enforce skill-first workflows.
 ## Structure
 
 ```
+├── instructions/
+│   └── using-skills.md              # Global instruction (always loaded, not a skill)
 ├── skills/                           # All skill directories (source of truth)
 │   ├── [skill name]/
 │   │   ├── SKILL.md
@@ -12,14 +14,16 @@ Collection of AI agent skills that enforce skill-first workflows.
 │   ├── prompts/[skill name]/         # Each skill has a directory under test/prompt
 │   │   └── VALIDATE.prompt.md        # VALIDATE prompt contains test instructions
 │   └── validate.mjs                  # Frontmatter + VALIDATE.prompt.md checks
+├── migrations/
+│   └── before-1.0.0.md              # Migration steps for users upgrading from pre-1.0
 └── .opencode/
-    ├── skills/ → ../skills           # Symlink for native discovery
-    └── opencode.json                 # Local dev config (loads using-skills)
+    ├── skills/ → ../skills           # Symlink for native discovery (domain skills only)
+    └── opencode.json                 # Local dev config (loads instructions/using-skills.md)
 ```
 
 ## Local development
 
-When working on skills in this repo, the local config (`.opencode/opencode.json`) loads `using-skills` into every opencode session, while the symlink provides native discovery for all skills via the `skill` tool.
+When working on skills in this repo, the local config (`.opencode/opencode.json`) loads `instructions/using-skills.md` into every opencode session, while the symlink provides native discovery for all domain skills via the `skill` tool.
 
 ## Working with Skills
 

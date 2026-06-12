@@ -84,9 +84,9 @@ function validateLocalConfig() {
     const cfg = JSON.parse(fs.readFileSync(configPath, "utf8"));
     if (
       !cfg.instructions ||
-      !cfg.instructions.some((i) => i.includes("using-skills"))
+      !cfg.instructions.some((i) => i.includes("instructions/using-skills.md"))
     ) {
-      fail(".opencode/opencode.json missing instructions for using-skills");
+      fail(".opencode/opencode.json missing instructions for instructions/using-skills.md");
       return;
     }
     pass(".opencode/opencode.json loads using-skills via instructions");
@@ -141,7 +141,14 @@ function validateSkills() {
 }
 
 function runValidatePrompts() {
-  const dirs = discoverSkillDirs().filter((d) => {
+  let dirs = [];
+  if (fs.existsSync(TEST_PROMPTS)) {
+    dirs = fs.readdirSync(TEST_PROMPTS).filter((d) => {
+      const stat = fs.statSync(path.join(TEST_PROMPTS, d));
+      return stat.isDirectory() && !d.startsWith(".");
+    });
+  }
+  dirs = dirs.filter((d) => {
     return fs.existsSync(path.join(TEST_PROMPTS, d, "VALIDATE.prompt.md"));
   });
 
@@ -173,6 +180,14 @@ function runValidatePrompts() {
         fs.unlinkSync(skillsLink);
       } catch {}
       fs.symlinkSync(path.join(ROOT, "skills"), skillsLink);
+
+      const instructionsLink = path.join(tmpDir, "instructions");
+      try {
+        fs.unlinkSync(instructionsLink);
+      } catch {}
+      if (fs.existsSync(path.join(ROOT, "instructions"))) {
+        fs.symlinkSync(path.join(ROOT, "instructions"), instructionsLink);
+      }
 
       let passedCount = 0;
       let failedCount = 0;
