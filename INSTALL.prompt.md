@@ -49,23 +49,57 @@ cp -r /tmp/kiss-agentic-dev/skills/* <TARGET_PATH>/
 
 ## 3. Install the using-skills global instruction
 
-`using-skills` is NOT a skill. It is a global instruction that tells the agent to always check for and invoke skills before acting. It must be present in every session.
+Copy the following content into your tool's global instructions file:
 
-Read the content of `instructions/using-skills.md` (from the cloned repo or the [raw GitHub URL](https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md)) and add it to your tool's global instructions.
+```
+# Using Skills
+
+<IMPORTANT>
+You ABSOLUTELY MUST invoke skills, even if there's 99% chance that it is not necessary. Non-negotiable.
+</IMPORTANT>
+
+## Rule
+
+**Look for skills and invoke them BEFORE any response or action.**
+
+1. When planning or reasoning, check that you have brainstormed, if not invoke `brainstorming`
+2. When there's a 1% chance a skill might apply, invoke it
+3. Announce what skill is being loaded and why: "Using [skill] to [goal]"
+4. Follow skill instructions and create TODOs to track tasks
+5. Only AFTER skills are invoked do you respond or ask questions
+
+**Skill priority:** Process reasoning skills first (`brainstorming`, `debugging`), implementation skill will follow.
+
+**Skill types:** Rigid (TDD, debugging) - follow exactly. Flexible (verification, using tools) - adapt to the context.
+
+**WHAT vs HOW**: User instructions inform what to do, don't skip workflows.
+
+## Red Flags
+
+Reasoning like this means you should STOP rationalizing:
+
+- `"This is just a simple question"`: Questions are tasks, check skills
+- `"I'll quickly check files"`: Conversation context is important, check for skills
+- `"I need more context first"`: Check skills before asking questions
+- `"I'll just do this thing first"`: Simple things become complex, skills will inform HOW, check them first
+- `"Let me explore the codebase first"`: Skill will inform HOW, check them first
+- `"Let me gather information first"`: Skill will inform HOW to gather information, check them first
+- `"I know what that means"`: Understanding concept does not mean workflows can be skipped
+- `"This doesn't need a skill"`: ALWAYS check if a skill exists, then use it
+- `"The skill is overkill"`: Simple tasks might evolve, ALWAYS check skills and use them
+```
 
 ### OpenCode
 
-1. Create the instructions directory and copy the file:
+1. Create the instructions directory:
 
 ```bash
 mkdir -p ~/.config/opencode/instructions/
-cp /tmp/kiss-agentic-dev/instructions/using-skills.md ~/.config/opencode/instructions/using-skills.md
-# OR if using npx skills (no repo clone):
-curl -o ~/.config/opencode/instructions/using-skills.md \
-  https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md
 ```
 
-2. Add to `~/.config/opencode/opencode.json`:
+2. Save the above content to `~/.config/opencode/instructions/using-skills.md`.
+
+3. Add to `~/.config/opencode/opencode.json`:
 
 ```json
 {
@@ -75,15 +109,16 @@ curl -o ~/.config/opencode/instructions/using-skills.md \
 
 ### Claude Code
 
-Append the content of `instructions/using-skills.md` to `~/.claude/CLAUDE.md`.
+Append the above content to `~/.claude/CLAUDE.md`.
 
 ### GitHub Copilot
 
-Append the content of `instructions/using-skills.md` to `~/.copilot/copilot-instructions.md`.
+Append the above content to `~/.copilot/copilot-instructions.md`.
 
 ### Cursor
 
-Append the content of `instructions/using-skills.md` to:
+Append the above content to:
+
 - **Global**: Cursor Settings > Rules > User Rules
 - **Project-level**: Create `.cursor/rules/using-skills.mdc` with `alwaysApply: true` and the content
 
@@ -118,14 +153,6 @@ npx skills add MarcosX/kiss-agentic-development#latest --global --all -y
 
 ### using-skills instruction
 
-Re-fetch the latest `instructions/using-skills.md` and overwrite your copy:
-
-```bash
-# OpenCode
-curl -o ~/.config/opencode/instructions/using-skills.md \
-  https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md
-```
-
-For other tools, re-read the raw file and replace the old content in your global instructions file.
+Update your global instructions to match the content in section 3 above (the canonical version is in `instructions/using-skills.md` in the repo).
 
 Restart your session for changes to take effect.

@@ -84,22 +84,22 @@ flowchart TB
 **Recommended**: Point your agent to the install prompt URL — it handles everything:
 
 ```
-https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/INSTALL.prompt.md
+Install https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/INSTALL.prompt.md
 ```
 
-The agent will detect your tool, install domain skills, and configure the global `using-skills` instruction.
+The agent will detect your tool, install domain skills, and configure global [using-skills](./instructions/using-skills.md) instruction.
 
-### Manual: use `npx skills` (requires extra step)
+### Manual (requires extra step): use `npx skills`
 
 ```bash
 npx skills add MarcosX/kiss-agentic-development --global --all
 ```
 
-This installs 6 domain skills to `~/.agents/skills/`. You then need to manually add the `using-skills` global instruction to your tool's config (see per-tool sections below).
+This installs 6 domain skills to `~/.agents/skills/`. You then need to manually add the [using-skills](./instructions/using-skills.md) global instruction to your tool's config (see per-tool sections below).
 
 ### OpenCode
 
-Add the `using-skills` instruction file to your config:
+Add [using-skills](./instructions/using-skills.md) instruction file to your config:
 
 ```json
 {
@@ -119,19 +119,19 @@ The `instructions` field injects the file content into every session automatical
 
 ### Claude Code
 
-Append the content of [`instructions/using-skills.md`](https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md) to `~/.claude/CLAUDE.md`.
+Append the content of [using-skills](./instructions/using-skills.md) to `~/.claude/CLAUDE.md`.
 
 This ensures the instruction is present at the start of every session. See [Claude Code memory docs](https://code.claude.com/docs/en/memory) for more details.
 
 ### GitHub Copilot CLI
 
-Append the content of [`instructions/using-skills.md`](https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md) to `~/.copilot/copilot-instructions.md`.
+Append the content of [using-skills](./instructions/using-skills.md) to `~/.copilot/copilot-instructions.md`.
 
 See [Copilot CLI reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference).
 
 ### Cursor
 
-Append the content of [`instructions/using-skills.md`](https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md) to:
+Append the content of [using-skills](./instructions/using-skills.md) to:
 
 - **Global**: Cursor Settings > Rules > User Rules
 - **Project-level**: Create `.cursor/rules/using-skills.mdc` with `alwaysApply: true` and the content
@@ -152,27 +152,6 @@ You can also confirm the domain skills are installed:
 ls ~/.agents/skills/
 # Expected: brainstorming  debugging  executing-plans  practicing-tdd  reviewing-code  writing-plans
 ```
-
-## Updating
-
-### Domain skills
-
-```bash
-npx skills add MarcosX/kiss-agentic-development --global --all -y
-```
-
-### using-skills instruction
-
-Re-fetch and replace `instructions/using-skills.md`:
-
-```bash
-curl -o ~/.config/opencode/instructions/using-skills.md \
-  https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md
-```
-
-For other tools, replace the old content in your global instructions file with the latest from the URL above.
-
-Restart your session for changes to take effect.
 
 ## Contributing
 
