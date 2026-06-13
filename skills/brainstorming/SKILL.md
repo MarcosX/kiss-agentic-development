@@ -17,7 +17,11 @@ Create TODOs to track each step. Complete them in order.
 
 1. **Explore context** — dispatch an explore subagent using `references/explore-context.prompt.md`. Paste the project domain/goal into the template. The subagent returns structured context covering domain language, relevant changes, file structure, patterns, and references. Note domain language conflicts and relevant patterns. Targeted file reads are still fine for specific questions the report raises.
 
-2. **Stress-test understanding** — one question at a time. Provide your recommended answer with each question. Prefer multiple choice. Interview relentlessly, walk decision tree branches, sharpen domain language against existing context and code. Call out terms that conflict with code. Propose precise canonical terms for vague/overloaded ones. Discuss concrete scenarios that probe edge cases. Cross-reference claims against code. When domain terms need capturing, use `references/CONTEXT-FORMAT.md`. When a hard decision emerges, use `references/ADR-FORMAT.md`.
+2. **Stress-test understanding** — one question at a time. Provide your recommended answer with each question. Prefer multiple choice. Interview relentlessly, walk decision tree branches, sharpen domain language against existing context and code.
+
+   **Load the glossary first.** Read `CONTEXT.md` if it exists. Existing terms are constraints to question against — challenge conflicts immediately, sharpen vague language, probe edge cases with concrete scenarios.
+
+   **Cross-reference all three** — code, conversation, glossary. Surface every contradiction between them. When a term is resolved, update `CONTEXT.md` inline (don't batch) using `references/CONTEXT-FORMAT.md`. When resolving domain terminology, see `references/glossary-interaction.md`. When a hard decision emerges, use `references/ADR-FORMAT.md`.
 
    **Assess scope first**: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this. Help the user decompose into sub-projects before diving into details. Each sub-project gets its own brainstorm → spec → plan → implementation cycle.
 
