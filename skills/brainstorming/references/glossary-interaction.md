@@ -31,14 +31,28 @@ Surface every contradiction immediately. Let the user resolve — do not assume 
 
 When a term is resolved, update `CONTEXT.md` immediately. Use `references/CONTEXT-FORMAT.md` for structure. Do not batch updates — each resolution is a separate edit. This keeps the glossary precise and prevents unresolved terms from being forgotten.
 
-## Purity rules
+## What belongs in the glossary
 
-CONTEXT.md is a glossary and nothing else:
+The glossary is long-term memory for agents — it captures what code alone cannot tell you.
 
-- **Domain terms only.** General programming concepts (timeout, cache, retry) do not belong.
-- **No implementation details.** Do not describe how something works — define what it IS.
-- **No specs or ADRs.** Implementation decisions go in `docs/adr/`. Behavioral specs go in the PRD.
-- **No scratch pad.** Do not use CONTEXT.md for notes, open questions, or temporary labels.
+**Filter**: if an agent can discover a term's meaning by reading the codebase (a file read, a grep, a schema lookup), it does NOT belong.
+
+### High discovery friction (belongs)
+
+- **Terms with `_Avoid_` synonyms** — the code calls it X but stakeholders call it Y, or multiple competing terms exist for the same concept
+- **Misleading names** — "Invoice" is actually a quote until finalized; the name disagrees with behavior an agent would observe in code
+- **Boundary rules between entities** — "A Customer becomes an Account after first payment" — no schema constraint captures this
+- **Historical naming context** — "We chose 'Engagement' over 'Project' because..." — invisible to a grep
+- **Loaded terms** — ordinary words with project-specific baggage (e.g., "active" means "paid within 30 days", not just a boolean)
+
+### Low discovery friction (noise)
+
+- Entity names matching their table/collection name
+- Field names following convention (order.status, customer.email)
+- Standard CRUD semantics on entities
+- API endpoints following REST conventions
+- Any type, class, or module whose responsibility is clear from its name
+- Any term where reading one file fully clarifies its meaning
 
 ## Lazy creation
 
