@@ -18,6 +18,13 @@ grep -q "Let me gather information first" instructions/using-skills.md && echo "
 grep -q "I know what that means" instructions/using-skills.md && echo "✓ Red flag: know what that means"
 grep -q "This doesn't need a skill" instructions/using-skills.md && echo "✓ Red flag: doesn't need a skill"
 grep -q "The skill is overkill" instructions/using-skills.md && echo "✓ Red flag: skill is overkill"
+grep -q "Signal Scan" instructions/using-skills.md && echo "✓ Signal Scan section present"
+grep -q "bug, error, crash" instructions/using-skills.md && echo "✓ Signal scan: debugging triggers"
+grep -q "idea, approach, explore" instructions/using-skills.md && echo "✓ Signal scan: brainstorming triggers"
+grep -q "plan, implement, build" instructions/using-skills.md && echo "✓ Signal scan: writing-plans triggers"
+grep -q "Let me investigate this" instructions/using-skills.md && echo "✓ Red flag: investigate this"
+grep -q "Let me understand the problem first" instructions/using-skills.md && echo "✓ Red flag: understand problem first"
+grep -q "I already know what skill I need" instructions/using-skills.md && echo "✓ Red flag: already know skill"
 ```
 
 ---

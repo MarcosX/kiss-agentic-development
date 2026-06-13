@@ -1,6 +1,6 @@
 ---
 name: debugging
-description: Use when given error output, stack traces, crash logs, or any failure report from commands or tests. Use before proposing any fix or making any code change.
+description: Use when debugging any bug, error, test failure, crash, or unexpected behavior. Triggered by error output, stack traces, crash logs, failure reports, or verbal descriptions of incorrect behavior.
 ---
 
 <HARD-GATE>

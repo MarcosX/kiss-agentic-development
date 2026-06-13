@@ -20,6 +20,16 @@ You ABSOLUTELY MUST invoke skills, even if there's 99% chance that it is not nec
 
 **WHAT vs HOW**: User instructions inform what to do, don't skip workflows.
 
+## Signal Scan
+
+Before any reasoning or action, scan the user's message for signal words. If any match, check the corresponding skill before proceeding:
+
+- bug, error, crash, fail, failure, unexpected → check `debugging`
+- idea, approach, explore, design → check `brainstorming`
+- plan, implement, build, add, feature → check `writing-plans`
+
+Do not begin analysis or investigation until the matching skill is loaded.
+
 ## Red Flags
 
 Reasoning like this means you should STOP rationalizing:
@@ -33,3 +43,6 @@ Reasoning like this means you should STOP rationalizing:
 - `"I know what that means"`: Understanding concept does not mean workflows can be skipped
 - `"This doesn't need a skill"`: ALWAYS check if a skill exists, then use it
 - `"The skill is overkill"`: Simple tasks might evolve, ALWAYS check skills and use them
+- `"Let me investigate this"`: Starting investigation, research, or looking at code before loading the matching skill. Skills define HOW to investigate.
+- `"Let me understand the problem first"`: Understanding is investigation. Load the matching skill first — it prescribes the investigation method.
+- `"I already know what skill I need"`: Knowing which skill applies is not the same as loading it. Always invoke, even when confident.
