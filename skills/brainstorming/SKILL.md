@@ -21,7 +21,7 @@ Create TODOs to track each step. Complete them in order.
 
    **Load the glossary first.** Read `CONTEXT.md` if it exists. Existing terms are constraints to question against — challenge conflicts immediately, sharpen vague language, probe edge cases with concrete scenarios.
 
-   **Cross-reference all three** — code, conversation, glossary. Surface every contradiction between them. When a term is resolved, update `CONTEXT.md` inline (don't batch) using `references/CONTEXT-FORMAT.md`. When resolving domain terminology, see `references/glossary-interaction.md`. When a hard decision emerges, use `references/ADR-FORMAT.md`.
+   **Cross-reference all three** — code, conversation, glossary. Surface every contradiction between them. When a term is resolved, update `CONTEXT.md` inline (don't batch) using `references/CONTEXT-FORMAT.md`. When resolving domain terminology, see `references/glossary-interaction.md`.
 
    **Assess scope first**: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this. Help the user decompose into sub-projects before diving into details. Each sub-project gets its own brainstorm → spec → plan → implementation cycle.
 
