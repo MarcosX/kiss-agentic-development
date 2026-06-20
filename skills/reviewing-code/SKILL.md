@@ -23,19 +23,11 @@ When reviewing, dispatch a subagent using `references/code-review.prompt.md`, pr
 
 The subagent reviews across five axes: Correctness, Readability and Simplicity, Architecture, Security, and Performance. It returns findings per severity (Critical, Required, Nit, Optional, FYI).
 
-### 3. Categorize Findings
-
-Label every comment so the author knows what is required versus optional:
-
-- **Critical:** Blocks merge — security vulnerability, data loss, broken functionality
-- **Required (no prefix):** Must address before merge
-- **Nit:** Minor — formatting, style preferences, optional
-- **Optional:** Suggestion worth considering but not required
-- **FYI:** Informational only, no action needed
+When presenting findings, always inclue the axis and severity.
 
 ### 4. The Approval Standard
 
-Approve when a change improves overall code health, even if not perfect. Do not block because you would have written it differently.
+Approve when a change improves overall code health, even if not perfect. Do not block because it could have been written differently.
 
 ### 5. Handling Disagreements
 
