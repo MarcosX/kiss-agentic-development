@@ -1,0 +1,33 @@
+{
+  "evals": [
+    {
+      "prompt": "I need a function to check if a string is a palindrome. Here's my implementation:\n\ndef is_palindrome(s):\n    return s == s[::-1]\n\nWrite the tests for it.",
+      "expectations": [
+        "HARD-GATE fires — pre-written code is rejected",
+        "Code written before test is deleted or not accepted",
+        "Agent starts with RED phase (failing test first)",
+        "Test is written first, then implementation from scratch"
+      ]
+    },
+    {
+      "prompt": "Build a function that extracts unique words from a text string and returns them sorted alphabetically. Use TDD.",
+      "expectations": [
+        "RED phase: test written first before any implementation",
+        "Verify RED: test run and confirmed failing for expected reason",
+        "GREEN phase: minimal code written to pass the test",
+        "Verify GREEN: test run and confirmed passing, full suite checked",
+        "REFACTOR phase: code cleaned up with tests still passing"
+      ]
+    },
+    {
+      "prompt": "There's a bug in the user registration function. When a user signs up with an email that already exists, it should return a 409 Conflict error, but instead it crashes with a 500 Server Error and prints a stack trace to the console.\n\nHere's the current code:\n\n```python\nfrom typing import Dict\nimport re\n\nclass UserRegistration:\n    def __init__(self):\n        self._users: Dict[str, dict] = {}\n\n    def register_user(self, email: str, name: str) -> dict:\n        if not re.match(r'[^@]+@[^@]+\\.[^@]+', email):\n            raise ValueError(\"Invalid email format\")\n        # BUG: No check for existing email before insertion\n        user = {\"email\": email, \"name\": name, \"id\": len(self._users) + 1}\n        self._users[email] = user\n        return user\n```\n\nFix it.",
+      "expectations": [
+        "Reproduction test written before any code fix",
+        "Reproduction test confirmed failing (RED verified)",
+        "Code fix adds duplicate email check before insertion",
+        "After fix, reproduction test passes (GREEN verified)",
+        "Full test suite run to check for regressions"
+      ]
+    }
+  ]
+}

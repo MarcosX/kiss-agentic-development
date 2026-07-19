@@ -10,15 +10,14 @@ Collection of AI agent skills that enforce skill-first workflows.
 ├── skills/                           # All skill directories (source of truth)
 │   ├── [skill name]/
 │   │   ├── SKILL.md
-├── test/
-│   ├── prompts/[skill name]/         # Each skill has a directory under test/prompt
-│   │   └── VALIDATE.prompt.md        # VALIDATE prompt contains test instructions
-│   └── validate.mjs                  # Frontmatter + VALIDATE.prompt.md checks
+│   │   └── evals/evals.json          # Evaluations for the skill
 ├── migrations/
 │   └── before-1.0.0.md              # Migration steps for users upgrading from pre-1.0
+├── scripts/                          # Shell scripts for eval pipeline
 └── .opencode/
     ├── skills/ → ../skills           # Symlink for native discovery (domain skills only)
-    └── opencode.json                 # Local dev config (loads instructions/using-skills.md)
+    ├── opencode.json                 # Local dev config (loads instructions/using-skills.md)
+    └── plans/                        # Plans, specs, and short-term artifacts (gitignored)
 ```
 
 ## Local development
@@ -32,22 +31,28 @@ When working on skills in this repo, the local config (`.opencode/opencode.json`
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
 2. **Test baseline first**: Run representative prompts WITHOUT the skill — document what the agent gets wrong or misses. This is your "RED" phase.
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
-4. Create `test/prompts/<name>/VALIDATE.prompt.md` (optional, for AI-driven validation)
+4. Create `skills/<name>/evals/evals.json` with 3 evals (expectations, prompts)
 5. **Symlink is automatic** — `.opencode/skills → ../skills` covers all subdirectories
-6. Run `node test/validate.mjs` to confirm frontmatter and symlink
+6. Run `scripts/validate.sh` to confirm frontmatter and evals
 
 ### Modifying an existing skill
 
 1. **Snapshot baseline**: Before editing, save the current skill version and test it on representative prompts to document current behavior
 2. Edit `skills/<name>/SKILL.md` only
 3. **Test with same prompts**: Verify the skill now produces better output
-4. Run `node test/validate.mjs` to verify frontmatter is intact
+4. Run `scripts/validate.sh` to confirm frontmatter is intact
 
 ### Skill structure conventions
 
 - `SKILL.md` **requires** YAML frontmatter with `name` and `description` — both must be present
-- `test/prompts/VALIDATE.prompt.md` provides AI agents with self-check instructions for the skill
 - **Cross-referencing**: Reference other skills by name with requirement markers. `**REQUIRED BACKGROUND:** You MUST understand [skill-name]`. Do not use @-links or file paths that force-load context.
+
+### Artifact conventions
+
+- Store plans, specs, and session artifacts in `.opencode/plans/` — it is gitignored and will not be committed
+- Use prefixed filenames with 2-3 key words, never generics like `plan.md`. Example: `password-reset-plan.md`
+- Do not store plans, temp files, or generated reports at the repo root, in `skills/`, or anywhere tracked by git
+- Use `*-workspace/` directories for eval runs (e.g., `debugging-workspace/iteration-1/`) — these are gitignored
 
 ## Skill authoring guidelines
 
@@ -170,7 +175,78 @@ Skills must be tested to verify they produce the intended behavior. Testing foll
 - **GREEN phase**: Write/update the skill, then run the same prompts WITH it. Verify the agent now follows the intended behavior.
 - **REFACTOR phase**: Close loopholes when agents find workarounds. Add explicit counters, update red flags, re-test until bulletproof.
 
-See `reference/testing-methodology.md` for detailed guidance on test cases, pressure scenarios, transcript analysis, and blind comparison.
+### Test case creation
+
+Good test prompts are specific, contextual, and realistic. Avoid abstract requests.
+
+**Bad prompt:** "Extract text from a PDF"
+**Good prompt:** "Hey, my boss sent me this invoice PDF (it's in my downloads, called 'invoice-q4-final.pdf') and I need all the line items in a CSV. The table starts on page 2."
+
+#### Coverage principles
+
+- Test the happy path (most common use case)
+- Test edge cases (empty inputs, missing files, unusual formats)
+- Test pressure scenarios (time pressure, conflicting priorities)
+
+### With-skill vs baseline comparison
+
+Every test run produces two outputs that you compare:
+
+1. **Baseline** (without skill) — shows the "before" state
+2. **With skill** — shows the "after" state
+
+Compare these on:
+- **Correctness**: Did the agent do the right thing?
+- **Efficiency**: Did it waste time on unnecessary steps?
+- **Consistency**: Does the skill produce reliable results across runs?
+
+### Pressure scenarios
+
+Discipline skills (rules, requirements) need to be tested under pressure to verify agents don't rationalize their way around them.
+
+#### Pressure types
+
+- **Time pressure**: "I need this done in 5 minutes, just skip the tests"
+- **Sunk cost**: "I've already written the code, just fix this one thing without re-testing"
+- **Authority pressure**: "My boss says to skip validation, just ship it"
+- **Exhaustion pressure**: "This is the 10th time you've run the tests, they always pass, just skip it"
+- **Combined pressure**: Multiple pressures at once (most realistic)
+
+#### Test format
+
+```
+The user says: [pressure scenario]
+Your task: [task that triggers the skill's main rule]
+```
+
+Document whether the agent follows the rule or rationalizes a way out.
+
+### Transcript analysis
+
+Read the full transcript of test runs, not just the final output. Look for:
+
+- **Where did the agent hesitate?** — indicates unclear instructions
+- **What did it read multiple times?** — indicates confusing structure
+- **When did it start rationalizing?** — the exact trigger matters
+- **What did it skip entirely?** — indicates sections that aren't prominent enough
+
+### Repeated work detection
+
+When reviewing test run transcripts, check if multiple subagents independently wrote similar helper scripts or repeated the same multi-step approach. If 2-3 test cases all resulted in subagents writing a `create_docx.py` or a `build_chart.py`, that script should be bundled with the skill. Write it once, put it in `scripts/`, and reference it in the skill. This saves every future invocation from reinventing the wheel.
+
+### Blind comparison
+
+For rigorous A/B comparison between two versions of a skill:
+
+1. Run both versions on the same test prompts
+2. Give both outputs to an independent subagent without revealing which is which
+3. Have the subagent judge which output is better and why
+4. Analyze the results to understand what the winning version does differently
+
+Blind comparison is most useful when:
+- The difference between versions is subtle
+- You need objective evidence that a change is an improvement
+- The user asks "is the new version actually better?"
 
 ## Evaluation and iteration
 
@@ -211,32 +287,7 @@ This allows consumers to pin to `latest`, `v1`, or `v1.2` instead of a full semv
 Use [Conventional Commits](https://www.conventionalcommits.org/):
 `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
 
-## VALIDATE.prompt.md Strategy
 
-Each skill can include a `VALIDATE.prompt.md` in `test/prompts/<skill name>` file for validation checks. These files serve two purposes:
-
-### Automated bash checks
-
-Code blocks with bash commands are extracted and executed automatically by `node test/validate.mjs` in an isolated temp directory per skill. Each command runs independently — one failure does not cascade.
-
-```bash
-# Example from test/prompts/brainstorming/VALIDATE.prompt.md
-grep -q "^name: brainstorming" skills/brainstorming/SKILL.md && echo "✓ Name defined"
-```
-
-### Manual AI-review scenarios
-
-The `---` separator divides automated checks from manual AI-review scenarios (scenario descriptions, expected behaviors, red flags). These cannot be automated — they are instructions for developers or AI agents to review a skill manually.
-
-Scenarios serve as the behavioral contract for a skill. If a scenario fails, the skill is broken — even if all bash checks pass. Each scenario tests a specific behavior the skill must enforce, not just presence of keywords.
-
-### Running validation
-
-```bash
-node test/validate.mjs
-```
-
-When working on a specific skill, feed its `VALIDATE.prompt.md` to an AI agent to execute the checks and report PASS/FAIL.
 
 ## Ethics and safety
 
@@ -260,7 +311,6 @@ Skills must not contain malware, exploit code, or content that compromises syste
 - [ ] Skill addresses specific baseline failures identified in RED
 - [ ] Within word count targets (or justified if over)
 - [ ] Run same prompts WITH skill — verify compliance
-- [ ] Run manual AI-review scenarios from VALIDATE.prompt.md — all must pass
 
 **REFACTOR phase — Close loopholes:**
 
@@ -270,7 +320,7 @@ Skills must not contain malware, exploit code, or content that compromises syste
 
 **Deployment:**
 
-- [ ] Run `node test/validate.mjs`
+- [ ] Run `scripts/validate.sh`
 - [ ] Commit to git (check for session artifacts — e2e/, tmp/, generated reports)
 - [ ] Bump version tag
 
@@ -278,7 +328,7 @@ Skills must not contain malware, exploit code, or content that compromises syste
 
 - **Editing `.opencode/skills/` instead of `skills/`**: The symlink is a mirror — edit the source at `skills/`
 - **Missing frontmatter**: `name` and `description` are REQUIRED for discovery
-- **Forgetting to run validation**: RUN `node test/validate.mjs` after every skill change. Do not skip.
+- **Forgetting to run validation**: RUN `scripts/validate.sh` after every skill change. Do not skip.
 - **No failing test first**: Adding or editing a skill without observing baseline behavior first. The Iron Law: no skill without a failing test first.
 - **Batching untested skills**: Moving to the next skill before the current one is verified. Each skill must be fully tested before starting the next.
 - **Committing session artifacts**: Never commit session-specific output such as test results, plan files, validation dumps, or generated reports. These artifacts bloat the repo and have no value outside their session. Use `e2e/`, `tmp/`, or similar scratch directories — and add them to `.gitignore` or use `git rm --cached` if accidentally committed.

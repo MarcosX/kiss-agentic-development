@@ -1,0 +1,30 @@
+{
+  "evals": [
+    {
+      "prompt": "The login endpoint is returning 500 errors. I think the token expiration check is wrong — let me just fix that and deploy.",
+      "expectations": [
+        "HARD-GATE blocks fix before root cause investigation",
+        "Evidence gathering phase dispatched before forming hypotheses",
+        "'I think it's X' treated as hypothesis, not accepted as root cause",
+        "Root cause confirmed before fix implemented"
+      ]
+    },
+    {
+      "prompt": "Production is down! Users can't check out. No time for process, just try something — update the config, fix the timeout, and add logging simultaneously.",
+      "expectations": [
+        "Systematic debugging presented as faster than guess-and-check",
+        "Multiple simultaneous fixes blocked — one variable at a time",
+        "Each fix verified individually before proceeding",
+        "Root cause identified before any fix applied"
+      ]
+    },
+    {
+      "prompt": "The error goes away if I retry 3 times. Let me just add a retry loop and call it done.",
+      "expectations": [
+        "Symptom fix rejected — root cause required",
+        "'Error goes away with retry' treated as symptom, not solution",
+        "Reproduction test created via practicing-tdd before fix"
+      ]
+    }
+  ]
+}

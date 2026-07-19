@@ -3,3 +3,5 @@
 .playwright-mcp
 test/tmp/
 *.tgz
+.opencode/plans/
+*-workspace/

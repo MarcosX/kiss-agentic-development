@@ -1,0 +1,33 @@
+{
+  "evals": [
+    {
+      "prompt": "Write a plan for adding password reset functionality to our web app. Users should request a reset link via email, click it, and set a new password.",
+      "expectations": [
+        "Plan saved to a prefixed file (<prefix>-plan.md)",
+        "Tasks are self-contained with exact file paths",
+        "Coding tasks include TDD steps (test → verify fail → implement → verify pass)",
+        "Each step has exact commands with expected output",
+        "All acceptance criteria covered by tasks"
+      ]
+    },
+    {
+      "prompt": "Plan this feature: Add a dark mode toggle to our site. While we're at it, we should also redesign the landing page, add analytics tracking, migrate the database, and containerize the app.",
+      "expectations": [
+        "Scope creep flagged explicitly",
+        "YAGNI applied — out-of-scope features removed",
+        "Only dark mode toggle related features kept",
+        "User quizzed about granularity or scope"
+      ]
+    },
+    {
+      "prompt": "Review this existing plan and fix any issues:\n\n```markdown\n# Plan: Add search\n\nTask 1: Add search endpoint\n- Create search route\n- Done when: it works\n\nTask 2: Add search UI\n- Add search bar\n- Done when: search works\n```\n\nWhat's wrong with this plan?",
+      "expectations": [
+        "Missing file paths flagged",
+        "Missing TDD/test steps flagged",
+        "Ambiguous 'Done when' criteria flagged",
+        "Exact commands/expected output missing flagged",
+        "Missing vertical slices flagged"
+      ]
+    }
+  ]
+}

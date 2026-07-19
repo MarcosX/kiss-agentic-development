@@ -1,0 +1,31 @@
+{
+  "evals": [
+    {
+      "prompt": "I have a plan file at executing-plans-workspace/iteration-1/eval-1/plan.md with 4 tasks. Task 2 depends on Task 1, Tasks 3 and 4 are independent of each other. Execute the plan.",
+      "expectations": [
+        "Dependency chain correctly identified",
+        "Task 1 dispatched first (no dependencies to wait on)",
+        "Tasks 3 and 4 dispatched in same parallel batch",
+        "Spec review and code review run after each batch",
+        "Completion report inspected for each subagent"
+      ]
+    },
+    {
+      "prompt": "I need you to add search functionality. No plan file exists yet.",
+      "expectations": [
+        "Fallback to brainstorming triggered when no plan exists",
+        "No execution attempted without a plan",
+        "User informed about the fallback"
+      ]
+    },
+    {
+      "prompt": "I have a plan at executing-plans-workspace/iteration-1/eval-3/plan.md. Execute the plan.",
+      "expectations": [
+        "BLOCKED status correctly identified and not ignored",
+        "Completed task (Task 3) reviewed for spec compliance",
+        "Unstarted task (Task 4) not dispatched until blocker resolved",
+        "User notified about the blocker"
+      ]
+    }
+  ]
+}

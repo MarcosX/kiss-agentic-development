@@ -1,0 +1,34 @@
+{
+  "evals": [
+    {
+      "prompt": "We need a way for users to reset their passwords when they forget them. What should we build?",
+      "expectations": [
+        "Multiple solution metaphors compared before selecting one",
+        "Trade-offs between metaphors explicitly discussed",
+        "Stakeholder perspectives identified and considered",
+        "Selected approach justified with reasoning",
+        "Output structured: metaphor comparison, recommendation, tasks"
+      ]
+    },
+    {
+      "prompt": "Let me add dark mode toggle. Just a CSS change. What do you think?",
+      "expectations": [
+        "Problem framed before jumping to solution",
+        "User's premature solution challenged or probed",
+        "Alternatives or related concerns surfaced (e.g. persistence, contrast)",
+        "Scope of problem understood before design decisions",
+        "Output includes open questions or assumptions to validate"
+      ]
+    },
+    {
+      "prompt": "I have an idea: we should add a notification system. It'll use WebSockets and push notifications. Let's plan it out.",
+      "expectations": [
+        "Idea examined critically — not accepted at face value",
+        "Red flags for constraints identified (e.g. offline, battery, permissions)",
+        "Alternative delivery mechanisms discussed",
+        "Trade-offs of the proposed approach examined",
+        "Decision framework applied before committing to implementation"
+      ]
+    }
+  ]
+}
