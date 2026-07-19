@@ -5,3 +5,4 @@ test/tmp/
 *.tgz
 .opencode/plans/
 *-workspace/
+.agents/
