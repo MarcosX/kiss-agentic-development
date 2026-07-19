@@ -42,7 +42,9 @@ Most skills provide list of guidelines that agents can rationalize around or mis
 
 Another commong issue is that most skill are written for humans, not agents — verbose prose, token-heavy tables, and diagrams that cost context without adding signal. **KISS skills follow an agent-first authoring pattern**: flat structure, clear reasoning over bare imperatives, no visual formatting that wastes tokens.
 
-**Each skill is validated against behavioral test scenarios** (see `test/prompts/`) that verify the skill produces the intended agent behavior — not just that keywords are present.
+**Each skill is validated against behavioral test scenarios** (see `skills/<name>/evals/evals.json`) that verify the skill produces the intended agent behavior — not just that keywords are present.
+
+Skills are developed and evaluated using [Anthropic's skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator), an open-source framework for benchmark-driven skill authoring. Every skill ships with 3 evaluation scenarios (prompts + expectations) that measure behavioral deltas between with-skill and without-skill runs, ensuring improvements are measurable, not anecdotal.
 
 ## Skills
 
