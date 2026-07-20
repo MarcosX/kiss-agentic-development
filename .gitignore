@@ -3,6 +3,15 @@
 .playwright-mcp
 test/tmp/
 *.tgz
-.opencode/plans/
+__pycache__
 *-workspace/
 .agents/
+
+# Opencode dependencies
+.opencode/node_modules
+.opencode/package-lock.json
+.opencode/bun.lock
+
+# Opencode session artifacts
+.opencode/evals
+.opencode/plans
