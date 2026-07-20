@@ -280,7 +280,7 @@ scripts/eval.sh --skill debugging --agent "opencode run --format json"
 
 **Output**: `.opencode/evals/<skill>/` — response files, per-eval grades, and summary.
 
-**Judge**: Uses the Anthropic API (`OPENCODE_API_KEY` or `ANTHROPIC_API_KEY`) to grade each response against expectations. The judge model defaults to `claude-sonnet-4-20250514` and can be changed with `--judge-model`.
+**Judge**: Uses the same agent CLI (configured with `--agent`) to grade each response against expectations. No separate API key required — the judge runs through the user's configured model.
 
 **Exit code**: Non-zero when any expectation fails.
 

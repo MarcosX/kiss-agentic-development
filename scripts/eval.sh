@@ -13,12 +13,8 @@ Run skill evaluations against an agent CLI and judge results.
 Options:
   --skill <name>       Skill to evaluate (default: all skills)
   --agent <cmd>        Agent CLI command (default: "opencode run")
-  --judge-model <id>   Model for judging (default: claude-sonnet-4-20250514)
   --dry-run            List evals without running them
   -h, --help           Show this help message
-
-Environment:
-  OPENCODE_API_KEY      Anthropic API key for judge (or ANTHROPIC_API_KEY)
 
 Examples:
   $(basename "$0") --skill brainstorming
@@ -31,7 +27,6 @@ EOF
 # Parse args
 SKILL=""
 AGENT="opencode run"
-JUDGE_MODEL="claude-sonnet-4-20250514"
 DRY_RUN=false
 
 while [[ $# -gt 0 ]]; do
@@ -42,10 +37,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     --agent)
       AGENT="$2"
-      shift 2
-      ;;
-    --judge-model)
-      JUDGE_MODEL="$2"
       shift 2
       ;;
     --dry-run)
@@ -75,9 +66,6 @@ if [ -n "$SKILL" ]; then
 fi
 if [ -n "$AGENT" ]; then
   PY_ARGS+=(--agent "$AGENT")
-fi
-if [ -n "$JUDGE_MODEL" ]; then
-  PY_ARGS+=(--judge-model "$JUDGE_MODEL")
 fi
 if [ "$DRY_RUN" = true ]; then
   PY_ARGS+=(--dry-run)

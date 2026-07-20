@@ -5,33 +5,30 @@ Run skill evaluations against an agent CLI and judge results.
 Invoked by scripts/eval.sh. Can also be run directly.
 
 Output is written to .opencode/evals/<skill>/ for each skill.
+
+The judge uses the same agent CLI as the skill runner. No separate API key needed.
 """
 
 import argparse
 import json
-import os
 import re
 import shlex
 import subprocess
 import sys
 import time
 from pathlib import Path
-from urllib.error import URLError
-from urllib.request import Request, urlopen
 
 SKILLS_DIR = Path("skills")
 OUTPUT_DIR = Path(".opencode/evals")
 DEFAULT_AGENT = "opencode run"
-DEFAULT_JUDGE_MODEL = "claude-sonnet-4-20250514"
 EVAL_TIMEOUT = 180
-ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
+JUDGE_TIMEOUT = 60
 
 
 def parse_args():
     p = argparse.ArgumentParser(description="Run skill evaluations")
     p.add_argument("--skill", help="Skill to evaluate (default: all)")
     p.add_argument("--agent", default=DEFAULT_AGENT, help=f"Agent CLI (default: {DEFAULT_AGENT})")
-    p.add_argument("--judge-model", default=DEFAULT_JUDGE_MODEL, help=f"Judge model (default: {DEFAULT_JUDGE_MODEL})")
     p.add_argument("--dry-run", action="store_true", help="List evals without running")
     return p.parse_args()
 
@@ -108,41 +105,7 @@ def run_agent(agent_cmd, prompt, timeout=EVAL_TIMEOUT):
         return {"stdout": "", "stderr": "", "returncode": -1, "error": str(e)}
 
 
-def call_anthropic(prompt, model, max_tokens=2000):
-    api_key = os.environ.get("OPENCODE_API_KEY") or os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        return None
-
-    body = json.dumps({
-        "model": model,
-        "max_tokens": max_tokens,
-        "messages": [{"role": "user", "content": prompt}],
-    }).encode()
-
-    req = Request(
-        ANTHROPIC_API_URL,
-        data=body,
-        headers={
-            "Content-Type": "application/json",
-            "x-api-key": api_key,
-            "anthropic-version": "2023-06-01",
-        },
-    )
-
-    try:
-        resp = urlopen(req, timeout=30)
-        data = json.loads(resp.read())
-        content = data.get("content", [])
-        return content[0]["text"] if content else None
-    except URLError as e:
-        return None
-
-
-def judge_response(response_text, expectations, model):
-    api_key = os.environ.get("OPENCODE_API_KEY") or os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        return [{"expectation": e, "passed": False, "reason": "Set OPENCODE_API_KEY or ANTHROPIC_API_KEY for judging"} for e in expectations]
-
+def judge_response(response_text, expectations, agent_cmd):
     exp_text = "\n".join(f"{i+1}. {e}" for i, e in enumerate(expectations))
 
     judge_prompt = f"""You are grading whether an AI agent's response meets specific expectations.
@@ -154,28 +117,29 @@ Agent response:
 {response_text}
 
 For each expectation, answer YES or NO with a brief one-sentence justification.
-Format your response as a JSON array of objects with keys: "expectation", "passed" (boolean), "reason".
+Return ONLY a JSON array of objects with keys: "expectation", "passed" (boolean), "reason".
+Do not include any other text before or after the JSON array.
 
 Example:
-[
-  {{"expectation": "Problem framed before jumping to solution", "passed": true, "reason": "Agent asked clarifying questions before proposing solutions."}},
-  {{"expectation": "Trade-offs discussed", "passed": false, "reason": "Agent proposed a single approach without comparing alternatives."}}
-]"""
+[{{"expectation": "Problem framed before jumping to solution", "passed": true, "reason": "Agent asked clarifying questions before proposing solutions."}},
+ {{"expectation": "Trade-offs discussed", "passed": false, "reason": "Agent proposed a single approach without comparing alternatives."}}]"""
 
-    result = call_anthropic(judge_prompt, model)
-    if not result:
-        return [{"expectation": e, "passed": False, "reason": "Judge API call failed"} for e in expectations]
+    result = run_agent(agent_cmd, judge_prompt, timeout=JUDGE_TIMEOUT)
+    if result["error"]:
+        return [{"expectation": e, "passed": False, "reason": f"Judge agent error: {result['error']}"} for e in expectations]
+
+    output = result["stdout"] or result["stderr"] or ""
 
     try:
-        return json.loads(result)
+        return json.loads(output)
     except json.JSONDecodeError:
-        match = re.search(r"\[.*\]", result, re.DOTALL)
+        match = re.search(r"\[.*\]", output, re.DOTALL)
         if match:
             try:
                 return json.loads(match.group())
             except json.JSONDecodeError:
                 pass
-        return [{"expectation": e, "passed": False, "reason": f"Judge parse error"} for e in expectations]
+        return [{"expectation": e, "passed": False, "reason": f"Judge parse error: output did not contain valid JSON"} for e in expectations]
 
 
 def main():
@@ -244,7 +208,7 @@ def main():
                 output = response["stdout"] or response["stderr"] or ""
                 print(f"       judging ({len(output)} chars)...", end=" ", flush=True)
                 t0 = time.time()
-                grades = judge_response(output, expectations, args.judge_model)
+                grades = judge_response(output, expectations, args.agent)
                 elapsed = time.time() - t0
                 print(f"({elapsed:.1f}s)")
 
