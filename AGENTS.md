@@ -282,12 +282,16 @@ git push --tags --force
 
 This allows consumers to pin to `latest`, `v1`, or `v1.2` instead of a full semver. Do not embed a version string in this file — tags are the single source of truth.
 
+<HARD-GATE>
+Before pushing to main or bumping any version tag, you MUST ask the user for explicit confirmation. Do NOT assume approval based on prior conversation context. Wait for a clear "yes" or "push" before taking action.
+</HARD-GATE>
+
+Only bump the version tag when the change affects shipped artifacts (skills, scripts, evals). Documentation-only changes (README, CONTRIBUTING, AGENTS.md edits, removing dead code) should be committed and pushed to main without a version bump.
+
 ## Commit convention
 
 Use [Conventional Commits](https://www.conventionalcommits.org/):
 `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`
-
-
 
 ## Ethics and safety
 
