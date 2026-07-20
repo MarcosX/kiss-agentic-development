@@ -17,7 +17,8 @@ rm -rf ~/.agents/skills/using-skills/
 ### 2. Re-install domain skills
 
 ```bash
-npx skills add MarcosX/kiss-agentic-development#latest --global --all -y
+git clone https://github.com/MarcosX/kiss-agentic-development.git /tmp/kiss-agentic-dev
+cp -r /tmp/kiss-agentic-dev/skills/* ~/.agents/skills/
 ```
 
 This installs only the 6 domain skills. The old `using-skills/` directory will not return.

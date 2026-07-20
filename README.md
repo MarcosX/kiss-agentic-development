@@ -44,7 +44,7 @@ Another commong issue is that most skill are written for humans, not agents — 
 
 **Each skill is validated against behavioral test scenarios** (see `skills/<name>/evals/evals.json`) that verify the skill produces the intended agent behavior — not just that keywords are present.
 
-Skills are developed and evaluated using [Anthropic's skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator), an open-source framework for benchmark-driven skill authoring. Every skill ships with 3 evaluation scenarios (prompts + expectations) that measure behavioral deltas between with-skill and without-skill runs, ensuring improvements are measurable, not anecdotal.
+Skills are evaluated using `scripts/eval.sh`, which runs each eval prompt against your agent CLI and grades responses against expectations through an LLM judge. Every skill ships with 3 evaluation scenarios that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal.
 
 ## Skills
 
@@ -91,10 +91,11 @@ Install https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/
 
 The agent will detect your tool, install domain skills, and configure global [using-skills](./instructions/using-skills.md) instruction.
 
-### Manual (requires extra step): use `npx skills`
+### Manual: clone the repo
 
 ```bash
-npx skills add MarcosX/kiss-agentic-development --global --all
+git clone https://github.com/MarcosX/kiss-agentic-development.git /tmp/kiss-agentic-dev
+cp -r /tmp/kiss-agentic-dev/skills/* ~/.agents/skills/
 ```
 
 This installs 6 domain skills to `~/.agents/skills/`. You then need to manually add the [using-skills](./instructions/using-skills.md) global instruction to your tool's config (see per-tool sections below).
@@ -161,4 +162,4 @@ For local development setup, adding new skills, and validation strategy, see [CO
 
 ## References
 
-Heavily influenced by [Superpowers](https://github.com/obra/superpowers), [skills](https://github.com/mattpocock/skills), and Anthropic's [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices).
+Heavily influenced by [Superpowers](https://github.com/obra/superpowers) and [skills](https://github.com/mattpocock/skills).

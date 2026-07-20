@@ -18,15 +18,7 @@ Determine which tool is running this prompt:
 
 ## 2. Install domain skills
 
-### Preferred: use `npx skills`
-
-```bash
-npx skills add MarcosX/kiss-agentic-development#latest --global --all
-```
-
-This installs the 6 domain skills to `~/.agents/skills/`.
-
-### Fallback: clone the repo
+Clone the repo and copy the skills to your agent's skills path:
 
 ```bash
 git clone https://github.com/MarcosX/kiss-agentic-development.git /tmp/kiss-agentic-dev
@@ -148,8 +140,11 @@ ls ~/.agents/skills/
 ### Domain skills
 
 ```bash
-npx skills add MarcosX/kiss-agentic-development#latest --global --all -y
+cd /tmp/kiss-agentic-dev && git pull
+cp -r skills/* <TARGET_PATH>/
 ```
+
+Replace `<TARGET_PATH>` with your tool's skills path (see table in section 2).
 
 ### using-skills instruction
 
