@@ -16,8 +16,9 @@ Validation: Run `scripts/validate.sh` to check frontmatter and evals.json struct
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
 4. Create `skills/<name>/evals/evals.json` with 3 evaluations (prompts + expectations)
 5. Run `scripts/validate.sh` to confirm frontmatter and evals
-6. Test the skill with the same prompts — verify the skill now produces better output
-7. Install from the repo to test: `npx skills add . --agent opencode --skill <name>`
+6. Run `scripts/eval.sh --skill <name>` to run the end-to-end eval — the agent (with the skill loaded) is tested against each eval prompt, and responses are graded against expectations
+7. Test the skill with the same prompts — verify the skill now produces better output
+8. Install from the repo to test: `npx skills add . --agent opencode --skill <name>`
 
 ## Modifying an existing skill
 
@@ -25,14 +26,31 @@ Validation: Run `scripts/validate.sh` to check frontmatter and evals.json struct
 2. Edit `skills/<name>/SKILL.md` only
 3. **Test with same prompts**: Verify the skill now produces better output
 4. Run `scripts/validate.sh` to confirm frontmatter is intact
+5. Run `scripts/eval.sh --skill <name>` to confirm the change didn't regress expectations
 
 ## Testing workflow
 
 Skill development follows the RED-GREEN-REFACTOR cycle. See [AGENTS.md](AGENTS.md) for the full testing methodology including test case creation, pressure scenarios, transcript analysis, and blind comparison.
 
+In the GREEN phase, after writing or editing a skill, run `scripts/eval.sh --skill <name>` to validate the skill produces the expected agent behavior against its eval prompts.
+
 ## Evaluation
 
-After testing, run the full eval pipeline using the skill-creator framework to measure behavioral deltas between with-skill and without-skill runs.
+### Local eval runner (fast, with-skill only)
+
+Use `scripts/eval.sh` for quick iteration — it tests the skill's end-to-end behavior by running each eval prompt against the configured agent CLI and grading responses with an LLM judge.
+
+```bash
+scripts/eval.sh --skill brainstorming           # single skill
+scripts/eval.sh --skill debugging --dry-run      # list evals without running
+scripts/eval.sh                                  # all 6 skills
+```
+
+Output is written to `.opencode/evals/<skill>/` with per-eval responses, grades, and a summary. The exit code is non-zero when any expectation fails, making it suitable for CI gating.
+
+### External framework (with/without-skill delta)
+
+For behavioral delta measurement (with-skill vs without-skill), use the skill-creator framework:
 
 ```bash
 npx skills eval . --skill <name>
