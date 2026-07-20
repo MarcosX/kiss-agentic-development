@@ -262,6 +262,28 @@ Skill development is an iterative loop: draft → test → review → improve �
 
 **Observe navigation patterns**: Watch how agents use the skill — do they skip references, over-rely on certain sections, ignore content? Iterate on structure based on observation, not assumptions.
 
+## Eval Runner
+
+`scripts/eval.sh` evaluates skills by running each eval prompt against an agent CLI (default: `opencode run`) and judging responses against expectations via an LLM judge.
+
+```bash
+scripts/eval.sh --skill brainstorming           # single skill
+scripts/eval.sh --skill brainstorming --dry-run  # list evals only
+scripts/eval.sh                                  # all 6 skills
+```
+
+The agent CLI is configurable with `--agent`, making the runner platform-agnostic:
+
+```bash
+scripts/eval.sh --skill debugging --agent "opencode run --format json"
+```
+
+**Output**: `.opencode/evals/<skill>/` — response files, per-eval grades, and summary.
+
+**Judge**: Uses the Anthropic API (`OPENCODE_API_KEY` or `ANTHROPIC_API_KEY`) to grade each response against expectations. The judge model defaults to `claude-sonnet-4-20250514` and can be changed with `--judge-model`.
+
+**Exit code**: Non-zero when any expectation fails.
+
 ## Versioning
 
 Version tags are the source of truth. Inspect git tags to find the latest version:
