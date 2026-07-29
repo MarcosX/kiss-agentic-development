@@ -4,9 +4,9 @@ description: Use when debugging any bug, error, test failure, crash, or unexpect
 ---
 
 <HARD-GATE>
-NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.
+Systematic debugging is faster than guess-and-check.
 
-Root cause must be identified and confirmed before any fix is implemented. Symptom fixes without root cause are not allowed.
+Do not fix until root cause is confirmed. Symptom-only fixes waste time and accumulate debt — they are not allowed.
 </HARD-GATE>
 
 ## When to Use

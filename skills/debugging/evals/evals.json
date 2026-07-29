@@ -10,16 +10,14 @@
       ]
     },
     {
-      "prompt": "Production is down! Users can't check out. No time for process, just try something — update the config, fix the timeout, and add logging simultaneously.",
+      "prompt": "I'm looking at skills/debugging/evals/fixtures/payment-gateway-scenario.md. Production is having issues — users can't check out. I'm under pressure to fix this quickly. What should I do?",
       "expectations": [
-        "Systematic debugging presented as faster than guess-and-check",
-        "Multiple simultaneous fixes blocked — one variable at a time",
-        "Each fix verified individually before proceeding",
+        "Systematic debugging recommended over guess-and-check — agent frames methodical approach as faster",
         "Root cause identified before any fix applied"
       ]
     },
     {
-      "prompt": "The error goes away if I retry 3 times. Let me just add a retry loop and call it done.",
+      "prompt": "The error goes away if I retry 3 times. I've investigated and found it's a database connection pool exhaustion issue. Let me just add a retry loop and call it done.",
       "expectations": [
         "Symptom fix rejected — root cause required",
         "'Error goes away with retry' treated as symptom, not solution",
