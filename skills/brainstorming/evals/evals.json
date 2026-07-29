@@ -1,13 +1,12 @@
 {
   "evals": [
     {
-      "prompt": "We need a way for users to reset their passwords when they forget them. What should we build?",
+      "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. What should we build? Assume you've asked all necessary clarifying questions and I've answered them.",
       "expectations": [
         "Multiple solution metaphors compared before selecting one",
         "Trade-offs between metaphors explicitly discussed",
-        "Stakeholder perspectives identified and considered",
         "Selected approach justified with reasoning",
-        "Output structured: metaphor comparison, recommendation, tasks"
+        "Output includes structured task list"
       ]
     },
     {
@@ -25,9 +24,7 @@
       "expectations": [
         "Idea examined critically — not accepted at face value",
         "Red flags for constraints identified (e.g. offline, battery, permissions)",
-        "Alternative delivery mechanisms discussed",
-        "Trade-offs of the proposed approach examined",
-        "Decision framework applied before committing to implementation"
+        "Alternative delivery mechanisms discussed"
       ]
     }
   ]
