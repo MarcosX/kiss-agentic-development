@@ -1,12 +1,12 @@
 {
   "evals": [
     {
-      "prompt": "Review this PR diff:\n\n```diff\n+function processData(data) {\n+  const result = [];\n+  eval(data.query);  // Hmm, need to process the query somehow\n+  return result;\n+}\n```\n\nThe PR description says: 'Add data processing utility. Uses eval() to execute dynamic queries.'",
+      "prompt": "Review this PR diff. Read the diff carefully before responding:\n\n```diff\n+function processData(data) {\n+  const result = [];\n+  eval(data.query);  // Hmm, need to process the query somehow\n+  return result;\n+}\n```\n\nThe PR description says: 'Add data processing utility. Uses eval() to execute dynamic queries.'",
       "expectations": [
         "Critical finding identified on eval() — security vulnerability",
         "Findings categorized by severity (Critical, Required, Nit)",
         "Merge blocked or strongly opposed due to Critical finding",
-        "Diff context understood before starting review",
+        "Findings demonstrate diff was read (specific lines referenced, accurate interpretation)",
         "Constructive alternative proposed (not just rejection)"
       ]
     },
