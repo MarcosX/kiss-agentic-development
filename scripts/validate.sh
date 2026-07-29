@@ -6,6 +6,10 @@ errors=0
 
 for skill_dir in "$SKILLS_DIR"/*/; do
   skill=$(basename "$skill_dir")
+  # Skip directories starting with underscore (internal/fixture dirs)
+  if [[ "$skill" == _* ]]; then
+    continue
+  fi
   skill_md="$skill_dir/SKILL.md"
   evals_json="$skill_dir/evals/evals.json"
 

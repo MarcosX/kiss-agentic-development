@@ -41,11 +41,16 @@ In the GREEN phase, after writing or editing a skill, run `scripts/eval.sh --ski
 Use `scripts/eval.sh` for quick iteration — it tests the skill's end-to-end behavior by running each eval prompt against the configured agent CLI and grading responses with an LLM judge.
 
 ```bash
-scripts/eval.sh --skill brainstorming           # single skill
-scripts/eval.sh --skill debugging --dry-run      # list evals without running
-scripts/eval.sh                                  # all 6 skills
+scripts/eval.sh --skill brainstorming                        # single skill
+scripts/eval.sh --skill debugging --dry-run                   # list evals without running
+scripts/eval.sh --skill reviewing-code --judge "opencode run" # independent judge
+scripts/eval.sh --skill practicing-tdd --timeout 600          # override agent timeout
+scripts/eval.sh --judge-timeout 180                            # override judge timeout
+scripts/eval.sh --baseline .opencode/evals/report.json        # compare with previous run
+scripts/eval.sh --keep-workspace                              # preserve temp dirs for debugging
+scripts/eval.sh                                               # all 6 skills
 ```
 
-Output is written to `.opencode/evals/<skill>/` with per-eval responses, grades, and a summary. The exit code is non-zero when any expectation fails, making it suitable for CI gating.
+Output is written to `.opencode/evals/<skill>/` with per-eval responses, grades, and a summary. Previous reports are automatically archived to `.opencode/evals/history/`. Each eval runs in an isolated temp directory with relevant fixtures copied in, preventing cross-contamination. The exit code is non-zero when any expectation fails, making it suitable for CI gating.
 
 See [AGENTS.md](AGENTS.md#eval-runner) for the full eval runner documentation.

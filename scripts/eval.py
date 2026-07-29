@@ -15,20 +15,29 @@ import re
 import shlex
 import subprocess
 import sys
+from datetime import datetime
+import os
+import shutil
+import tempfile
 import time
 from pathlib import Path
 
-SKILLS_DIR = Path("skills")
-OUTPUT_DIR = Path(".opencode/evals")
+SKILLS_DIR = Path("skills").resolve()
+OUTPUT_DIR = Path(".opencode/evals").resolve()
 DEFAULT_AGENT = "opencode run"
-EVAL_TIMEOUT = 180
-JUDGE_TIMEOUT = 60
+EVAL_TIMEOUT = 300
+JUDGE_TIMEOUT = 120
 
 
 def parse_args():
     p = argparse.ArgumentParser(description="Run skill evaluations")
     p.add_argument("--skill", help="Skill to evaluate (default: all)")
     p.add_argument("--agent", default=DEFAULT_AGENT, help=f"Agent CLI (default: {DEFAULT_AGENT})")
+    p.add_argument("--judge", default=None, help="Judge agent CLI (default: same as --agent)")
+    p.add_argument("--timeout", type=int, default=EVAL_TIMEOUT, help=f"Agent timeout in seconds (default: {EVAL_TIMEOUT})")
+    p.add_argument("--judge-timeout", type=int, default=JUDGE_TIMEOUT, help=f"Judge timeout in seconds (default: {JUDGE_TIMEOUT})")
+    p.add_argument("--baseline", help="Compare against a previous report.json (e.g., .opencode/evals/history/report-20250101-120000.json)")
+    p.add_argument("--keep-workspace", action="store_true", help="Preserve temp workspace after eval")
     p.add_argument("--dry-run", action="store_true", help="List evals without running")
     return p.parse_args()
 
@@ -105,7 +114,7 @@ def run_agent(agent_cmd, prompt, timeout=EVAL_TIMEOUT):
         return {"stdout": "", "stderr": "", "returncode": -1, "error": str(e)}
 
 
-def judge_response(response_text, expectations, agent_cmd):
+def judge_response(response_text, expectations, agent_cmd, timeout=JUDGE_TIMEOUT):
     exp_text = "\n".join(f"{i+1}. {e}" for i, e in enumerate(expectations))
 
     judge_prompt = f"""You are grading whether an AI agent's response meets specific expectations.
@@ -124,7 +133,7 @@ Example:
 [{{"expectation": "Problem framed before jumping to solution", "passed": true, "reason": "Agent asked clarifying questions before proposing solutions."}},
  {{"expectation": "Trade-offs discussed", "passed": false, "reason": "Agent proposed a single approach without comparing alternatives."}}]"""
 
-    result = run_agent(agent_cmd, judge_prompt, timeout=JUDGE_TIMEOUT)
+    result = run_agent(agent_cmd, judge_prompt, timeout=timeout)
     if result["error"]:
         return [{"expectation": e, "passed": False, "reason": f"Judge agent error: {result['error']}"} for e in expectations]
 
@@ -190,52 +199,74 @@ def main():
                     print(f"       expect: {exp[:70]}...")
                 continue
 
-            # Run agent
-            combined = build_eval_prompt(skill_content, ev)
-            t0 = time.time()
+            # Create isolated workspace
+            workspace = Path(tempfile.mkdtemp(prefix="kiss-eval-"))
+            original_cwd = Path.cwd()
+            try:
+                # Copy fixtures into workspace
+                fixt_dir = skill_dir / "evals" / "fixtures"
+                if fixt_dir.exists():
+                    dest = workspace / fixt_dir.relative_to(SKILLS_DIR.parent)
+                    dest.parent.mkdir(parents=True, exist_ok=True)
+                    try:
+                        shutil.copytree(fixt_dir, dest, dirs_exist_ok=True)
+                    except (OSError, shutil.Error) as e:
+                        print(f"       ERROR copying fixtures from {fixt_dir}: {e}")
 
-            print(f"       running agent...", end=" ", flush=True)
-            response = run_agent(args.agent, combined)
-            elapsed = time.time() - t0
-            print(f"({elapsed:.1f}s)")
-
-            (skill_out / f"response-{i}.json").write_text(json.dumps(response, indent=2))
-
-            if response["error"]:
-                print(f"       ERROR: {response['error']}")
-                grades = [{"expectation": e, "passed": False, "reason": f"Agent error: {response['error']}"} for e in expectations]
-            else:
-                output = response["stdout"] or response["stderr"] or ""
-                print(f"       judging ({len(output)} chars)...", end=" ", flush=True)
+                # Run agent from workspace
+                os.chdir(str(workspace))
+                combined = build_eval_prompt(skill_content, ev)
                 t0 = time.time()
-                grades = judge_response(output, expectations, args.agent)
+
+                print(f"       running agent...", end=" ", flush=True)
+                response = run_agent(args.agent, combined, timeout=args.timeout)
                 elapsed = time.time() - t0
-                print(f"({elapsed:.1f}s)")
+                print(f"({elapsed:.1f}s / timeout: {args.timeout}s)")
 
-            (skill_out / f"grade-{i}.json").write_text(json.dumps(grades, indent=2))
+                (skill_out / f"response-{i}.json").write_text(json.dumps(response, indent=2))
 
-            n_pass = sum(1 for g in grades if g.get("passed"))
-            n_total = len(grades)
-            skill_passed += n_pass
-            skill_total += n_total
-            total_passed += n_pass
-            total_evals += n_total
+                if response["error"]:
+                    print(f"       ERROR: {response['error']}")
+                    grades = [{"expectation": e, "passed": False, "reason": f"Agent error: {response['error']}"} for e in expectations]
+                else:
+                    output = response["stdout"] or response["stderr"] or ""
+                    judge_cmd = args.judge if args.judge else args.agent
+                    print(f"       judging ({len(output)} chars)...", end=" ", flush=True)
+                    t0 = time.time()
+                    grades = judge_response(output, expectations, judge_cmd, timeout=args.judge_timeout)
+                    elapsed = time.time() - t0
+                    print(f"({elapsed:.1f}s / timeout: {args.judge_timeout}s)")
 
-            if n_pass < n_total:
-                any_failures = True
+                (skill_out / f"grade-{i}.json").write_text(json.dumps(grades, indent=2))
 
-            print(f"       {n_pass}/{n_total} passed")
-            for g in grades:
-                mark = "PASS" if g.get("passed") else "FAIL"
-                print(f"         [{mark}] {g.get('expectation', '?')[:70]}")
+                n_pass = sum(1 for g in grades if g.get("passed"))
+                n_total = len(grades)
+                skill_passed += n_pass
+                skill_total += n_total
+                total_passed += n_pass
+                total_evals += n_total
 
-            skill_results.append({
-                "eval_index": i,
-                "prompt": prompt_text[:100],
-                "passed": n_pass,
-                "total": n_total,
-                "grades": grades,
-            })
+                if n_pass < n_total:
+                    any_failures = True
+
+                print(f"       {n_pass}/{n_total} passed")
+                for g in grades:
+                    mark = "PASS" if g.get("passed") else "FAIL"
+                    print(f"         [{mark}] {g.get('expectation', '?')[:70]}")
+
+                skill_results.append({
+                    "eval_index": i,
+                    "prompt": prompt_text[:100],
+                    "passed": n_pass,
+                    "total": n_total,
+                    "grades": grades,
+                })
+            finally:
+                os.chdir(str(original_cwd))
+                if args.keep_workspace:
+                    print(f"       workspace preserved: {workspace}")
+                else:
+                    shutil.rmtree(workspace, ignore_errors=True)
 
         if not args.dry_run and skill_total > 0:
             summary = {
@@ -253,7 +284,38 @@ def main():
         print(f"\n{'=' * 60}")
         print(f"OVERALL: {total_passed}/{total_evals} expectations met ({rate:.1f}%)")
         print(f"{'=' * 60}")
+
+        # Archive previous report before overwriting
+        history_dir = OUTPUT_DIR / "history"
+        history_dir.mkdir(parents=True, exist_ok=True)
+        if (OUTPUT_DIR / "report.json").exists():
+            timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            shutil.copy(OUTPUT_DIR / "report.json", history_dir / f"report-{timestamp}.json")
+
         (OUTPUT_DIR / "report.json").write_text(json.dumps(all_results, indent=2))
+
+        # Baseline comparison
+        if args.baseline:
+            baseline_path = Path(args.baseline)
+            if not baseline_path.exists():
+                print(f"WARNING: baseline file not found: {args.baseline}")
+            else:
+                baseline = json.loads(baseline_path.read_text())
+                print(f"\nBaseline comparison against {args.baseline}:")
+                regressions = False
+                for skill_name, current in sorted(all_results.items()):
+                    if skill_name in baseline:
+                        prev_rate = baseline[skill_name]["pass_rate"]
+                        curr_rate = current["pass_rate"]
+                        delta = curr_rate - prev_rate
+                        marker = " *** REGRESSION ***" if delta < -0.1 else ""
+                        if delta < -0.1:
+                            regressions = True
+                        print(f"  {skill_name}: {prev_rate*100:.0f}% \u2192 {curr_rate*100:.0f}% ({delta*100:+.0f}pp){marker}")
+                    else:
+                        print(f"  {skill_name}: (new, no baseline)")
+                if regressions:
+                    print("WARNING: One or more skills regressed by more than 10pp")
 
     sys.exit(1 if any_failures else 0)
 

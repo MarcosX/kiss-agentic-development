@@ -46,6 +46,17 @@ Another commong issue is that most skill are written for humans, not agents — 
 
 Skills are evaluated using `scripts/eval.sh`, which runs each eval prompt against your agent CLI and grades responses against expectations through an LLM judge. Every skill ships with 3 evaluation scenarios that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal.
 
+```bash
+scripts/eval.sh --skill brainstorming            # single skill (defaults)
+scripts/eval.sh --skill debugging --judge "opencode run"  # independent judge
+scripts/eval.sh --skill practicing-tdd --timeout 600      # longer agent timeout
+scripts/eval.sh --keep-workspace                          # preserve temp dirs
+scripts/eval.sh --baseline .opencode/evals/report.json    # compare with baseline
+scripts/eval.sh                                           # all 6 skills
+```
+
+Output is written to `.opencode/evals/<skill>/` with per-eval response and grade files. Previous reports are archived to `.opencode/evals/history/`. Each eval runs in an isolated temp directory to prevent cross-contamination. The exit code is non-zero when any expectation fails.
+
 ## Skills
 
 Every session is gated by a [global using-skills instruction](instructions/using-skills.md) that forces the agent to find and invoke the right skill before doing anything else.
