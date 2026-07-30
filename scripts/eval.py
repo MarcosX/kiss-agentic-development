@@ -34,6 +34,8 @@ def parse_args():
     p.add_argument("--skill", help="Skill to evaluate (default: all)")
     p.add_argument("--agent", default=DEFAULT_AGENT, help=f"Agent CLI (default: {DEFAULT_AGENT})")
     p.add_argument("--judge", default=None, help="Judge agent CLI (default: same as --agent)")
+    p.add_argument("--agent-model", help="Model name for agent (appended as --model to agent command)")
+    p.add_argument("--judge-model", help="Model name for judge (appended as --model to judge command)")
     p.add_argument("--timeout", type=int, default=EVAL_TIMEOUT, help=f"Agent timeout in seconds (default: {EVAL_TIMEOUT})")
     p.add_argument("--judge-timeout", type=int, default=JUDGE_TIMEOUT, help=f"Judge timeout in seconds (default: {JUDGE_TIMEOUT})")
     p.add_argument("--baseline", help="Compare against a previous report.json (e.g., .opencode/evals/history/report-20250101-120000.json)")
@@ -153,6 +155,17 @@ Example:
 
 def main():
     args = parse_args()
+
+    # Build agent command, appending model if provided
+    agent_cmd = args.agent
+    if args.agent_model:
+        agent_cmd += f" --model {args.agent_model}"
+
+    # Build judge command: explicit or same as agent, then append judge model if provided
+    judge_cmd = args.judge if args.judge else agent_cmd
+    if args.judge_model:
+        judge_cmd += f" --model {args.judge_model}"
+
     skills = discover_skills(args.skill)
 
     if not skills:
@@ -219,7 +232,7 @@ def main():
                 t0 = time.time()
 
                 print(f"       running agent...", end=" ", flush=True)
-                response = run_agent(args.agent, combined, timeout=args.timeout)
+                response = run_agent(agent_cmd, combined, timeout=args.timeout)
                 elapsed = time.time() - t0
                 print(f"({elapsed:.1f}s / timeout: {args.timeout}s)")
 
@@ -230,7 +243,6 @@ def main():
                     grades = [{"expectation": e, "passed": False, "reason": f"Agent error: {response['error']}"} for e in expectations]
                 else:
                     output = response["stdout"] or response["stderr"] or ""
-                    judge_cmd = args.judge if args.judge else args.agent
                     print(f"       judging ({len(output)} chars)...", end=" ", flush=True)
                     t0 = time.time()
                     grades = judge_response(output, expectations, judge_cmd, timeout=args.judge_timeout)

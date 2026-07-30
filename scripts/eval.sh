@@ -15,8 +15,10 @@ Options:
   --agent <cmd>        Agent CLI command (default: "opencode run")
   --judge <cmd>        Judge agent CLI (default: same as --agent)
   --timeout <secs>     Agent timeout in seconds (default: 300)
-  --judge-timeout <secs>  Judge timeout in seconds (default: 120)
-  --baseline <path>    Compare against a previous report.json
+   --judge-timeout <secs>  Judge timeout in seconds (default: 120)
+   --agent-model <name>   Model name for agent (appended as --model)
+   --judge-model <name>   Model name for judge (appended as --model)
+   --baseline <path>    Compare against a previous report.json
   --keep-workspace     Preserve temp workspace after eval
   --dry-run            List evals without running them
   -h, --help           Show this help message
@@ -35,6 +37,8 @@ AGENT="opencode run"
 JUDGE=""
 TIMEOUT=""
 JUDGE_TIMEOUT=""
+AGENT_MODEL=""
+JUDGE_MODEL=""
 BASELINE=""
 KEEP_WORKSPACE=false
 DRY_RUN=false
@@ -57,11 +61,19 @@ while [[ $# -gt 0 ]]; do
       TIMEOUT="$2"
       shift 2
       ;;
-    --judge-timeout)
-      JUDGE_TIMEOUT="$2"
-      shift 2
-      ;;
-    --baseline)
+     --judge-timeout)
+       JUDGE_TIMEOUT="$2"
+       shift 2
+       ;;
+     --agent-model)
+       AGENT_MODEL="$2"
+       shift 2
+       ;;
+     --judge-model)
+       JUDGE_MODEL="$2"
+       shift 2
+       ;;
+     --baseline)
       BASELINE="$2"
       shift 2
       ;;
@@ -105,6 +117,12 @@ if [ -n "$TIMEOUT" ]; then
 fi
 if [ -n "$JUDGE_TIMEOUT" ]; then
   PY_ARGS+=(--judge-timeout "$JUDGE_TIMEOUT")
+fi
+if [ -n "$AGENT_MODEL" ]; then
+  PY_ARGS+=(--agent-model "$AGENT_MODEL")
+fi
+if [ -n "$JUDGE_MODEL" ]; then
+  PY_ARGS+=(--judge-model "$JUDGE_MODEL")
 fi
 if [ -n "$BASELINE" ]; then
   PY_ARGS+=(--baseline "$BASELINE")
