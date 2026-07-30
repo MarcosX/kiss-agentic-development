@@ -31,6 +31,11 @@ Architectural choices, modules to build/modify, API contracts, schema changes, i
 - Prior art for tests (similar test patterns in the codebase)
 - Seam-first: identify the highest seam possible for testing
 
+## Acceptance Criteria
+
+Numbered list of testable statements derived from user stories.
+Each AC is atomic — one behavior, verifiable independently.
+
 ## Out of Scope
 
 What is deliberately not covered by this design.

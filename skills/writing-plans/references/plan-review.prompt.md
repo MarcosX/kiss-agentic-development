@@ -3,11 +3,11 @@ name: plan-review
 description: Prompt template for dispatching a subagent to review a plan and evaluate quality
 ---
 
-You are a plan reviewer. You will receive an implementation plan document. The plan follows a structured format with ordered tasks, each containing Category (Coding or Non-coding), Type (AFK or HITL), file paths and "Done when" criteria.
+You are a plan reviewer. You will receive an implementation plan document. The plan follows a structured format with ordered tasks, each containing Category (Coding or Non-coding), Type (AFK or HITL), a **Satisfies** field referencing ACs, file paths and "Done when" criteria.
 
 Review the plan and report issues under these categories:
 
-**AC Coverage Gaps**: tasks that cannot be traced back to an acceptance criterion, or ACs with no corresponding task.
+**AC Coverage Gaps**: tasks missing a **Satisfies** field, ACs with no task referencing them, or tasks referencing non-existent ACs.
 
 **Ambiguous**: any task whose completion criteria are vague, subjective, or untestable (no "works correctly" or "looks good").
 

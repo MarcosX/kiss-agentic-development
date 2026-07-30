@@ -44,11 +44,17 @@ The template below guarantees every task is agent-executable. Merge local ticket
 
 **Architecture**: [2-3 sentences with approach, key components and patterns]
 
+**Acceptance Criteria:**
+
+- AC-1: [testable statement] [owned by: Task N, Task M]
+- AC-2: [testable statement] [owned by: Task N]
+
 ---
 
 ## Task N: [Task Name]
 
 **Category:** Coding | Non-coding
+**Satisfies:** AC-1, AC-2
 
 **Files:**
 
@@ -117,7 +123,8 @@ Before finalizing, dispatch a subagent to review the plan against the checklist 
 
 ## Checklist
 
-- Every AC maps to a named task
+- Every AC maps to a named task (via **Satisfies** field)
+- Each task has a **Satisfies** field referencing its ACs
 - Each task has a Category and Type
 - Exact file paths always
 - Complete code (never "add code here")

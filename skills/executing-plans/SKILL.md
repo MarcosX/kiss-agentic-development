@@ -34,26 +34,32 @@ For each batch, follow the fan-out/fan-in pattern:
 
 2. **Fan-out (parallel dispatch)**: Dispatch ALL tasks in the batch simultaneously, each as a fresh subagent using `references/dispatch-agent.prompt.md` with the full task text pasted in. Do not make subagents read the plan file or inherit session context.
 
-3. **Fan-in (review after completion)**: Wait for all subagents to complete. For each completed task:
+ 3. **Fan-in (review after completion)**: Wait for all subagents to complete. For each completed task:
    a. Handle implementer status (DONE, DONE_WITH_CONCERNS, NEEDS_CONTEXT, BLOCKED)
    b. Verify completion using `references/spec-review.prompt.md` and `references/code-review.prompt.md`
-   c. Run review loops if issues found — fix, re-review, repeat until approved
-   d. Mark task complete in TodoWrite
+   c. **AC validation** (single-owner only): If the task has a **Satisfies** field, validate each AC that lists this task as its sole owner. Read relevant code and run tests to confirm the AC is met. Report pass/fail per AC. Skip if the task references no ACs, or no ACs it owns individually.
+   d. Run review loops if issues found — fix, re-review, repeat until approved
+   e. Mark task complete in TodoWrite
 
 Proceed to the next batch. After all batches complete, go to **Complete development**.
 
-**Complete development**: Review execution output to determine if the plan was completed successfully.
-If it is, report status and provide proof of completion.
-If not, determine next steps:
+**Complete development** — validate that the integrated result achieves the plan's intent:
 
-- if task implementation failed
-  - review concerns and/or blockers
-  - update the plan with what needs rework
-  - go back to execution phase
-- if task implementation was not possible
-  - review concerns and/or blockers
-  - propose 2-3 options for addressing the cause
-  - report current status of plan along with suggestions
+1. **Global AC validation** — Dispatch a subagent to validate all remaining ACs (multi-owner and cross-cutting). Provide the full AC list from the plan and the current codebase state. The subagent reads code and runs tests to determine for each AC:
+   - ✅ Pass — behavior confirmed
+   - ❌ Fail — behavior not implemented or incorrect
+   - ⚠️ Partial — implemented but with gaps
+
+2. **Goal validation** — Review all AC results against the plan's **Goal** statement. Does the integrated implementation achieve the stated goal? What's missing?
+
+3. **Decision**:
+   - All ACs pass + goal achieved → report done with proof per AC
+   - Any AC fails → generate remediation tasks, re-enter execution
+   - Partial → report status with options for resolution
+
+If task implementation itself failed, determine next steps:
+- Review concerns and/or blockers, update the plan with what needs rework, go back to execution phase
+- If implementation was not possible, propose 2-3 options for addressing the cause, report current status along with suggestions
 
 # Red flags
 
