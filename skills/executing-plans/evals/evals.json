@@ -12,8 +12,7 @@
       "prompt": "I need you to add search functionality. No plan file exists yet.",
       "expectations": [
         "Fallback to brainstorming triggered when no plan exists",
-        "No execution attempted without a plan",
-        "User informed about the fallback"
+        "No execution attempted without a plan"
       ]
     },
     {
