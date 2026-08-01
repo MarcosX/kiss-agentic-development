@@ -4,7 +4,7 @@ Code:
 - `skills/debugging/evals/fixtures/pool/db.py`
 - `skills/debugging/evals/fixtures/pool/worker.py`
 
-`logs/error.log` (last 5 entries):
+Error log (last 5 entries):
 
 ```
 [2026-07-31 09:12:01] DBError: connection pool exhausted: max 3 connections
