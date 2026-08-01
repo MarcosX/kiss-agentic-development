@@ -25,7 +25,7 @@ from pathlib import Path
 SKILLS_DIR = Path("skills").resolve()
 OUTPUT_DIR = Path(".opencode/evals").resolve()
 DEFAULT_AGENT = "opencode run"
-EVAL_TIMEOUT = 300
+EVAL_TIMEOUT = 600
 JUDGE_TIMEOUT = 120
 
 

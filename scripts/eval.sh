@@ -14,7 +14,7 @@ Options:
   --skill <name>       Skill to evaluate (default: all skills)
   --agent <cmd>        Agent CLI command (default: "opencode run")
   --judge <cmd>        Judge agent CLI (default: same as --agent)
-  --timeout <secs>     Agent timeout in seconds (default: 300)
+  --timeout <secs>     Agent timeout in seconds (default: 600)
    --judge-timeout <secs>  Judge timeout in seconds (default: 120)
    --agent-model <name>   Model name for agent (appended as --model)
    --judge-model <name>   Model name for judge (appended as --model)
