@@ -282,7 +282,9 @@ scripts/eval.sh --skill debugging --agent "opencode run --format json"
 
 **Judge**: Uses the same agent CLI (configured with `--agent`) to grade each response against expectations. No separate API key required — the judge runs through the user's configured model.
 
-**Exit code**: Non-zero when any expectation fails.
+**Errors**: Timeouts, command crashes, and non-zero agent exits are tracked separately in the summary (`errors` field) and displayed as `[ERROR]`, not counted against the pass rate.
+
+**Exit code**: Non-zero when any expectation fails or any eval errors out.
 
 ## Versioning
 

@@ -51,6 +51,6 @@ scripts/eval.sh --keep-workspace                              # preserve temp di
 scripts/eval.sh                                               # all 6 skills
 ```
 
-Output is written to `.opencode/evals/<skill>/` with per-eval responses, grades, and a summary. Previous reports are automatically archived to `.opencode/evals/history/`. Each eval runs in an isolated temp directory with relevant fixtures copied in, preventing cross-contamination. The exit code is non-zero when any expectation fails, making it suitable for CI gating.
+Output is written to `.opencode/evals/<skill>/` with per-eval responses, grades, and a summary. Previous reports are automatically archived to `.opencode/evals/history/`. Each eval runs in an isolated temp directory with relevant fixtures copied in, preventing cross-contamination. The exit code is non-zero when any expectation fails, making it suitable for CI gating. Agent errors (timeouts, crashes, non-zero exits) are tracked separately in the summary's `errors` field and do not count against the pass rate.
 
 See [AGENTS.md](AGENTS.md#eval-runner) for the full eval runner documentation.

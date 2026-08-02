@@ -25,7 +25,7 @@ from pathlib import Path
 SKILLS_DIR = Path("skills").resolve()
 OUTPUT_DIR = Path(".opencode/evals").resolve()
 DEFAULT_AGENT = "opencode run"
-EVAL_TIMEOUT = 300
+EVAL_TIMEOUT = 600
 JUDGE_TIMEOUT = 120
 
 
@@ -102,11 +102,14 @@ def run_agent(agent_cmd, prompt, timeout=EVAL_TIMEOUT):
             text=True,
             timeout=timeout,
         )
+        error = None
+        if result.returncode != 0:
+            error = f"agent exited with code {result.returncode}"
         return {
             "stdout": result.stdout,
             "stderr": result.stderr,
             "returncode": result.returncode,
-            "error": None,
+            "error": error,
         }
     except subprocess.TimeoutExpired:
         return {"stdout": "", "stderr": "", "returncode": -1, "error": "timeout"}
@@ -177,7 +180,9 @@ def main():
     all_results = {}
     total_passed = 0
     total_evals = 0
+    total_errors = 0
     any_failures = False
+    any_errors = False
 
     for skill_name, skill_dir, evals_path in skills:
         print(f"\n{'=' * 60}")
@@ -199,6 +204,7 @@ def main():
         skill_results = []
         skill_passed = 0
         skill_total = 0
+        skill_errors = 0
 
         for i, ev in enumerate(evals):
             prompt_text = ev.get("prompt", "")
@@ -239,15 +245,24 @@ def main():
                 (skill_out / f"response-{i}.json").write_text(json.dumps(response, indent=2))
 
                 if response["error"]:
-                    print(f"       ERROR: {response['error']}")
-                    grades = [{"expectation": e, "passed": False, "reason": f"Agent error: {response['error']}"} for e in expectations]
-                else:
-                    output = response["stdout"] or response["stderr"] or ""
-                    print(f"       judging ({len(output)} chars)...", end=" ", flush=True)
-                    t0 = time.time()
-                    grades = judge_response(output, expectations, judge_cmd, timeout=args.judge_timeout)
-                    elapsed = time.time() - t0
-                    print(f"({elapsed:.1f}s / timeout: {args.judge_timeout}s)")
+                    print(f"       [ERROR] {response['error']}")
+                    skill_errors += 1
+                    total_errors += 1
+                    any_errors = True
+                    skill_results.append({
+                        "eval_index": i,
+                        "prompt": prompt_text[:100],
+                        "error": response["error"],
+                    })
+                    (skill_out / f"error-{i}.json").write_text(json.dumps(response, indent=2))
+                    continue
+
+                output = response["stdout"] or response["stderr"] or ""
+                print(f"       judging ({len(output)} chars)...", end=" ", flush=True)
+                t0 = time.time()
+                grades = judge_response(output, expectations, judge_cmd, timeout=args.judge_timeout)
+                elapsed = time.time() - t0
+                print(f"({elapsed:.1f}s / timeout: {args.judge_timeout}s)")
 
                 (skill_out / f"grade-{i}.json").write_text(json.dumps(grades, indent=2))
 
@@ -280,21 +295,25 @@ def main():
                 else:
                     shutil.rmtree(workspace, ignore_errors=True)
 
-        if not args.dry_run and skill_total > 0:
+        if not args.dry_run and skill_results:
             summary = {
                 "skill": skill_name,
                 "results": skill_results,
                 "passed": skill_passed,
                 "total": skill_total,
-                "pass_rate": round(skill_passed / skill_total, 3),
+                "errors": skill_errors,
+                "pass_rate": round(skill_passed / skill_total, 3) if skill_total > 0 else 0.0,
             }
             (skill_out / "summary.json").write_text(json.dumps(summary, indent=2))
             all_results[skill_name] = summary
 
-    if not args.dry_run and total_evals > 0:
-        rate = (total_passed / total_evals) * 100
+    if not args.dry_run and (total_evals > 0 or total_errors > 0):
         print(f"\n{'=' * 60}")
-        print(f"OVERALL: {total_passed}/{total_evals} expectations met ({rate:.1f}%)")
+        if total_evals > 0:
+            rate = (total_passed / total_evals) * 100
+            print(f"OVERALL: {total_passed}/{total_evals} expectations met ({rate:.1f}%)")
+        if total_errors > 0:
+            print(f"ERRORS: {total_errors} eval(s) failed to run (timeout/crash/command error)")
         print(f"{'=' * 60}")
 
         # Archive previous report before overwriting
@@ -329,7 +348,7 @@ def main():
                 if regressions:
                     print("WARNING: One or more skills regressed by more than 10pp")
 
-    sys.exit(1 if any_failures else 0)
+    sys.exit(1 if (any_failures or any_errors) else 0)
 
 
 if __name__ == "__main__":
