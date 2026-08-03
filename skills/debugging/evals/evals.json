@@ -17,7 +17,7 @@
       ]
     },
     {
-      "prompt": "The error goes away if I retry 3 times. I've investigated and found it's a database connection pool exhaustion issue. Let me just add a retry loop and call it done.",
+      "prompt": "I'm looking at skills/debugging/evals/fixtures/pool/scenario.md. Production is failing with 'connection pool exhausted' under load. The error goes away if I retry 3 times. I've investigated and found it's a database connection pool exhaustion issue. Let me just add a retry loop and call it done.",
       "expectations": [
         "Symptom fix rejected — root cause required",
         "'Error goes away with retry' treated as symptom, not solution",

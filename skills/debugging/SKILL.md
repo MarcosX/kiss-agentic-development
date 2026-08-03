@@ -17,6 +17,8 @@ Use for any technical issue: test failures, production bugs, unexpected behavior
 
 When investigating a bug or failure, dispatch a subagent using `references/gather-evidence.prompt.md`, providing: the error message, relevant file paths, and recent git diff. The subagent returns a structured evidence report. Bring the report back to the main session before forming hypotheses.
 
+The user will often volunteer a suspected cause ("I think it's X"). Treat it as a hypothesis to test, not a lead — do not restate or endorse it until the evidence report is back. Restating the guess before evidence makes it look confirmed.
+
 If subagent dispatch is not avialable, follow the prompt directly. Bring findings into the next phase before forming hypotheses.
 
 When a system spans multiple components, instruct the subagent to add diagnostic instrumentation at each component boundary and run once to gather boundary-level evidence before returning.
@@ -35,6 +37,7 @@ Apply the scientific method:
 Fix the root cause, not the symptom:
 
 - **Create a failing test first** — Write the simplest reproduction test using `practicing-tdd`. The test MUST fail before the fix.
+- When the user claims to have found the root cause ("I've investigated, it's X"), treat the claim as a hypothesis: prove it with a failing reproduction test before fixing. If no code is available to test against, ask for the file path or method needed to write the test — do not skip it.
 - **Implement a single fix** — Address the root cause. One change at a time. No bundled improvements.
 - **Verify the fix** — Test passes. No regressions. Issue resolved.
 - **Document the outcome** — Fill in `reference/debug-report.md` with reproduction, root cause, fix, and prevention.
