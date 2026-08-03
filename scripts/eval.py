@@ -95,12 +95,18 @@ def run_agent(agent_cmd, prompt, timeout=EVAL_TIMEOUT):
     parts = shlex.split(agent_cmd)
     full_cmd = parts + [prompt]
 
+    cwd = Path.cwd()
+    env = os.environ.copy()
+    env["PWD"] = str(cwd)
+
     try:
         result = subprocess.run(
             full_cmd,
             capture_output=True,
             text=True,
             timeout=timeout,
+            cwd=cwd,
+            env=env,
         )
         error = None
         if result.returncode != 0:
