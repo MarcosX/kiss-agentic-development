@@ -170,8 +170,13 @@ def main():
     if args.agent_model:
         agent_cmd += f" --model {args.agent_model}"
 
-    # Build judge command: explicit or same as agent, then append judge model if provided
-    judge_cmd = args.judge if args.judge else agent_cmd
+    # Build judge command: explicit judge base, or fall back to base agent (without agent model)
+    if args.judge:
+        judge_cmd = args.judge
+    elif args.judge_model:
+        judge_cmd = args.agent
+    else:
+        judge_cmd = agent_cmd
     if args.judge_model:
         judge_cmd += f" --model {args.judge_model}"
 
