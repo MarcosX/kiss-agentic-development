@@ -37,6 +37,7 @@ If more context is needed, explore related files outside of the commit, but do n
 - Premature optimizations/abstractions
 - Edge cases
 - Type safety (when applicable)
+- Breaking type changes: if a shared type was modified, verify callers still compile and no implicit contracts were silently broken
 
 **Testing**
 
@@ -58,6 +59,11 @@ If more context is needed, explore related files outside of the commit, but do n
 - **Unit decomposition**: Are units decomposed so they can be understood and tested independently?
 - **Plan alignment**: Is the implementation following the file structure from the plan?
 - **Size impact**: Did this implementation create new files that are already large, or significantly grow existing files? (Don't flag pre-existing file sizes — focus on what this change contributed.)
+
+## Hygiene
+
+- **Dead code**: unused types, variables, imports, or functions introduced by this change (run the language's linter or type checker with unused-symbol detection)
+- **Ephemeral references**: comments, TODOs, or strings referencing local plan files, session paths, or agent-internal artifacts — these must not be committed
 
 ## Report format
 

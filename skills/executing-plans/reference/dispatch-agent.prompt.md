@@ -90,6 +90,9 @@ Review your work with fresh eyes. Ask yourself:
 - Did I avoid overbuilding (YAGNI)?
 - Did I only build what was requested?
 - Did I follow existing patterns in the codebase?
+- Did I introduce any types, variables, or imports that are never used? Dead code must not be committed.
+- Did I change a type or interface used by callers outside this task? If so, did I verify those callers still compile and behave correctly?
+- Do any comments or strings in my code reference local plan files, session paths, or agent-internal context? Remove them before committing.
 
 **Testing:**
 - Do tests actually verify behavior (not just mock behavior)?
