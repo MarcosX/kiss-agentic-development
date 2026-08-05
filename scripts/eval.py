@@ -162,6 +162,13 @@ Example:
         return [{"expectation": e, "passed": False, "reason": f"Judge parse error: output did not contain valid JSON"} for e in expectations]
 
 
+def print_config_header(agent_cmd, judge_cmd, args):
+    print(f"Agent:  {agent_cmd}")
+    print(f"Judge:  {judge_cmd}")
+    print(f"Timeouts: agent={args.timeout}s, judge={args.judge_timeout}s")
+    print()
+
+
 def main():
     args = parse_args()
 
@@ -187,6 +194,8 @@ def main():
         sys.exit(1)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    print_config_header(agent_cmd, judge_cmd, args)
 
     all_results = {}
     total_passed = 0
@@ -291,6 +300,8 @@ def main():
                 for g in grades:
                     mark = "PASS" if g.get("passed") else "FAIL"
                     print(f"         [{mark}] {g.get('expectation', '?')[:70]}")
+                    if g.get("reason"):
+                        print(f"               {g['reason']}")
 
                 skill_results.append({
                     "eval_index": i,
