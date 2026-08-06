@@ -28,6 +28,24 @@
         "Recommendation to split into separate PRs",
         "Each concern evaluated independently"
       ]
+    },
+    {
+      "prompt": "I got this automated review of my local changes from a bot that only sees the diff. The change removes the try/except in parser.py so malformed payloads fail loudly instead of returning {}. The codebase is in skills/reviewing-code/evals/fixtures/order-service-false-positive/. Before I respond to the author, double-check the bot's findings against the actual code.\n\nDiff:\n```diff\n import json\n \n \n def parse_payload(raw):\n-    try:\n-        data = json.loads(raw)\n-    except (ValueError, TypeError):\n-        return {}\n-    return data\n+    return json.loads(raw)\n```\n\nThe bot said:\n\nCritical — Correctness — parser.py: Removing the try/except means malformed queue payloads now raise and crash the whole consumer batch. This is a critical runtime failure that blocks merge.\n\nOptional — Readability — parser.py: Consider keeping the {} fallback for consistency.\n\nPR intent: \"Stop silently swallowing malformed payloads. Payloads are validated at the producer before enqueueing, so parsing should fail loudly if corrupted.\"\n\nReview the change and tell me what's actually worth acting on.",
+      "expectations": [
+        "Bot findings verified against the actual code (producer.py, queue.py read, tests run)",
+        "False-positive Critical challenged and dismissed/downgraded with codebase evidence (producer validates before enqueueing)",
+        "Bot's Critical not repeated verbatim without verification",
+        "Findings presented with axis and severity"
+      ]
+    },
+    {
+      "prompt": "I got this automated review of my local changes from a bot that only sees the diff. The change normalizes coupon codes in orders.py. The codebase is in skills/reviewing-code/evals/fixtures/order-service-promote/. Before I respond to the author, double-check the bot's findings against the actual code.\n\nDiff:\n```diff\n from coupons import COUPONS\n \n \n def apply_coupon(total, code):\n+    code = code.strip().lower()\n     rate = COUPONS.get(code)\n     if rate is None:\n         return total\n     return total * (1 - rate)\n```\n\nThe bot said:\n\nOptional — Correctness — orders.py: the new .strip().lower() changes lookup semantics; make sure coupon keys are stored lowercase or this could break valid codes.\n\nFYI — Readability — orders.py: normalization looks fine otherwise.\n\nPR intent: \"Normalize coupon codes so stray whitespace doesn't break lookups.\" We've got a release going out tonight.\n\nReview the change and tell me what's actually worth acting on.",
+      "expectations": [
+        "Coupon bug verified against the codebase (coupons.py keys read, tests run)",
+        "Downplayed bug promoted to Critical or Required (uppercase keys break all valid coupons)",
+        "Bot's Optional/FYI rating not accepted at face value",
+        "Findings presented with axis and severity"
+      ]
     }
   ]
 }

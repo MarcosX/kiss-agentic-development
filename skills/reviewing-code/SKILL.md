@@ -23,7 +23,11 @@ When reviewing, dispatch a subagent using `references/code-review.prompt.md`, pr
 
 The subagent reviews across five axes: Correctness, Readability and Simplicity, Architecture, Security, and Performance. It returns findings per severity (Critical, Required, Nit, Optional, FYI).
 
-When presenting findings, always inclue the axis and severity.
+### 3. Challenge Findings
+
+The subagent works from the diff alone and lacks codebase context, so its findings can be mis-scoped — genuine issues downplayed, noise inflated. Before presenting, challenge every finding against the actual code. When challenging findings, see `references/challenge-findings.md`.
+
+When presenting findings, always include the axis and severity.
 
 ### 4. The Approval Standard
 
