@@ -13,7 +13,6 @@ Collection of AI agent skills that enforce skill-first workflows.
 │   │   └── evals/evals.json          # Evaluations for the skill
 ├── migrations/
 │   └── before-1.0.0.md              # Migration steps for users upgrading from pre-1.0
-├── scripts/                          # Shell scripts for eval pipeline
 └── .opencode/
     ├── skills/ → ../skills           # Symlink for native discovery (domain skills only)
     ├── opencode.json                 # Local dev config (loads instructions/using-skills.md)
@@ -31,16 +30,16 @@ When working on skills in this repo, the local config (`.opencode/opencode.json`
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
 2. **Test baseline first**: Run representative prompts WITHOUT the skill — document what the agent gets wrong or misses. This is your "RED" phase.
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
-4. Create `skills/<name>/evals/evals.json` with 3 evals (expectations, prompts)
+4. Create `skills/<name>/evals/evals.json` with 3 evals conforming to skill-creator's evals.json schema (see `references/schemas.md` — `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
 5. **Symlink is automatic** — `.opencode/skills → ../skills` covers all subdirectories
-6. Run `scripts/validate.sh` to confirm frontmatter and evals
+6. Run skill-creator's `scripts/quick_validate.py` to confirm frontmatter
 
 ### Modifying an existing skill
 
 1. **Snapshot baseline**: Before editing, save the current skill version and test it on representative prompts to document current behavior
 2. Edit `skills/<name>/SKILL.md` only
 3. **Test with same prompts**: Verify the skill now produces better output
-4. Run `scripts/validate.sh` to confirm frontmatter is intact
+4. Run skill-creator's `scripts/quick_validate.py` to confirm frontmatter is intact
 
 ### Skill structure conventions
 
@@ -262,29 +261,22 @@ Skill development is an iterative loop: draft → test → review → improve �
 
 **Observe navigation patterns**: Watch how agents use the skill — do they skip references, over-rely on certain sections, ignore content? Iterate on structure based on observation, not assumptions.
 
-## Eval Runner
+## Evaluation
 
-`scripts/eval.sh` evaluates skills by running each eval prompt against an agent CLI (default: `opencode run`) and judging responses against expectations via an LLM judge.
+Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. To evaluate a skill, invoke the `skill-creator` skill in a session and ask it to run the eval workflow for that skill.
 
-```bash
-scripts/eval.sh --skill brainstorming           # single skill
-scripts/eval.sh --skill brainstorming --dry-run  # list evals only
-scripts/eval.sh                                  # all 6 skills
-```
+The workflow:
 
-The agent CLI is configurable with `--agent`, making the runner platform-agnostic:
+1. Spawns with-skill and without-skill subagents for each prompt in `skills/<name>/evals/evals.json`
+2. Grades each run against the eval's expectations via the grader agent (`agents/grader.md`), writing `grading.json` per run
+3. Aggregates results with `scripts/aggregate_benchmark.py` into `benchmark.json` and `benchmark.md`
+4. Opens `eval-viewer/generate_review.py` for review (use `--static` in headless environments)
 
-```bash
-scripts/eval.sh --skill debugging --agent "opencode run --format json"
-```
+**Layout**: `<skill>-workspace/iteration-N/eval-<id>/{with_skill,without_skill}/run-N/` with `outputs/`, `grading.json`, and `timing.json` per run. These directories are gitignored.
 
-**Output**: `.opencode/evals/<skill>/` — response files, per-eval grades, and summary.
+**Schema**: `evals.json` must conform to skill-creator's `references/schemas.md` — top-level `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, and `expectations`. The workflow fails fast on a malformed file, so schema errors surface immediately at run time.
 
-**Judge**: Uses the same agent CLI (configured with `--agent`) to grade each response against expectations. No separate API key required — the judge runs through the user's configured model.
-
-**Errors**: Timeouts, command crashes, and non-zero agent exits are tracked separately in the summary (`errors` field) and displayed as `[ERROR]`, not counted against the pass rate.
-
-**Exit code**: Non-zero when any expectation fails or any eval errors out.
+**Validation**: skill-creator's `scripts/quick_validate.py <skill>` checks SKILL.md frontmatter (`name`, `description`). Run it after every skill change.
 
 ## Versioning
 
@@ -348,7 +340,7 @@ Skills must not contain malware, exploit code, or content that compromises syste
 
 **Deployment:**
 
-- [ ] Run `scripts/validate.sh`
+- [ ] Run skill-creator's `scripts/quick_validate.py`
 - [ ] Commit to git (check for session artifacts — e2e/, tmp/, generated reports)
 - [ ] Bump version tag
 
@@ -356,7 +348,7 @@ Skills must not contain malware, exploit code, or content that compromises syste
 
 - **Editing `.opencode/skills/` instead of `skills/`**: The symlink is a mirror — edit the source at `skills/`
 - **Missing frontmatter**: `name` and `description` are REQUIRED for discovery
-- **Forgetting to run validation**: RUN `scripts/validate.sh` after every skill change. Do not skip.
+- **Forgetting to run validation**: RUN skill-creator's `scripts/quick_validate.py` after every skill change. Do not skip.
 - **No failing test first**: Adding or editing a skill without observing baseline behavior first. The Iron Law: no skill without a failing test first.
 - **Batching untested skills**: Moving to the next skill before the current one is verified. Each skill must be fully tested before starting the next.
 - **Committing session artifacts**: Never commit session-specific output such as test results, plan files, validation dumps, or generated reports. These artifacts bloat the repo and have no value outside their session. Use `e2e/`, `tmp/`, or similar scratch directories — and add them to `.gitignore` or use `git rm --cached` if accidentally committed.

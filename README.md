@@ -44,18 +44,9 @@ Another commong issue is that most skill are written for humans, not agents — 
 
 **Each skill is validated against behavioral test scenarios** (see `skills/<name>/evals/evals.json`) that verify the skill produces the intended agent behavior — not just that keywords are present.
 
-Skills are evaluated using `scripts/eval.sh`, which runs each eval prompt against your agent CLI and grades responses against expectations through an LLM judge. Every skill ships with 3 evaluation scenarios that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal.
+Skills are evaluated through the `skill-creator` workflow — invoke the `skill-creator` skill in a session and ask it to run the eval workflow for a skill. Every skill ships with 3 evaluation scenarios that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal.
 
-```bash
-scripts/eval.sh --skill brainstorming            # single skill (defaults)
-scripts/eval.sh --skill debugging --judge "opencode run"  # independent judge
-scripts/eval.sh --skill practicing-tdd --timeout 600      # longer agent timeout
-scripts/eval.sh --keep-workspace                          # preserve temp dirs
-scripts/eval.sh --baseline .opencode/evals/report.json    # compare with baseline
-scripts/eval.sh                                           # all 6 skills
-```
-
-Output is written to `.opencode/evals/<skill>/` with per-eval response and grade files. Previous reports are archived to `.opencode/evals/history/`. Each eval runs in an isolated temp directory to prevent cross-contamination. The exit code is non-zero when any expectation fails.
+The workflow spawns with-skill and without-skill agent runs for each eval prompt, grades each against the expectations, and aggregates results into a `benchmark.json` with pass-rate, timing, and token deltas. Output lands in `<skill>-workspace/iteration-N/` (gitignored). Skill frontmatter is validated with skill-creator's `scripts/quick_validate.py <skill>` after changes.
 
 ## Skills
 

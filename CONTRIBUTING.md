@@ -7,50 +7,44 @@ Clone the repo and work from it. The repo includes:
 - `.opencode/skills → ../skills` — symlink for native OpenCode skill discovery (domain skills only)
 - `.opencode/opencode.json` — loads `instructions/using-skills.md` into every session via `instructions`
 
-Validation: Run `scripts/validate.sh` to check frontmatter and evals.json structure.
+Skill validation runs through skill-creator's `scripts/quick_validate.py <skill>`, which checks SKILL.md frontmatter (`name`, `description`). Run it after every skill change.
 
 ## Adding a new skill
 
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
 2. **Test baseline first**: Run representative prompts WITHOUT the skill — document what the agent gets wrong or misses. This is your "RED" phase.
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
-4. Create `skills/<name>/evals/evals.json` with 3 evaluations (prompts + expectations)
-5. Run `scripts/validate.sh` to confirm frontmatter and evals
-6. Run `scripts/eval.sh --skill <name>` to run the end-to-end eval — the agent (with the skill loaded) is tested against each eval prompt, and responses are graded against expectations
+4. Create `skills/<name>/evals/evals.json` with 3 evals conforming to skill-creator's schema (`skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
+5. Run skill-creator's `scripts/quick_validate.py <name>` to confirm frontmatter
+6. Invoke the `skill-creator` skill in a session and ask it to run the eval workflow — it spawns with-skill and without-skill runs for each eval prompt, grades them, and aggregates the benchmark
 7. Test the skill with the same prompts — verify the skill now produces better output
-8. Run `scripts/eval.sh --skill <name>` again to confirm final pass rate
+8. Re-run the eval workflow to confirm the final pass rate
 
 ## Modifying an existing skill
 
 1. **Snapshot baseline**: Before editing, save the current skill version and test it on representative prompts to document current behavior
 2. Edit `skills/<name>/SKILL.md` only
 3. **Test with same prompts**: Verify the skill now produces better output
-4. Run `scripts/validate.sh` to confirm frontmatter is intact
-5. Run `scripts/eval.sh --skill <name>` to confirm the change didn't regress expectations
+4. Run skill-creator's `scripts/quick_validate.py <name>` to confirm frontmatter is intact
+5. Re-run the eval workflow to confirm the change didn't regress expectations
 
 ## Testing workflow
 
 Skill development follows the RED-GREEN-REFACTOR cycle. See [AGENTS.md](AGENTS.md) for the full testing methodology including test case creation, pressure scenarios, transcript analysis, and blind comparison.
 
-In the GREEN phase, after writing or editing a skill, run `scripts/eval.sh --skill <name>` to validate the skill produces the expected agent behavior against its eval prompts.
+In the GREEN phase, after writing or editing a skill, run the skill-creator eval workflow to validate the skill produces the expected agent behavior against its eval prompts.
 
 ## Evaluation
 
-### Local eval runner (fast, with-skill only)
+Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. Invoke the `skill-creator` skill in a session and ask it to run the eval workflow for `skills/<name>`.
 
-Use `scripts/eval.sh` for quick iteration — it tests the skill's end-to-end behavior by running each eval prompt against the configured agent CLI and grading responses with an LLM judge.
+The workflow:
 
-```bash
-scripts/eval.sh --skill brainstorming                        # single skill
-scripts/eval.sh --skill debugging --dry-run                   # list evals without running
-scripts/eval.sh --skill reviewing-code --judge "opencode run" # independent judge
-scripts/eval.sh --skill practicing-tdd --timeout 600          # override agent timeout
-scripts/eval.sh --judge-timeout 180                            # override judge timeout
-scripts/eval.sh --baseline .opencode/evals/report.json        # compare with previous run
-scripts/eval.sh --keep-workspace                              # preserve temp dirs for debugging
-scripts/eval.sh                                               # all 6 skills
-```
+1. Spawns with-skill and without-skill subagents for each prompt in `skills/<name>/evals/evals.json`
+2. Grades each run against the eval's expectations via the grader agent (`agents/grader.md`), writing `grading.json` per run
+3. Aggregates results with `scripts/aggregate_benchmark.py` into `benchmark.json` and `benchmark.md`
+4. Opens `eval-viewer/generate_review.py` for review (use `--static` in headless environments)
 
-Output is written to `.opencode/evals/<skill>/` with per-eval responses, grades, and a summary. Previous reports are automatically archived to `.opencode/evals/history/`. Each eval runs in an isolated temp directory with relevant fixtures copied in, preventing cross-contamination. The exit code is non-zero when any expectation fails, making it suitable for CI gating. Agent errors (timeouts, crashes, non-zero exits) are tracked separately in the summary's `errors` field and do not count against the pass rate.
+**Layout**: `<skill>-workspace/iteration-N/eval-<id>/{with_skill,without_skill}/run-N/` with `outputs/`, `grading.json`, and `timing.json` per run. These directories are gitignored.
 
-See [AGENTS.md](AGENTS.md#eval-runner) for the full eval runner documentation.
+See [AGENTS.md](AGENTS.md#evaluation) for the full evaluation documentation.
