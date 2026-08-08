@@ -1,7 +1,10 @@
 {
+  "skill_name": "reviewing-code",
   "evals": [
     {
+      "id": 1,
       "prompt": "Review this PR diff. Read the diff carefully before responding:\n\n```diff\n+function processData(data) {\n+  const result = [];\n+  eval(data.query);  // Hmm, need to process the query somehow\n+  return result;\n+}\n```\n\nThe PR description says: 'Add data processing utility. Uses eval() to execute dynamic queries.'",
+      "expected_output": "Agent identifies eval() as a critical security vulnerability, categorizes findings by severity (Critical, Required, Nit), blocks or strongly opposes the merge due to the Critical finding, references specific diff lines showing the diff was read, and proposes a constructive alternative.",
       "expectations": [
         "Critical finding identified on eval() — security vulnerability",
         "Findings categorized by severity (Critical, Required, Nit)",
@@ -11,7 +14,9 @@
       ]
     },
     {
+      "id": 2,
       "prompt": "I got this review comment on my PR that adds a new API endpoint:\n\nReviewer: 'You should use a connection pool instead of creating new connections per request. Also, add input validation middleware.'\n\nHow should I handle this feedback?",
+      "expected_output": "Agent handles the feedback through the skill's phases: reads the full feedback before reacting (READ), restates or asks clarifying questions (UNDERSTAND), checks the suggestions against reality (VERIFY/EVALUATE), implements one item at a time with testing, and applies YAGNI to unnecessary productionizing.",
       "expectations": [
         "READ phase: reads full feedback before reacting",
         "UNDERSTAND phase: restates or asks clarifying questions",
@@ -21,7 +26,9 @@
       ]
     },
     {
+      "id": 3,
       "prompt": "Review this PR. It changes 850 lines across 12 files:\n- Adds a new payment feature with Stripe integration (600 lines)\n- Refactors the existing auth module from callbacks to async/await (200 lines)\n- Renames User to AppUser in the user module (50 lines)\n\nThe PR description says: 'Add payments, refactor auth, rename User type.'",
+      "expected_output": "Agent flags the PR size as too large (850+ lines, should be ~100-300), identifies the mixed concerns (payments + refactoring + rename), recommends splitting into separate PRs, and evaluates each concern independently.",
       "expectations": [
         "PR size flagged as too large (850+ lines, should be ~100-300)",
         "Mixed concerns identified (payments + refactoring + rename)",
@@ -30,7 +37,15 @@
       ]
     },
     {
-      "prompt": "I got this automated review of my local changes from a bot that only sees the diff. The change removes the try/except in parser.py so malformed payloads fail loudly instead of returning {}. The codebase is in skills/reviewing-code/evals/fixtures/order-service-false-positive/. Before I respond to the author, double-check the bot's findings against the actual code.\n\nDiff:\n```diff\n import json\n \n \n def parse_payload(raw):\n-    try:\n-        data = json.loads(raw)\n-    except (ValueError, TypeError):\n-        return {}\n-    return data\n+    return json.loads(raw)\n```\n\nThe bot said:\n\nCritical — Correctness — parser.py: Removing the try/except means malformed queue payloads now raise and crash the whole consumer batch. This is a critical runtime failure that blocks merge.\n\nOptional — Readability — parser.py: Consider keeping the {} fallback for consistency.\n\nPR intent: \"Stop silently swallowing malformed payloads. Payloads are validated at the producer before enqueueing, so parsing should fail loudly if corrupted.\"\n\nReview the change and tell me what's actually worth acting on.",
+      "id": 4,
+      "prompt": "I got this automated review of my local changes from a bot that only sees the diff. The change removes the try/except in parser.py so malformed payloads fail loudly instead of returning {}. The codebase is in evals/fixtures/order-service-false-positive/. Before I respond to the author, double-check the bot's findings against the actual code.\n\nDiff:\n```diff\n import json\n \n \n def parse_payload(raw):\n-    try:\n-        data = json.loads(raw)\n-    except (ValueError, TypeError):\n-        return {}\n-    return data\n+    return json.loads(raw)\n```\n\nThe bot said:\n\nCritical — Correctness — parser.py: Removing the try/except means malformed queue payloads now raise and crash the whole consumer batch. This is a critical runtime failure that blocks merge.\n\nOptional — Readability — parser.py: Consider keeping the {} fallback for consistency.\n\nPR intent: \"Stop silently swallowing malformed payloads. Payloads are validated at the producer before enqueueing, so parsing should fail loudly if corrupted.\"\n\nReview the change and tell me what's actually worth acting on.",
+      "files": [
+        "evals/fixtures/order-service-false-positive/parser.py",
+        "evals/fixtures/order-service-false-positive/producer.py",
+        "evals/fixtures/order-service-false-positive/queue.py",
+        "evals/fixtures/order-service-false-positive/tests/test_payload.py"
+      ],
+      "expected_output": "Agent verifies the bot's findings against the actual code (reads producer.py and queue.py, runs the tests), challenges and dismisses or downgrades the false-positive Critical with codebase evidence (producer validates before enqueueing), does not repeat the bot's Critical verbatim without verification, and presents findings with axis and severity.",
       "expectations": [
         "Bot findings verified against the actual code (producer.py, queue.py read, tests run)",
         "False-positive Critical challenged and dismissed/downgraded with codebase evidence (producer validates before enqueueing)",
@@ -39,7 +54,15 @@
       ]
     },
     {
-      "prompt": "I got this automated review of my local changes from a bot that only sees the diff. The change normalizes coupon codes in orders.py. The codebase is in skills/reviewing-code/evals/fixtures/order-service-promote/. Before I respond to the author, double-check the bot's findings against the actual code.\n\nDiff:\n```diff\n from coupons import COUPONS\n \n \n def apply_coupon(total, code):\n+    code = code.strip().lower()\n     rate = COUPONS.get(code)\n     if rate is None:\n         return total\n     return total * (1 - rate)\n```\n\nThe bot said:\n\nOptional — Correctness — orders.py: the new .strip().lower() changes lookup semantics; make sure coupon keys are stored lowercase or this could break valid codes.\n\nFYI — Readability — orders.py: normalization looks fine otherwise.\n\nPR intent: \"Normalize coupon codes so stray whitespace doesn't break lookups.\" We've got a release going out tonight.\n\nReview the change and tell me what's actually worth acting on.",
+      "id": 5,
+      "prompt": "I got this automated review of my local changes from a bot that only sees the diff. The change normalizes coupon codes in orders.py. The codebase is in evals/fixtures/order-service-promote/. Before I respond to the author, double-check the bot's findings against the actual code.\n\nDiff:\n```diff\n from coupons import COUPONS\n \n \n def apply_coupon(total, code):\n+    code = code.strip().lower()\n     rate = COUPONS.get(code)\n     if rate is None:\n         return total\n     return total * (1 - rate)\n```\n\nThe bot said:\n\nOptional — Correctness — orders.py: the new .strip().lower() changes lookup semantics; make sure coupon keys are stored lowercase or this could break valid codes.\n\nFYI — Readability — orders.py: normalization looks fine otherwise.\n\nPR intent: \"Normalize coupon codes so stray whitespace doesn't break lookups.\" We've got a release going out tonight.\n\nReview the change and tell me what's actually worth acting on.",
+      "files": [
+        "evals/fixtures/order-service-promote/app.py",
+        "evals/fixtures/order-service-promote/coupons.py",
+        "evals/fixtures/order-service-promote/orders.py",
+        "evals/fixtures/order-service-promote/tests/test_orders.py"
+      ],
+      "expected_output": "Agent verifies the coupon bug against the codebase (reads coupons.py keys, runs the tests), promotes the downplayed bug to Critical or Required (uppercase keys break all valid coupons), does not accept the bot's Optional/FYI rating at face value, and presents findings with axis and severity.",
       "expectations": [
         "Coupon bug verified against the codebase (coupons.py keys read, tests run)",
         "Downplayed bug promoted to Critical or Required (uppercase keys break all valid coupons)",

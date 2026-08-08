@@ -1,8 +1,8 @@
 Production intermittently fails under load with "connection pool exhausted". Users see requests hang, then 500s.
 
 Code:
-- `skills/debugging/evals/fixtures/pool/db.py`
-- `skills/debugging/evals/fixtures/pool/worker.py`
+- `evals/fixtures/pool/db.py`
+- `evals/fixtures/pool/worker.py`
 
 Error log (last 5 entries):
 

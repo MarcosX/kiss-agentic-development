@@ -1,7 +1,10 @@
 {
+  "skill_name": "brainstorming",
   "evals": [
     {
+      "id": 1,
       "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. What should we build? Assume you've asked all necessary clarifying questions and I've answered them.",
+      "expected_output": "Agent runs a design brainstorm: compares multiple solution metaphors with explicit trade-offs, justifies a selection with reasoning, and outputs a structured task list.",
       "expectations": [
         "Multiple solution metaphors compared before selecting one",
         "Trade-offs between metaphors explicitly discussed",
@@ -10,7 +13,9 @@
       ]
     },
     {
+      "id": 2,
       "prompt": "Let me add dark mode toggle. Just a CSS change. What do you think?",
+      "expected_output": "Agent frames the problem before jumping to a solution, challenges or probes the user's premature 'just a CSS change' framing, surfaces related concerns (e.g. persistence, contrast), and captures open questions or assumptions to validate.",
       "expectations": [
         "Problem framed before jumping to solution",
         "User's premature solution challenged or probed",
@@ -20,7 +25,9 @@
       ]
     },
     {
+      "id": 3,
       "prompt": "I have an idea: we should add a notification system. It'll use WebSockets and push notifications. Let's plan it out.",
+      "expected_output": "Agent examines the idea critically rather than accepting it at face value, identifies red flags for constraints (e.g. offline, battery, permissions), and discusses alternative delivery mechanisms.",
       "expectations": [
         "Idea examined critically — not accepted at face value",
         "Red flags for constraints identified (e.g. offline, battery, permissions)",

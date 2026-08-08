@@ -1,7 +1,11 @@
 {
+  "skill_name": "executing-plans",
   "evals": [
     {
-      "prompt": "I have a plan file at skills/executing-plans/evals/fixtures/eval-1-plan.md with 2 independent tasks. Execute the plan.",
+      "id": 1,
+      "prompt": "I have a plan file at evals/fixtures/eval-1-plan.md with 2 independent tasks. Execute the plan.",
+      "files": ["evals/fixtures/eval-1-plan.md"],
+      "expected_output": "Agent identifies the two tasks as independent (no dependency chain blocking either), dispatches them in a parallel batch, and inspects each subagent's completion report.",
       "expectations": [
         "Tasks identified as independent (no dependency chain blocking either)",
         "Tasks dispatched in parallel batch",
@@ -9,14 +13,19 @@
       ]
     },
     {
+      "id": 2,
       "prompt": "I need you to add search functionality. No plan file exists yet.",
+      "expected_output": "Agent does not attempt execution without a plan: it falls back to brainstorming to produce a plan first.",
       "expectations": [
         "Fallback to brainstorming triggered when no plan exists",
         "No execution attempted without a plan"
       ]
     },
     {
-      "prompt": "I have a plan at skills/executing-plans/evals/fixtures/eval-3-plan.md. Execute the plan.",
+      "id": 3,
+      "prompt": "I have a plan at evals/fixtures/eval-3-plan.md. Execute the plan.",
+      "files": ["evals/fixtures/eval-3-plan.md"],
+      "expected_output": "Agent correctly identifies the BLOCKED status and does not ignore it: completed tasks (Task 1 and Task 2) are reviewed for spec compliance, the unstarted task (Task 4) is not dispatched until the blocker resolves, and the user is notified about the blocker.",
       "expectations": [
         "BLOCKED status correctly identified and not ignored",
         "Completed tasks (Task 1 and Task 2) reviewed for spec compliance",

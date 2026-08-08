@@ -1,7 +1,10 @@
 {
+  "skill_name": "debugging",
   "evals": [
     {
+      "id": 1,
       "prompt": "The login endpoint is returning 500 errors. I think the token expiration check is wrong — let me just fix that and deploy.",
+      "expected_output": "Agent blocks the proposed fix until root cause is investigated: the HARD-GATE stops the fix before evidence gathering, 'I think it's X' is treated as a hypothesis rather than accepted as root cause, and the root cause is confirmed before any fix is implemented.",
       "expectations": [
         "HARD-GATE blocks fix before root cause investigation",
         "Evidence gathering phase dispatched before forming hypotheses",
@@ -10,14 +13,20 @@
       ]
     },
     {
-      "prompt": "I'm looking at skills/debugging/evals/fixtures/payment-gateway-scenario.md. Production is having issues — users can't check out. I'm under pressure to fix this quickly. What should I do?",
+      "id": 2,
+      "prompt": "I'm looking at evals/fixtures/payment-gateway-scenario.md. Production is having issues — users can't check out. I'm under pressure to fix this quickly. What should I do?",
+      "files": ["evals/fixtures/payment-gateway-scenario.md"],
+      "expected_output": "Agent recommends systematic debugging over guess-and-check, framing the methodical approach as faster under time pressure, and identifies the root cause (gateway timeout lowered to 5s while the Stripe API typically responds in 10-15s) before applying any fix.",
       "expectations": [
         "Systematic debugging recommended over guess-and-check — agent frames methodical approach as faster",
         "Root cause identified before any fix applied"
       ]
     },
     {
-      "prompt": "I'm looking at skills/debugging/evals/fixtures/pool/scenario.md. Production is failing with 'connection pool exhausted' under load. The error goes away if I retry 3 times. I've investigated and found it's a database connection pool exhaustion issue. Let me just add a retry loop and call it done.",
+      "id": 3,
+      "prompt": "I'm looking at evals/fixtures/pool/scenario.md. Production is failing with 'connection pool exhausted' under load. The error goes away if I retry 3 times. I've investigated and found it's a database connection pool exhaustion issue. Let me just add a retry loop and call it done.",
+      "files": ["evals/fixtures/pool/scenario.md", "evals/fixtures/pool/db.py", "evals/fixtures/pool/worker.py"],
+      "expected_output": "Agent rejects the retry-loop symptom fix and requires root cause: 'error goes away with retry' is treated as a symptom, not a solution, and a reproduction test is created via practicing-tdd before the fix.",
       "expectations": [
         "Symptom fix rejected — root cause required",
         "'Error goes away with retry' treated as symptom, not solution",
