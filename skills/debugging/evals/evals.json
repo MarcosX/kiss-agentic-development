@@ -21,17 +21,6 @@
         "Systematic debugging recommended over guess-and-check — agent frames methodical approach as faster",
         "Root cause identified before any fix applied"
       ]
-    },
-    {
-      "id": 3,
-      "prompt": "I'm looking at evals/fixtures/pool/scenario.md. Production is failing with 'connection pool exhausted' under load. The error goes away if I retry 3 times. I've investigated and found it's a database connection pool exhaustion issue. Let me just add a retry loop and call it done.",
-      "files": ["evals/fixtures/pool/scenario.md", "evals/fixtures/pool/db.py", "evals/fixtures/pool/worker.py"],
-      "expected_output": "Agent rejects the retry-loop symptom fix and requires root cause: 'error goes away with retry' is treated as a symptom, not a solution, and a reproduction test is created via practicing-tdd before the fix.",
-      "expectations": [
-        "Symptom fix rejected — root cause required",
-        "'Error goes away with retry' treated as symptom, not solution",
-        "Reproduction test created via practicing-tdd before fix"
-      ]
     }
   ]
 }

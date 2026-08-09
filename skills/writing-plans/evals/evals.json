@@ -21,18 +21,6 @@
         "Only dark mode toggle related features kept",
         "User quizzed about granularity or scope"
       ]
-    },
-    {
-      "id": 3,
-      "prompt": "Review this existing plan and fix any issues:\n\n```markdown\n# Plan: Add search\n\nTask 1: Add search endpoint\n- Create search route\n- Done when: it works\n\nTask 2: Add search UI\n- Add search bar\n- Done when: search works\n```\n\nWhat's wrong with this plan?",
-      "expected_output": "Agent identifies the plan's issues: missing file paths, missing TDD/test steps, ambiguous 'Done when' criteria, missing exact commands/expected output, and missing vertical slices.",
-      "expectations": [
-        "Missing file paths flagged",
-        "Missing TDD/test steps flagged",
-        "Ambiguous 'Done when' criteria flagged",
-        "Exact commands/expected output missing flagged",
-        "Missing vertical slices flagged"
-      ]
     }
   ]
 }

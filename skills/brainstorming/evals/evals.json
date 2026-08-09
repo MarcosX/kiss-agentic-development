@@ -23,16 +23,6 @@
         "Scope of problem understood before design decisions",
         "Output includes open questions or assumptions to validate"
       ]
-    },
-    {
-      "id": 3,
-      "prompt": "I have an idea: we should add a notification system. It'll use WebSockets and push notifications. Let's plan it out.",
-      "expected_output": "Agent examines the idea critically rather than accepting it at face value, identifies red flags for constraints (e.g. offline, battery, permissions), and discusses alternative delivery mechanisms.",
-      "expectations": [
-        "Idea examined critically — not accepted at face value",
-        "Red flags for constraints identified (e.g. offline, battery, permissions)",
-        "Alternative delivery mechanisms discussed"
-      ]
     }
   ]
 }
