@@ -41,3 +41,13 @@ Create TODOs to track each step. Complete them in order.
    3. **Create implementation plan**: after approval, invoke `writing-plans`.
 
 **Terminal state**: `writing-plans` is the ONLY skill to invoke after brainstorming. Do NOT invoke any implementation skill (e.g. `executing-plans`) from within this skill.
+
+## Exit Gate
+
+Before presenting the design or moving to writing-plans, check each box:
+
+- [ ] Context explored — subagent report read, domain language cross-referenced
+- [ ] Understanding stress-tested — clarifying questions asked, one at a time
+- [ ] 2-3 approaches presented with trade-offs and a recommendation
+- [ ] User approved the design — no implementation before approval
+- [ ] PRD written and approved; writing-plans is the only next skill

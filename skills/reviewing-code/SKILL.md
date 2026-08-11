@@ -48,6 +48,16 @@ Do not accept "I will clean it up later" — deferred cleanup rarely happens.
 
 ~100 lines changed is good. ~300 lines is acceptable for a single logical change. ~1000+ lines is too large — split it. Separate refactoring from feature work into different changes.
 
+## Exit Gate
+
+Before you call a review complete, check each box:
+
+- [ ] Change intent understood before reading code
+- [ ] Findings presented with axis and severity
+- [ ] Every finding challenged against the actual code
+- [ ] Approval standard applied — health improvement, not perfection
+- [ ] No red flag present (LGTM without review, tests-only check, unread diff)
+
 ## Receiving Review Feedback
 
 ### The Response Pattern
