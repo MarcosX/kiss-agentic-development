@@ -1,48 +1,42 @@
 # Using Skills
 
-<IMPORTANT>
-You ABSOLUTELY MUST invoke skills, even if there's 99% chance that it is not necessary. Non-negotiable.
-</IMPORTANT>
+<HARD-GATE>
+Before responding to any user message, check the available skills. If any skill applies, you MUST load it and follow it. Responding without loading an applicable skill — or loading it and then not following it — is a violation. Stop and do it properly.
+</HARD-GATE>
 
-## Rule
+## Every response
 
-**Look for skills and invoke them BEFORE any response or action.**
+Begin every response with exactly one line, then continue:
 
-1. When planning or reasoning, check that you have brainstormed, if not invoke `brainstorming`
-2. When there's a 1% chance a skill might apply, invoke it
-3. Announce what skill is being loaded and why: "Using [skill] to [goal]"
-4. Follow skill instructions and create TODOs to track tasks
-5. Only AFTER skills are invoked do you respond or ask questions
+- "Using [skill] to [goal]." — when a skill applies (load and follow it)
+- "No applicable skill." — only when none does
 
-**Skill priority:** Process reasoning skills first (`brainstorming`, `debugging`), implementation skill will follow.
+A response without this line is non-compliant; rewrite it before sending.
 
-**Skill types:** Rigid (TDD, debugging) - follow exactly. Flexible (verification, using tools) - adapt to the context.
+## When to load
 
-**WHAT vs HOW**: User instructions inform what to do, don't skip workflows.
+Load a skill whenever there is any chance it applies, not only when you're sure. The signal scan is the floor, not the ceiling.
 
-## Signal Scan
+- bug, error, crash, fail, unexpected → `debugging`
+- idea, approach, explore, design → `brainstorming`
+- plan, implement, build, add, feature → `writing-plans`
 
-Before any reasoning or action, scan the user's message for signal words. If any match, check the corresponding skill before proceeding:
+Process skills first (`brainstorming`, `debugging`), implementation skills after.
 
-- bug, error, crash, fail, failure, unexpected → check `debugging`
-- idea, approach, explore, design → check `brainstorming`
-- plan, implement, build, add, feature → check `writing-plans`
+## After loading
 
-Do not begin analysis or investigation until the matching skill is loaded.
+1. Restate the skill's key rules in your own words in that response. If you can't, re-read it.
+2. Create TODOs for each step the skill prescribes.
+3. Follow the skill's workflow. User instructions define WHAT; the skill defines HOW.
+4. Before sending, check your work against the skill's gates and checklists. If a step is missing, do it — don't ship around it.
 
-## Red Flags
+## Rationalizing
 
-Reasoning like this means you should STOP rationalizing:
+These thoughts are how agents skip skills. If you catch yourself thinking one, stop and load the skill:
 
-- `"This is just a simple question"`: Questions are tasks, check skills
-- `"I'll quickly check files"`: Conversation context is important, check for skills
-- `"I need more context first"`: Check skills before asking questions
-- `"I'll just do this thing first"`: Simple things become complex, skills will inform HOW, check them first
-- `"Let me explore the codebase first"`: Skill will inform HOW, check them first
-- `"Let me gather information first"`: Skill will inform HOW to gather information, check them first
-- `"I know what that means"`: Understanding concept does not mean workflows can be skipped
-- `"This doesn't need a skill"`: ALWAYS check if a skill exists, then use it
-- `"The skill is overkill"`: Simple tasks might evolve, ALWAYS check skills and use them
-- `"Let me investigate this"`: Starting investigation, research, or looking at code before loading the matching skill. Skills define HOW to investigate.
-- `"Let me understand the problem first"`: Understanding is investigation. Load the matching skill first — it prescribes the investigation method.
-- `"I already know what skill I need"`: Knowing which skill applies is not the same as loading it. Always invoke, even when confident.
+- "This is just a simple question" / "I'll quickly check files"
+- "Just a high-level answer is fine" / "Keep it short" / "Quick question"
+- "Let me explore the codebase first" / "Let me gather information first"
+- "I know what that means" / "This doesn't need a skill" / "The skill is overkill"
+- "I'll just do this thing first" / "Let me investigate this" / "Let me understand the problem first"
+- "I already know what skill I need"

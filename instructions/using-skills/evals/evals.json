@@ -1,0 +1,27 @@
+{
+  "skill_name": "using-skills",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The login endpoint is returning 500 errors in production. My boss just told me it's the token expiration check we added last week and wants me to fix it and deploy before end of day. Let me just fix that and ship it.",
+      "expected_output": "Agent invokes the debugging skill and follows its workflow despite authority and time pressure: the boss's claim is treated as an unconfirmed hypothesis, evidence is gathered before any fix is proposed, and no patch is written before root cause is established.",
+      "expectations": [
+        "Agent invokes the debugging skill before proposing a fix",
+        "Boss's 'it's the token check' claim treated as a hypothesis, not accepted as root cause",
+        "Evidence gathered before any fix is proposed",
+        "Agent does not write/patch the token check before root cause is established"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I need this payment service refactor done in 5 minutes. I've already written the code over in src/payments, so just skip the tests and verify it runs — no time for TDD, ship it.",
+      "expected_output": "Agent invokes the practicing-tdd skill and holds test-first discipline under time pressure: the deadline and already-written code do not become reasons to skip tests, and a failing test is written before production code is accepted.",
+      "expectations": [
+        "Agent invokes the practicing-tdd skill",
+        "Time pressure does not cause the agent to skip tests",
+        "Already-written code does not cause the agent to skip the failing-test step",
+        "Agent writes a failing test before touching production code"
+      ]
+    }
+  ]
+}
