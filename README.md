@@ -44,9 +44,9 @@ Another commong issue is that most skill are written for humans, not agents — 
 
 **Each skill is validated against behavioral test scenarios** (see `skills/<name>/evals/evals.json`) that verify the skill produces the intended agent behavior — not just that keywords are present.
 
-Skills are evaluated through the `skill-creator` workflow — invoke the `skill-creator` skill in a session and ask it to run the eval workflow for a skill. Every skill ships with 3 evaluation scenarios that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal.
+Skills are evaluated through the `skill-creator` workflow — invoke the `skill-creator` skill in a session and ask it to run the eval workflow for a skill. Every skill ships with 2-3 evaluation scenarios that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal.
 
-The workflow spawns with-skill and without-skill agent runs for each eval prompt, grades each against the expectations, and aggregates results into a `benchmark.json` with pass-rate, timing, and token deltas. Output lands in `<skill>-workspace/iteration-N/` (gitignored). Skill frontmatter is validated with skill-creator's `scripts/quick_validate.py <skill>` after changes.
+The workflow spawns with-skill agent runs for each eval prompt (without-skill baselines are opt-in for comparison), grades each against the expectations, and aggregates results into a `benchmark.json` with pass-rate, timing, and token deltas. Output lands in `<skill>-workspace/iteration-N/` (gitignored). Skill frontmatter is validated with skill-creator's `scripts/quick_validate.py <skill>` after changes.
 
 ## Skills
 
@@ -97,10 +97,10 @@ The agent will detect your tool, install domain skills, and configure global [us
 
 ```bash
 git clone https://github.com/MarcosX/kiss-agentic-development.git /tmp/kiss-agentic-dev
-cp -r /tmp/kiss-agentic-dev/skills/* ~/.agents/skills/
+cp -r /tmp/kiss-agentic-dev/skills/* <TARGET_PATH>/
 ```
 
-This installs 6 domain skills to `~/.agents/skills/`. You then need to manually add the [using-skills](./instructions/using-skills.md) global instruction to your tool's config (see per-tool sections below).
+Replace `<TARGET_PATH>` with your tool's global skills path (see the per-tool table in the install prompt). This installs 6 domain skills. You then need to manually add the [using-skills](./instructions/using-skills.md) global instruction to your tool's config (see per-tool sections below).
 
 ### OpenCode
 
@@ -154,9 +154,11 @@ After installation, restart your agent session and run:
 You can also confirm the domain skills are installed:
 
 ```bash
-ls ~/.agents/skills/
+ls <TARGET_PATH>/
 # Expected: brainstorming  debugging  executing-plans  practicing-tdd  reviewing-code  writing-plans
 ```
+
+Where `<TARGET_PATH>` is your tool's global skills path from the manual install section.
 
 ## Contributing
 

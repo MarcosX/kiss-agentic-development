@@ -6,7 +6,8 @@ Collection of AI agent skills that enforce skill-first workflows.
 
 ```
 ├── instructions/
-│   └── using-skills.md              # Global instruction (always loaded, not a skill)
+│   ├── using-skills.md              # Global instruction (always loaded, not a skill)
+│   └── using-skills/evals/          # Evals for the using-skills instruction
 ├── skills/                           # All skill directories (source of truth)
 │   ├── [skill name]/
 │   │   ├── SKILL.md
@@ -15,6 +16,7 @@ Collection of AI agent skills that enforce skill-first workflows.
 │   └── before-1.0.0.md              # Migration steps for users upgrading from pre-1.0
 └── .opencode/
     ├── skills/ → ../skills           # Symlink for native discovery (domain skills only)
+    ├── commands/eval-skills.md       # Command that runs the eval workflow
     ├── opencode.json                 # Local dev config (loads instructions/using-skills.md)
     └── plans/                        # Plans, specs, and short-term artifacts (gitignored)
 ```
@@ -23,6 +25,8 @@ Collection of AI agent skills that enforce skill-first workflows.
 
 When working on skills in this repo, the local config (`.opencode/opencode.json`) loads `instructions/using-skills.md` into every opencode session, while the symlink provides native discovery for all domain skills via the `skill` tool.
 
+The `skill-creator` skill drives skill validation and evals. It is dev-only tooling — it lives in `.agents/skills/skill-creator/` (gitignored, never shipped) and must be installed separately on a fresh clone. The `eval-skills` command reports when it is missing.
+
 ## Working with Skills
 
 ### Adding a new skill
@@ -30,7 +34,7 @@ When working on skills in this repo, the local config (`.opencode/opencode.json`
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
 2. **Test baseline first**: Run representative prompts WITHOUT the skill — document what the agent gets wrong or misses. This is your "RED" phase.
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
-4. Create `skills/<name>/evals/evals.json` with 3 evals conforming to skill-creator's evals.json schema (see `references/schemas.md` — `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
+4. Create `skills/<name>/evals/evals.json` with 2-3 evals conforming to skill-creator's evals.json schema (see skill-creator's `references/schemas.md` — `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
 5. **Symlink is automatic** — `.opencode/skills → ../skills` covers all subdirectories
 6. Run skill-creator's `scripts/quick_validate.py` to confirm frontmatter
 
@@ -263,16 +267,16 @@ Skill development is an iterative loop: draft → test → review → improve �
 
 ## Evaluation
 
-Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. To evaluate a skill, invoke the `skill-creator` skill in a session and ask it to run the eval workflow for that skill.
+Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. To evaluate a skill, run the `eval-skills` command (`.opencode/commands/eval-skills.md`) or invoke the `skill-creator` skill in a session and ask it to run the eval workflow for that skill.
 
 The workflow:
 
-1. Spawns with-skill and without-skill subagents for each prompt in `skills/<name>/evals/evals.json`
-2. Grades each run against the eval's expectations via the grader agent (`agents/grader.md`), writing `grading.json` per run
-3. Aggregates results with `scripts/aggregate_benchmark.py` into `benchmark.json` and `benchmark.md`
-4. Opens `eval-viewer/generate_review.py` for review (use `--static` in headless environments)
+1. Spawns a with-skill subagent per prompt in `skills/<name>/evals/evals.json`. With-skill only is the default; without-skill baselines are opt-in for comparison
+2. Grades each run against the eval's expectations via skill-creator's grader agent (`agents/grader.md`), writing `grading.json` per run
+3. Aggregates results with skill-creator's `scripts/aggregate_benchmark.py` into `benchmark.json` and `benchmark.md`
+4. Opens skill-creator's `eval-viewer/generate_review.py` for review (use `--static` in headless environments)
 
-**Layout**: `<skill>-workspace/iteration-N/eval-<id>/{with_skill,without_skill}/run-N/` with `outputs/`, `grading.json`, and `timing.json` per run. These directories are gitignored.
+**Layout**: `<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,without_skill}/run-N/` with `outputs/`, `grading.json`, and `timing.json` per run (`without_skill` present only in comparison mode). These directories are gitignored.
 
 **Schema**: `evals.json` must conform to skill-creator's `references/schemas.md` — top-level `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, and `expectations`. The workflow fails fast on a malformed file, so schema errors surface immediately at run time.
 
@@ -302,7 +306,7 @@ This allows consumers to pin to `latest`, `v1`, or `v1.2` instead of a full semv
 Before pushing to main or bumping any version tag, you MUST ask the user for explicit confirmation. Do NOT assume approval based on prior conversation context. Wait for a clear "yes" or "push" before taking action.
 </HARD-GATE>
 
-Only bump the version tag when the change affects shipped artifacts (skills, scripts, evals). Documentation-only changes (README, CONTRIBUTING, AGENTS.md edits, removing dead code) should be committed and pushed to main without a version bump.
+Only bump the version tag when the change affects shipped artifacts (skills, scripts, evals). Dev-only tooling like skill-creator (gitignored, installed separately) is not a shipped artifact and never triggers a bump. Documentation-only changes (README, CONTRIBUTING, AGENTS.md edits, removing dead code) should be committed and pushed to main without a version bump.
 
 ## Commit convention
 

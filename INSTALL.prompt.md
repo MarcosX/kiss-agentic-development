@@ -136,9 +136,11 @@ Then run this self-check prompt:
 You can also confirm the domain skills are installed:
 
 ```bash
-ls ~/.agents/skills/
+ls <TARGET_PATH>/
 # Expected: brainstorming  debugging  executing-plans  practicing-tdd  reviewing-code  writing-plans
 ```
+
+Replace `<TARGET_PATH>` with the path you copied skills to in step 2.
 
 ---
 
