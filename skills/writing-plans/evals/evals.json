@@ -8,7 +8,9 @@
       "expectations": [
         "Plan saved to a prefixed file (<prefix>-plan.md)",
         "Tasks are self-contained with exact file paths",
-        "All acceptance criteria covered by tasks"
+        "All acceptance criteria covered by tasks",
+        "Runtime-behavior tasks include a Proof step with an expected outcome",
+        "Plan ends with a Validation task mapping each AC to expected evidence"
       ]
     },
     {

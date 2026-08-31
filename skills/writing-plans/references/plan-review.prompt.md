@@ -15,6 +15,10 @@ Review the plan and report issues under these categories:
 
 **HITL without human instructions**: HITL tasks that do not explain what the human needs to do, where, and how to confirm.
 
+**Missing Proof**: runtime-behavior tasks (server, endpoint, UI, job, migration) without a Proof step, or Proof steps that capture artifacts without stating an expected outcome. Pure static changes (docs, config, dependency bumps) are exempt.
+
+**Missing Validation**: plans that do not end with a Validation task running the integrated system and mapping each AC to its expected evidence, unless the plan has no runtime behavior.
+
 Report each issue with:
 
 - Category

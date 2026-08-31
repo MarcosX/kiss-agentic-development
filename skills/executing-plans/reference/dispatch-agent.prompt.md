@@ -35,9 +35,10 @@ Once you're clear on requirements:
 1. Implement exactly what the task specifies
 2. Follow the task steps as specified. Coding tasks include TDD lifecycle; Non-coding tasks use simple steps.
 3. Verify implementation works
-4. Commit your work
-5. Self-review (see below)
-6. Report back
+4. **Capture proof** — If the task includes a Proof step, run it: start the slice in its isolated environment, run the reproduction command, and capture the specified artifacts (logs, responses, query dumps, screenshots) to the session scratch directory. Record the reproduction command and the expected outcome.
+5. Commit your work
+6. Self-review (see below)
+7. Report back
 
 **While you work:** If you encounter something unexpected or unclear, **ask questions**.
 It's always OK to pause and clarify. Don't guess or make assumptions.
@@ -107,6 +108,7 @@ When done, report:
 - **Status:** DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
 - What you implemented (or what you attempted, if blocked)
 - What you tested and test results
+- **Proof manifest**: artifact paths (in session scratch), the exact reproduction command, and the expected outcome each artifact demonstrates — or "no Proof step in task" if none
 - Files changed
 - Self-review findings (if any)
 - Any issues or concerns

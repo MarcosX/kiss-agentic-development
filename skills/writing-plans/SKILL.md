@@ -31,6 +31,8 @@ The template below guarantees every task is agent-executable. Merge local ticket
 
 **Ensure all ACs are covered**: Map every AC to tasks as they are created. If ACs are left with no task assigned, review the plan to identify gaps/duplication.
 
+**Proof & Validation**: Tests and code review prove code matches spec — they don't prove it runs. Every runtime-behavior task gets a Proof step capturing observable evidence, and every plan ends with a Validation task running the integrated system. This closes the gap where agents claim "done, matches spec, passes review" yet the feature fails once running.
+
 **Plan handover**: Once the plan is in place, transition to implementation. **REQUIRED BACKGROUND:** You MUST understand executing-plans.
 
 # Plan document
@@ -87,11 +89,25 @@ git add path/to/files path/to/test/files
 git commit -m 'feat: add feature'
 ```
 
+6. Proof (required for runtime-behavior tasks: server, endpoint, UI, job, migration)
+
+Prove the feature runs in a realistic isolated environment, not just that tests pass. State the **expected outcome** so evaluation is objective — without it the artifact is self-serving. Declare which dependencies are real vs. stubbed; if a dependency is external/blocked, capture behavior up to that boundary and log the stub. Expected-outcome kinds:
+- Execution trace: process stays alive, health check 200
+- Output capture: API/CLI/page output matches expected shape
+- State inspection: DB row, cache, or queue entry has expected value
+- Failure evidence: error logged with context, graceful degradation
+
+```
+Run the isolated slice, capture artifacts (log, response, query result) to
+SESSION_SCRATCH, record the reproduction command and the expected outcome.
+```
+
 **Done when**:
 
 - All tests pass
 - Lint shows no errors or warning
 - Application builds locally
+- Proof artifacts captured matching the expected outcome
 
 ---
 
@@ -105,7 +121,9 @@ git commit -m 'feat: add feature'
 
 [how to confirm — read output, parse file, dry run, etc.]
 
-3. Commit
+3. Proof (only if the change has runtime behavior; otherwise skip)
+
+4. Commit
 
 ```bash
 git add path/to/files
@@ -115,6 +133,18 @@ git commit -m 'chore: description'
 **Done when**:
 
 - Change is confirmed correct
+- Proof captured (if applicable)
+
+---
+
+**Final task: Validation** — every plan ends with this. Runs the integrated system with realistic (stub or mock) data, captures end-to-end artifacts, and writes a validation report mapping each AC to its evidence.
+
+- Repro: exact commands to run the full app and exercise each AC
+- Dependencies: which are real vs. stubbed for this run
+- Artifacts: logs, responses, query dumps, screenshots captured to SESSION_SCRATCH
+- Expected outcome per AC: what the evidence must show for each AC to be considered validated
+
+Non-coding-only plans (no runtime) may collapse this into a single final Verify step.
 ````
 
 ## Plan Self-Review
@@ -130,3 +160,5 @@ Before finalizing, dispatch a subagent to review the plan against the checklist 
 - Complete code (never "add code here")
 - Exact commands with expected output
 - Every task has a "Done when:" statement
+- Every runtime-behavior task has a Proof step with an expected outcome
+- Plan ends with a Validation task that maps each AC to its evidence

@@ -32,6 +32,18 @@
         "Unstarted task (Task 4) not dispatched until blocker resolved",
         "User notified about the blocker"
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "I have a plan at evals/fixtures/eval-4-plan.md. Execute the plan.",
+      "files": ["evals/fixtures/eval-4-plan.md"],
+      "expected_output": "Agent runs the runtime Proof step as part of task execution and independently re-runs the reproduction command to verify the captured artifact matches the expected outcome, rather than trusting the implementer's claim that the feature runs.",
+      "expectations": [
+        "Runtime Proof step executed during task execution (artifact captured)",
+        "Proof independently re-run and verified in review, not trusted from the implementer's report",
+        "Artifact matched against the stated expected outcome ({\"count\": 0})",
+        "Plan's Validation task run to confirm the integrated app runs"
+      ]
     }
   ]
 }

@@ -28,6 +28,10 @@ Identify which slices must complete before others can start. Publish blockers fi
 
 Issue descriptions should not contain specific file paths or code snippets — they go stale. Exception: prototype-produced decision-rich snippets (state machine, reducer, schema, type shape) that encode decisions more precisely than prose. Inline them and note they came from a prototype.
 
+## Proof step per slice
+
+Each slice ends with a Proof step so it's verifiable as runnable, not just testable. State the **expected outcome** explicitly — that's what makes evaluation objective. Declare **real vs. stubbed** dependencies; a blocked/external dependency means capture behavior up to that boundary and log the stub so the human knows the coverage limit.
+
 ## Slice template
 
 ```
@@ -43,4 +47,9 @@ End-to-end behavior description, not layer-by-layer implementation.
 **Acceptance criteria**:
 - [ ] Criterion 1
 - [ ] Criterion 2
+
+**Proof**:
+- Command(s) to run the slice in isolation (with stubs for dependencies it doesn't own)
+- Expected outcome the evidence must show
+- Artifacts to capture and where (SESSION_SCRATCH)
 ```
