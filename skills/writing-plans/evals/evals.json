@@ -9,8 +9,8 @@
         "Plan saved to a prefixed file (<prefix>-plan.md)",
         "Tasks are self-contained with exact file paths",
         "All acceptance criteria covered by tasks",
-        "Runtime-behavior tasks include a Proof step with an expected outcome",
-        "Plan ends with a Validation task mapping each AC to expected evidence"
+        "Every coding AC has an eval in the AC Evals section with prescriptive steps and expected evidence",
+        "Runtime-behavior AC evals exercise the running application and capture runtime evidence"
       ]
     },
     {

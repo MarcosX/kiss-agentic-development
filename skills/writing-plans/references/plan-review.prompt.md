@@ -15,14 +15,14 @@ Review the plan and report issues under these categories:
 
 **HITL without human instructions**: HITL tasks that do not explain what the human needs to do, where, and how to confirm.
 
-**Missing Proof**: runtime-behavior tasks (server, endpoint, UI, job, migration) without a Proof step, or Proof steps that capture artifacts without stating an expected outcome. Pure static changes (docs, config, dependency bumps) are exempt.
+**Missing AC Eval**: coding ACs without an eval procedure in the AC Evals section, or evals that lack prescriptive steps (exact commands, assertions, expected evidence). Non-coding ACs without a lightweight verify step.
 
-**Missing Validation**: plans that do not end with a Validation task running the integrated system and mapping each AC to its expected evidence, unless the plan has no runtime behavior.
+**Eval quality**: evals that rely on test output, git diff, type-check, or lint as evidence instead of runtime observation (HTTP responses, logs, screenshots, DB state, process output). Evals with vague assertions ("works correctly") instead of concrete expected outcomes.
 
 Report each issue with:
 
 - Category
-- Task number and name
+- Task number and name (or AC reference for eval issues)
 - Problem description
 - Suggested fix
 

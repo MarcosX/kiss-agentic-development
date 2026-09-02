@@ -37,12 +37,12 @@
       "id": 4,
       "prompt": "I have a plan at evals/fixtures/eval-4-plan.md. Execute the plan.",
       "files": ["evals/fixtures/eval-4-plan.md"],
-      "expected_output": "Agent runs the runtime Proof step as part of task execution and independently re-runs the reproduction command to verify the captured artifact matches the expected outcome, rather than trusting the implementer's claim that the feature runs.",
+      "expected_output": "Agent executes the task, then after implementation completes runs the AC eval from the plan's AC Evals section by dispatching an eval subagent that stands up the app, calls the endpoint, and captures runtime evidence matched against the expected outcome.",
       "expectations": [
-        "Runtime Proof step executed during task execution (artifact captured)",
-        "Proof independently re-run and verified in review, not trusted from the implementer's report",
-        "Artifact matched against the stated expected outcome ({\"count\": 0})",
-        "Plan's Validation task run to confirm the integrated app runs"
+        "Task executed to completion (tests pass)",
+        "AC eval run after implementation from the plan's AC Evals section (not skipped)",
+        "Eval dispatched as a subagent that stands up the app and captures runtime evidence",
+        "Evidence matched against the expected outcome (HTTP 200 with body {\"count\": 0})"
       ]
     }
   ]

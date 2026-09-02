@@ -1,12 +1,17 @@
 # Cache Hit Counter Plan
 
-**Goal:** Add a runnable endpoint to prove runtime proof evaluation.
+**Goal:** Add a runnable endpoint that returns the count of cache hits.
+
+**Acceptance Criteria:**
+
+- AC-1: `/count` endpoint returns JSON `{"count": 0}` on initial request [owned by: Task 1]
 
 ---
 
 ## Task 1: Add /count endpoint
 
 **Category:** Coding
+**Satisfies:** AC-1
 
 **Files:**
 - Create: app.py
@@ -47,43 +52,29 @@ def read_count():
 pytest test_app.py  # expect 1 passed
 ```
 
-5. Proof
-
-Run the server, request /count, capture the response body.
-
-```bash
-uvicorn app:app --port 8000 &
-sleep 1
-curl -s http://localhost:8000/count > SESSION_SCRATCH/count.json
-kill %1
-```
-
-Expected outcome: `SESSION_SCRATCH/count.json` contains `{"count": 0}` and the server stayed alive.
-
 **Done when:**
 
 - Test passes
-- Proof artifact captured matching expected outcome
 
 ---
 
-## Task 2: Validation
+## AC Evals
 
-**Category:** Non-coding
+### AC-1 Eval: /count endpoint returns initial count
 
-Run the integrated app and confirm both the feature runs end-to-end.
+**Procedure:**
 
-1. Start the app and hit the endpoint
+1. Start the app:
+   ```bash
+   uvicorn app:app --port 8000 &
+   sleep 1
+   ```
+2. Exercise the endpoint:
+   ```bash
+   curl -s http://localhost:8000/count
+   ```
+3. Capture the response and confirm the server stays alive.
 
-```bash
-uvicorn app:app --port 8000 &
-sleep 1
-curl -s http://localhost:8000/count
-kill %1
-```
+**Expected evidence:** HTTP 200 response with JSON body `{"count": 0}`.
 
-Expected outcome: 200 response with JSON body `{"count": 0}`.
-
-**Done when:**
-
-- App runs and returns the expected response
+**Dependencies:** None

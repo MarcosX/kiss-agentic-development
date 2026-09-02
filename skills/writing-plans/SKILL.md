@@ -31,7 +31,7 @@ The template below guarantees every task is agent-executable. Merge local ticket
 
 **Ensure all ACs are covered**: Map every AC to tasks as they are created. If ACs are left with no task assigned, review the plan to identify gaps/duplication.
 
-**Proof & Validation**: Tests and code review prove code matches spec — they don't prove it runs. Every runtime-behavior task gets a Proof step capturing observable evidence, and every plan ends with a Validation task running the integrated system. This closes the gap where agents claim "done, matches spec, passes review" yet the feature fails once running.
+**AC Evals**: Tests and code review prove code matches spec — they don't prove the application behaves correctly at runtime. Every coding AC gets an eval: a prescriptive procedure that stands up the app, exercises the behavior, and captures hard evidence. Evals run after all tasks complete. Non-coding ACs (docs, config) get a lightweight verify step. This closes the gap where agents claim "done, matches spec, passes review" yet the feature fails once running.
 
 **Plan handover**: Once the plan is in place, transition to implementation. **REQUIRED BACKGROUND:** You MUST understand executing-plans.
 
@@ -89,25 +89,11 @@ git add path/to/files path/to/test/files
 git commit -m 'feat: add feature'
 ```
 
-6. Proof (required for runtime-behavior tasks: server, endpoint, UI, job, migration)
-
-Prove the feature runs in a realistic isolated environment, not just that tests pass. State the **expected outcome** so evaluation is objective — without it the artifact is self-serving. Declare which dependencies are real vs. stubbed; if a dependency is external/blocked, capture behavior up to that boundary and log the stub. Expected-outcome kinds:
-- Execution trace: process stays alive, health check 200
-- Output capture: API/CLI/page output matches expected shape
-- State inspection: DB row, cache, or queue entry has expected value
-- Failure evidence: error logged with context, graceful degradation
-
-```
-Run the isolated slice, capture artifacts (log, response, query result) to
-SESSION_SCRATCH, record the reproduction command and the expected outcome.
-```
-
 **Done when**:
 
 - All tests pass
 - Lint shows no errors or warning
 - Application builds locally
-- Proof artifacts captured matching the expected outcome
 
 ---
 
@@ -121,9 +107,7 @@ SESSION_SCRATCH, record the reproduction command and the expected outcome.
 
 [how to confirm — read output, parse file, dry run, etc.]
 
-3. Proof (only if the change has runtime behavior; otherwise skip)
-
-4. Commit
+3. Commit
 
 ```bash
 git add path/to/files
@@ -133,19 +117,44 @@ git commit -m 'chore: description'
 **Done when**:
 
 - Change is confirmed correct
-- Proof captured (if applicable)
 
 ---
 
-**Final task: Validation** — every plan ends with this. Runs the integrated system with realistic (stub or mock) data, captures end-to-end artifacts, and writes a validation report mapping each AC to its evidence.
+## AC Evals
 
-- Repro: exact commands to run the full app and exercise each AC
-- Dependencies: which are real vs. stubbed for this run
-- Artifacts: logs, responses, query dumps, screenshots captured to SESSION_SCRATCH
-- Expected outcome per AC: what the evidence must show for each AC to be considered validated
+Every coding AC gets an eval. Non-coding ACs get a lightweight verify. Evals run after all tasks complete.
 
-Non-coding-only plans (no runtime) may collapse this into a single final Verify step.
+### [AC-N] Eval: [AC title]
+
+**Procedure:**
+
+[Prescriptive, step-by-step commands the eval subagent will execute against the running application. Include exact commands, ports, assertions, and the tooling the project uses (Playwright, WireMock, curl, maestro, etc.). The procedure must produce observable runtime evidence — not test output, not git diff.]
+
+1. Start the app:
+   [exact command]
+2. Set up dependencies (stubs, mocks, seed data):
+   [exact commands]
+3. Exercise the behavior:
+   [exact commands — API calls, UI navigation, CLI invocation]
+4. Assert expected outcome:
+   [what the evidence must show — response body, screenshot, log line, DB state]
+
+**Expected evidence:** [concrete description of what the eval will capture — e.g. "HTTP 200 response with JSON body matching schema, server log showing no errors"]
+
+**Dependencies:** [which ACs must be validated first, or "None" if standalone]
 ````
+
+## Writing Eval Procedures
+
+Evals are prescriptive — the plan specifies exact commands and assertions, not vague intent. The eval subagent follows the procedure literally.
+
+**Project-aware tooling**: Use whatever the project already uses. If the project has Playwright, use Playwright for UI assertions. If it uses WireMock for stubs, reference the stub definitions. If it uses maestro for mobile, reference maestro flows. Don't introduce new tooling in the eval.
+
+**Runtime evidence only**: The procedure must produce output from a running system — HTTP responses, logs, screenshots, DB query results, process output. Test runner output, git diff, type-check, and lint are not runtime evidence.
+
+**Non-coding evals**: Lightweight — confirm the artifact exists and has expected content. Example: "Confirm `docs/setup.md` exists and contains '## Installation' section."
+
+**Dependencies**: If AC-2's eval requires AC-1 to be validated first (e.g., checkout depends on catalog), declare it. The orchestrator defers evals with unmet dependencies.
 
 ## Plan Self-Review
 
@@ -160,5 +169,6 @@ Before finalizing, dispatch a subagent to review the plan against the checklist 
 - Complete code (never "add code here")
 - Exact commands with expected output
 - Every task has a "Done when:" statement
-- Every runtime-behavior task has a Proof step with an expected outcome
-- Plan ends with a Validation task that maps each AC to its evidence
+- Every coding AC has an eval with prescriptive steps and expected evidence
+- Every non-coding AC has a lightweight verify step
+- No eval relies on test output, git diff, type-check, or lint as evidence
