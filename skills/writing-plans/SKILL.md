@@ -33,26 +33,6 @@ The template below guarantees every task is agent-executable. Merge local ticket
 
 **Proof & Validation**: Tests and code review prove code matches spec — they don't prove it runs. Every runtime-behavior task gets a Proof step capturing observable evidence, and every plan ends with a Validation task running the integrated system. This closes the gap where agents claim "done, matches spec, passes review" yet the feature fails once running.
 
-**What counts as proof — hard taxonomy**: Proof is output observed from a running system. Nothing else qualifies.
-
-Valid proof types:
-- **Log output**: application logs showing the operation executed (e.g. "POST /api/items 201 Created")
-- **HTTP response**: actual request/response pair from a running server (status code, headers, body)
-- **DB state**: query results showing data changed as expected (SELECT output after INSERT/UPDATE)
-- **Screenshot**: image of running application UI showing expected state
-- **Process output**: stdout/stderr from a running process (startup messages, job completion, error traces)
-- **File system state**: directory listing or file contents after execution (generated report, exported file)
-- **Queue/cache state**: message published, cache entry set, job enqueued
-
-Invalid — these are NEVER proof of runtime behavior:
-- `git diff` (shows code was written, not that it works)
-- Test runner output (shows tests pass, not that the app behaves correctly in production-like conditions)
-- Type checker output (shows types are valid, not runtime behavior)
-- Linter output (shows style compliance, not runtime behavior)
-- Agent narrative ("the feature should work because..." — inference, not observation)
-- Code review findings (shows code quality, not runtime behavior)
-- Screenshots of code editors or terminals showing code (not the running application)
-
 **Plan handover**: Once the plan is in place, transition to implementation. **REQUIRED BACKGROUND:** You MUST understand executing-plans.
 
 # Plan document
@@ -111,14 +91,15 @@ git commit -m 'feat: add feature'
 
 6. Proof (required for runtime-behavior tasks: server, endpoint, UI, job, migration)
 
-Prove the feature runs in a realistic isolated environment, not just that tests pass. State the **expected outcome** so evaluation is objective — without it the artifact is self-serving. Declare which dependencies are real vs. stubbed; if a dependency is external/blocked, capture behavior up to that boundary and log the stub.
-
-Proof must be **runtime observation from a running system** — see taxonomy above. The expected outcome must describe what the evidence will show in concrete, observable terms:
+Prove the feature runs in a realistic isolated environment, not just that tests pass. State the **expected outcome** so evaluation is objective — without it the artifact is self-serving. Declare which dependencies are real vs. stubbed; if a dependency is external/blocked, capture behavior up to that boundary and log the stub. Expected-outcome kinds:
+- Execution trace: process stays alive, health check 200
+- Output capture: API/CLI/page output matches expected shape
+- State inspection: DB row, cache, or queue entry has expected value
+- Failure evidence: error logged with context, graceful degradation
 
 ```
-Proof type: [log | http-response | db-state | screenshot | process-output | file-system | queue-state]
-Run the isolated slice, capture evidence from the running system.
-Expected outcome: [what the evidence must show — e.g. "server log shows POST /api/items returns 201 with item ID"]
+Run the isolated slice, capture artifacts (log, response, query result) to
+SESSION_SCRATCH, record the reproduction command and the expected outcome.
 ```
 
 **Done when**:
@@ -126,7 +107,7 @@ Expected outcome: [what the evidence must show — e.g. "server log shows POST /
 - All tests pass
 - Lint shows no errors or warning
 - Application builds locally
-- Proof captured from running system matching the expected outcome (not test output or git diff)
+- Proof artifacts captured matching the expected outcome
 
 ---
 
@@ -179,6 +160,5 @@ Before finalizing, dispatch a subagent to review the plan against the checklist 
 - Complete code (never "add code here")
 - Exact commands with expected output
 - Every task has a "Done when:" statement
-- Every runtime-behavior task has a Proof step with a valid proof type and observable expected outcome
-- No Proof step uses test output, git diff, type-check, or lint as runtime evidence
+- Every runtime-behavior task has a Proof step with an expected outcome
 - Plan ends with a Validation task that maps each AC to its evidence
