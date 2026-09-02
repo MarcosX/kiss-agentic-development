@@ -32,6 +32,8 @@ Issue descriptions should not contain specific file paths or code snippets — t
 
 Each slice ends with a Proof step so it's verifiable as runnable, not just testable. State the **expected outcome** explicitly — that's what makes evaluation objective. Declare **real vs. stubbed** dependencies; a blocked/external dependency means capture behavior up to that boundary and log the stub so the human knows the coverage limit.
 
+**Proof must be runtime observation.** The evidence must come from a running system — logs, HTTP responses, DB query results, screenshots, process output. Test output, git diff, type-check, and lint are NEVER proof of runtime behavior; they prove code exists and compiles, not that the application behaves correctly.
+
 ## Slice template
 
 ```
@@ -49,7 +51,8 @@ End-to-end behavior description, not layer-by-layer implementation.
 - [ ] Criterion 2
 
 **Proof**:
+- Proof type: [log | http-response | db-state | screenshot | process-output | file-system | queue-state]
 - Command(s) to run the slice in isolation (with stubs for dependencies it doesn't own)
-- Expected outcome the evidence must show
-- Artifacts to capture and where (SESSION_SCRATCH)
+- Expected outcome: what the evidence must show in concrete, observable terms
+- Real vs. stubbed dependencies
 ```

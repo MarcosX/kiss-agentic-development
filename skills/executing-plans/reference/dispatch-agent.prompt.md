@@ -35,7 +35,15 @@ Once you're clear on requirements:
 1. Implement exactly what the task specifies
 2. Follow the task steps as specified. Coding tasks include TDD lifecycle; Non-coding tasks use simple steps.
 3. Verify implementation works
-4. **Capture proof** — If the task includes a Proof step, run it: start the slice in its isolated environment, run the reproduction command, and capture the specified artifacts (logs, responses, query dumps, screenshots) to the session scratch directory. Record the reproduction command and the expected outcome.
+4. **Capture proof** — If the task includes a Proof step, run it: start the slice in its isolated environment, run the reproduction command, and capture evidence from the running system. Record the reproduction command and the expected outcome.
+
+   **What is NOT runtime proof:**
+   - `git diff` — shows code was written, not that it works
+   - Test runner output — shows tests pass, not that the app behaves correctly
+   - Type checker / lint output — shows code is valid, not runtime behavior
+   - Your own narrative about why it should work — that is inference, not observation
+
+   **What IS runtime proof:** output from a running system — server logs, HTTP request/response pairs, DB query results, screenshots of the running UI, process stdout/stderr, file system state after execution.
 5. Commit your work
 6. Self-review (see below)
 7. Report back

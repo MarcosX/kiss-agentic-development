@@ -74,5 +74,7 @@ If task implementation itself failed, determine next steps:
 - **Instruction unclear** — stop and ask for clarification
 - **Do not skip reviews** — spec compliance first, then runtime proof, then code quality. All three required. No exceptions.
 - **Do not trust "it runs"** — a Proof step must be independently re-run and its artifacts matched against the expected outcome before a task is done. A claim without examined runtime evidence is not done.
+
+**Proof is runtime observation only** — git diff, test output, type-check output, and lint output are NOT proof. They show code exists and compiles, not that the application behaves correctly at runtime. Proof must come from a running system: logs, HTTP responses, DB query results, screenshots, process output. If you accept test output as proof, you are accepting "the code I wrote works" as proof — that is not validation.
 - **Never ignore subagent questions** — answer before letting them proceed.
 - **Never accept "close enough"** — reviewer found issues means not done.

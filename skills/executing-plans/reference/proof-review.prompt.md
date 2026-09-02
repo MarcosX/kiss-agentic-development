@@ -28,6 +28,7 @@ mislabeled, or optimistic. You MUST verify the runtime behavior yourself.
 - Take their word that the feature runs
 - Accept an artifact that does not match its stated reproduction command
 - Assume a captured log or response demonstrates the claimed behavior
+- Accept test output, git diff, type-check, or lint as runtime proof — these prove code exists, not that it works
 
 **DO:**
 - Run the reproduction command yourself against the current codebase state
@@ -49,6 +50,24 @@ Run the reproduction command and verify:
 **Coverage limit:** the Proof declares which dependencies are real vs. stubbed.
 If a dependency is stubbed or external, is the evidence scoped to the behavior
 the slice owns rather than silently implying full integration?
+
+**Proof validity:** reject any evidence that is not runtime observation:
+
+REJECT (never valid as proof):
+- `git diff` or commit content — shows code changes, not behavior
+- Test framework output (pass/fail) — shows tests pass, not app behaves
+- Type checker or linter output — shows code is valid, not runtime correct
+- Agent-written narrative ("the feature should work because...")
+- Screenshots of code editors or terminal showing code
+- Any artifact not produced by actually running the application
+
+ACCEPT (valid runtime proof):
+- Raw application logs from a running instance
+- HTTP request/response pairs from actual calls to a running server
+- DB query results (SELECT output) after operations on a running database
+- Screenshots of the running application UI (not code editors)
+- Process stdout/stderr from actual execution
+- File system state (ls, cat of output files) after execution
 
 **Report:**
 - ✅ Proof confirmed: artifacts match expected outcome, feature runs
