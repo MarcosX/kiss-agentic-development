@@ -32,11 +32,17 @@ For each batch, follow the fan-out/fan-in pattern:
 
 1. **Extract tasks**: Read the plan once and extract all tasks in this batch with full text and context. Save to TodoWrite.
 
-2. **Fan-out (parallel dispatch)**: Dispatch ALL tasks in the batch simultaneously, each as a fresh subagent using `references/dispatch-agent.prompt.md` with the full task text pasted in. Do not make subagents read the plan file or inherit session context.
+2. **Fan-out (parallel dispatch)**: Dispatch ALL tasks in the batch simultaneously, each as a fresh subagent using `reference/dispatch-agent.prompt.md` with the full task text pasted in. Do not make subagents read the plan file or inherit session context.
 
  3. **Fan-in (review after completion)**: Wait for all subagents to complete. For each completed task:
-   a. Handle implementer status (DONE, DONE_WITH_CONCERNS, NEEDS_CONTEXT, BLOCKED)
-   b. Verify completion using `references/spec-review.prompt.md` and `references/code-review.prompt.md` — spec compliance first, then code quality.
+   a. Handle implementer status:
+      - DONE / DONE_WITH_CONCERNS → proceed to spec review (step 3b)
+      - NEEDS_CONTEXT → provide context and re-dispatch
+      - BLOCKED → **before stopping**, review all previously completed tasks for
+        spec compliance using `reference/spec-review.prompt.md`. Then notify user
+        with: (1) spec review results for completed tasks, (2) blocked task + reason,
+        (3) tasks held back. Do not skip spec review just because a later task is blocked.
+   b. Verify completion using `reference/spec-review.prompt.md` and `reference/code-review.prompt.md` — spec compliance first, then code quality.
    c. Run review loops if issues found — fix, re-review, repeat until approved
    d. Mark task complete in TodoWrite
 
@@ -48,7 +54,10 @@ Proceed to the next batch. After all batches complete, go to **AC Evals**.
 
 2. **Dispatch evals sequentially** — for each AC in dependency order:
    a. If the AC has dependencies that haven't been validated yet, defer it
-   b. Dispatch a fresh subagent using `references/ac-eval.prompt.md` with the AC's eval procedure pasted in
+   b. Dispatch a FRESH subagent using `reference/ac-eval.prompt.md` with the AC's eval
+      procedure pasted in. AC evals MUST run as subagents — never run them inline.
+      Inline execution defeats the purpose: the eval subagent must independently verify
+      evidence without seeing implementation context.
    c. The eval subagent stands up the app, runs the procedure, captures runtime evidence
    d. Compare the eval result against the expected evidence
 
@@ -76,6 +85,7 @@ If task implementation itself failed, determine next steps:
 - **Verification step continues to fail** — stop and ask for clarification
 - **Critical gaps or blockers** — stop and present the problem, do not force through
 - **Instruction unclear** — stop and ask for clarification
+- **BLOCKED reached without reviewing completed tasks** — spec review of all DONE tasks is required before stopping
 - **Do not skip reviews** — spec compliance first, then code quality. Both required. No exceptions.
 - **Never ignore subagent questions** — answer before letting them proceed.
 - **Never accept "close enough"** — reviewer found issues means not done.

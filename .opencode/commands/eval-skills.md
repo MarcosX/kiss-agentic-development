@@ -18,9 +18,15 @@ Validate each target: it must exist at skills/<name>/ with an evals/evals.json f
 
 If 3 or more skills are targeted, warn about the duration and token cost, then get explicit confirmation before continuing.
 
-## Step 2: Verify skill-creator
+## Step 2: Verify skill-creator and provision the venv
 
 Load the skill-creator skill. If it cannot be loaded, print instructions for installing it and stop.
+
+Before running any skill-creator script, ensure the repo venv has its dependencies:
+
+1. If `<repo-root>/.venv/bin/python` does not exist, create it with `python3 -m venv .venv` (run from the repo root).
+2. Install skill-creator requirements — idempotent and fast, PyYAML is the only runtime dependency (quick_validate.py and package_skill.py import it): `<repo-root>/.venv/bin/pip install -r <skill-creator>/requirements.txt`.
+3. Use `<repo-root>/.venv/bin/python` for every skill-creator script invocation below. The system Homebrew Python is PEP 668-managed and cannot install packages, so bare `python3` will crash on scripts that need PyYAML.
 
 ## Step 3: Evaluate each skill, one at a time
 
@@ -32,9 +38,9 @@ For each target skill, in order, run skill-creator's eval workflow for exactly o
 4. While runs execute, draft assertions from each eval's expectations, update eval_metadata.json (and evals/evals.json if assertions change), and explain them to the user.
 5. Capture timing.json for each run from the subagent task notification, saved to <run-dir>/timing.json with fields total_tokens, duration_ms, total_duration_seconds — it is not persisted elsewhere.
 6. When all runs finish, grade each run against its expectations with a grader subagent that reads skill-creator's agents/grader.md. Save grading.json per run.
-7. From the skill-creator base directory, run `python -m scripts.aggregate_benchmark <workspace>/iteration-N --skill-name <name>` to produce benchmark.json and benchmark.md in the iteration directory. In with-skill-only mode this yields single-configuration stats without a delta, which is expected.
+7. From the skill-creator base directory, run `<repo-root>/.venv/bin/python -m scripts.aggregate_benchmark <workspace>/iteration-N --skill-name <name>` to produce benchmark.json and benchmark.md in the iteration directory. In with-skill-only mode this yields single-configuration stats without a delta, which is expected.
 8. Launch the review viewer in the background:
-   `nohup python <skill-creator>/eval-viewer/generate_review.py <workspace>/iteration-N --skill-name <name> --benchmark <workspace>/iteration-N/benchmark.json > /dev/null 2>&1 &`
+   `nohup <repo-root>/.venv/bin/python <skill-creator>/eval-viewer/generate_review.py <workspace>/iteration-N --skill-name <name> --benchmark <workspace>/iteration-N/benchmark.json > /dev/null 2>&1 &`
    For iteration-N where N > 1, also pass --previous-workspace pointing at iteration-(N-1). In a headless environment use `--static <workspace>/iteration-N/review.html` instead of the background server.
 
 ## Step 4: Summarize

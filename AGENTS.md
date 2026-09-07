@@ -267,7 +267,15 @@ Skill development is an iterative loop: draft → test → review → improve �
 
 ## Evaluation
 
-Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. To evaluate a skill, run the `eval-skills` command (`.opencode/commands/eval-skills.md`) or invoke the `skill-creator` skill in a session and ask it to run the eval workflow for that skill.
+Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. Open the `/eval-skills` slash command to evaluate skills in this repo (only available in OpenCode, where `.opencode/commands/eval-skills.md` is registered). In any other agent, invoke the `skill-creator` skill in a session and ask it to run the eval workflow for the target skill.
+
+`/eval-skills` usage:
+- No arguments: prompts you to pick skills and whether to include without-skill baselines
+- `all`: every skill under `skills/` that has an `evals/evals.json`
+- `<name>...`: one or more space-separated skill names
+- Add `compare` (or `baseline`/`--compare`) anywhere in the arguments to include without-skill baselines
+
+It runs one full cycle per skill and stops at the review viewer — it never auto-iterates or modifies skills.
 
 The workflow:
 

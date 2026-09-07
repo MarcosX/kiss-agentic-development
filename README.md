@@ -44,7 +44,7 @@ Another commong issue is that most skill are written for humans, not agents — 
 
 **Each skill is validated against behavioral test scenarios** (see `skills/<name>/evals/evals.json`) that verify the skill produces the intended agent behavior — not just that keywords are present.
 
-Skills are evaluated through the `skill-creator` workflow — invoke the `skill-creator` skill in a session and ask it to run the eval workflow for a skill. Every skill ships with 2-3 evaluation scenarios that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal.
+Skills are evaluated through the `skill-creator` workflow — every skill ships with 2-3 evaluation scenarios that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal. In OpenCode, open the `/eval-skills` slash command (`.opencode/commands/eval-skills.md`) to evaluate one or more skills. In any other agent, invoke the `skill-creator` skill and ask it to run the eval workflow for a skill.
 
 The workflow spawns with-skill agent runs for each eval prompt (without-skill baselines are opt-in for comparison), grades each against the expectations, and aggregates results into a `benchmark.json` with pass-rate, timing, and token deltas. Output lands in `<skill>-workspace/iteration-N/` (gitignored). Skill frontmatter is validated with skill-creator's `scripts/quick_validate.py <skill>` after changes.
 
