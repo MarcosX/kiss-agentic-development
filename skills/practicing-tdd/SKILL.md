@@ -27,12 +27,12 @@ have, not the code you wrote, so it can't be your proof of done.
 **Make it pass — write the simplest thing that turns the failure green.** No
 extras; even a hardcoded answer counts, if it satisfies the contract. The test
 is your "enough" detector — green means the contract is met, nothing more is
-asked.
+asked. Green on one test is not the end: run the whole suite, because a change
+that satisfies its own contract can still break someone else's.
 
 **Refactor — improve while the test stays green.** Remove duplication, sharpen
 names, extract helpers. Each change is verified by the next run, so cleanup is
-confident. When your test passes, run the full suite — its green is your proof
-nothing else broke.
+confident.
 
 ## Bug fixes
 
