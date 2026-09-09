@@ -3,66 +3,47 @@ name: practicing-tdd
 description: Use when implementing any feature, fixing any bug, refactoring, or changing behavior.
 ---
 
-<HARD-GATE>
-NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST.
+The task is to make a failing test pass.
 
-Production code written before a test must be deleted — not kept as reference, not adapted, not looked at. Implement fresh from tests.
-</HARD-GATE>
+Every feature, bug fix, refactor, or behavior change is this task. The test is
+the contract: it defines "done" in a form the computer checks for you. You
+finish when a test you wrote first, and watched fail, now passes — never when
+code exists alone.
 
-## When to Use
+Exceptions: throwaway prototypes, generated code, configuration files. These
+aren't behavior tasks — when one applies, state it in a line before proceeding.
 
-Always: new features, bug fixes, refactoring, behavior changes.
+## The Loop
 
-Exceptions (ask first): throwaway prototypes, generated code, configuration files.
+**Write the failing test — define done.** This is the actual ask, not a step before
+the ask. A test is your intent made checkable: describe one behavior per test,
+with real code over mocks.
 
-## RED — Write a Failing Test
+**Watch it fail — earn your proof.** Run it now, and see it fail for the expected
+reason: the behavior missing, not a typo. This failing run is the receipt for
+everything after. A test that never failed is hollow — it proves the code you
+have, not the code you wrote, so it can't be your proof of done.
 
-Write one minimal test showing desired behavior. One behavior per test — if the name has "and", split it. Use a clear name describing the behavior, not the implementation. Use real code; avoid mocks unless the dependency is too slow, non-deterministic, or has uncontrollable side effects.
+**Make it pass — write the simplest thing that turns the failure green.** No
+extras; even a hardcoded answer counts, if it satisfies the contract. The test
+is your "enough" detector — green means the contract is met, nothing more is
+asked.
 
-## Verify RED — Watch It Fail
+**Refactor — improve while the test stays green.** Remove duplication, sharpen
+names, extract helpers. Each change is verified by the next run, so cleanup is
+confident. When your test passes, run the full suite — its green is your proof
+nothing else broke.
 
-Mandatory. Run the test now — fresh output only. Confirm it fails because the feature is missing, not because of typos or errors. A test that passes immediately proves nothing — you tested existing behavior or the wrong thing.
+## Bug fixes
 
-## GREEN — Write Minimal Code
+The bug is your failing test. Write the reproduction — a test that shows the
+wrong behavior — and watch it fail. That failing run captures the bug in a
+checkable form. Then fix the code and watch it pass: now you have proof the bug
+is gone and a guard against it returning.
 
-Write the simplest code to pass the test. No extra features, no refactoring, no improvements beyond the test. Cheating is acceptable here: hardcode return values, duplicate code, skip edge cases. Refactor will clean it up.
+## Why the loop is the fast path
 
-## Verify GREEN — Watch It Pass
-
-Mandatory. Run the test now — previous runs do not count. Confirm it passes. Then run the full suite and check for regressions. Fix any broken tests immediately.
-
-## REFACTOR — Clean Up
-
-Only after GREEN. Remove duplication, improve names, extract helpers. Keep tests green throughout. If a test fails during refactor, undo immediately and take smaller steps. Do not add behavior.
-
-## Prove-It Pattern (Bug Fixes)
-
-Bug reported? Write a reproduction test and watch it fail. Then fix the code and watch it pass. Never fix bugs without a test — the test proves the fix and prevents regression.
-
-## Red Flags — STOP and Start Over
-
-- Code before test
-- Test passes on first run
-- Cannot explain why the test failed
-- Tests added "later" or "after"
-- "I already manually tested it"
-- "This is too simple to test"
-- "Deleting X hours of work is wasteful" — sunk cost fallacy
-- "TDD is dogmatic, I am being pragmatic"
-- "I will keep the code as reference" — delete means delete
-
-Any of these means: delete the code, restart with TDD.
-
-## Verification Checklist
-
-Before marking work complete:
-
-- [ ] Every new function has a test that failed first
-- [ ] Each test failed for the expected reason (feature missing, not typo)
-- [ ] Minimal code was written to pass each test
-- [ ] All tests pass, output pristine
-- [ ] Tests use real code (mocks only if unavoidable)
-- [ ] Edge cases and errors are covered
-- [ ] Bug fixes include a reproduction test
-
-
+The fail-then-pass loop is the shortest route to "I'm sure it works." The
+failing run names exactly what's missing; the passing run confirms you're done.
+Without it, every verification is guessing, and each future change forces you
+to re-verify by hand. The loop pays for itself the moment anything changes.
