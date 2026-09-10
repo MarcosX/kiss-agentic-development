@@ -12,17 +12,19 @@ The solution to the problem, from the user's perspective.
 
 ## User Stories
 
-A numbered list of user stories. Each in format:
+A numbered list of user stories. Each story carries a sequential ID assigned in the order written (`US-1`, `US-2`, ...). Format:
 
-```
-1. As an <actor>, I want <feature>, so that <benefit>
-```
+1. US-1: As an <actor>, I want <feature>, so that <benefit>
 
-Be extensive — cover all aspects of the feature.
+Be extensive — cover all aspects of the feature. Decisions below reference these IDs.
 
 ## Implementation Decisions
 
 Architectural choices, modules to build/modify, API contracts, schema changes, interface shapes. Do NOT include specific file paths or code snippets — they go stale. Exception: prototype-produced decision-rich snippets (state machine, reducer, schema, type shape) that encode decisions more precisely than prose. Inline them and note they came from a prototype.
+
+Tie each decision to the story or stories it serves, and state why the path was chosen. Format:
+
+- US-1, US-3: <decision>. Chosen because <rationale — the rejected alternative and the trade-off that ruled it out>.
 
 ## Testing Decisions
 
@@ -31,15 +33,12 @@ Architectural choices, modules to build/modify, API contracts, schema changes, i
 - Prior art for tests (similar test patterns in the codebase)
 - Seam-first: identify the highest seam possible for testing
 
-## Acceptance Criteria
-
-Numbered list of testable statements derived from user stories.
-Each AC is atomic — one behavior, verifiable independently.
+Tie each decision to the story it serves with a `Chosen because` line when it maps to a specific story.
 
 ## Out of Scope
 
-What is deliberately not covered by this design.
+What is deliberately not covered by this design, and why — deferred, rejected, or unnecessary. A fresh reader must be able to tell a deliberate cut from an omission.
 
 ## Further Notes
 
-Any additional context or considerations.
+Any additional context or considerations. Acceptance criteria are not written in the PRD — they are derived during plan writing from the user stories and decisions above.
