@@ -23,6 +23,18 @@
         "Scope of problem understood before design decisions",
         "Output includes open questions or assumptions to validate"
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. Brainstorm the design, ask whatever clarifying questions you need, then produce the PRD as a standalone artifact in the workspace this session can hand to a plan-writer later. Assume I've answered your questions.",
+      "expected_output": "The agent conceives the design, then writes a standalone PRD document (not just an in-conversation reply) whose decisions are tied back to numbered user stories with rationale.",
+      "expectations": [
+        "Standalone PRD artifact produced (design decisions captured in a document, not only in the chat reply)",
+        "User stories are numbered US-N sequentially in the order written",
+        "Each decision references one or more story IDs that exist in the user stories",
+        "Decisions carry a why/rationale line (chosen path, rejected alternative, or trade-off)",
+        "PRD section list equals problem statement, solution, user stories, implementation decisions, testing decisions, out of scope, further notes"
+      ]
     }
   ]
 }
