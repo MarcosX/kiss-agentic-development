@@ -6,11 +6,11 @@ description: Use when specs or requirements are clear and before moving to imple
 Write agent-executable implementation plans, assuming zero codebase context.
 
 <IMPORTANT>
-Tasks must be self-contained: file paths, code, exact commands with expected outputs, and clear definition of done.
+Tasks must be self-contained: file paths, exact commands with expected outputs, clear definition of done. Coding tasks carry a behavioral contract instead of implementation code — the test-first loop is owned by practicing-tdd.
 
-TDD prevents regressions — coding tasks follow test-first lifecycle steps below. Non-coding tasks (docs, config, CI/CD) skip TDD — use simple change→verify→commit steps.
+Coding tasks delegate the test-first loop to practicing-tdd (write the failing test first, watch it fail for the expected reason, then make it pass, then run the full suite). Non-coding tasks (docs, config, CI/CD) skip the loop — use simple change→verify→commit steps.
 
-The template below guarantees every task is agent-executable. Merge local ticket conventions into it — keep Test: file and TDD steps.
+The template below guarantees every task is executor-runnable. Merge local ticket conventions into it — keep the Test: file path.
 </IMPORTANT>
 
 # RULE
@@ -34,6 +34,8 @@ The template below guarantees every task is agent-executable. Merge local ticket
 **AC Evals**: Tests and code review prove code matches spec — they don't prove the application behaves correctly at runtime. Every coding AC gets an eval: a prescriptive procedure that stands up the app, exercises the behavior, and captures hard evidence. Evals run after all tasks complete. Non-coding ACs (docs, config) get a lightweight verify step. This closes the gap where agents claim "done, matches spec, passes review" yet the feature fails once running.
 
 **Plan handover**: Once the plan is in place, transition to implementation. **REQUIRED BACKGROUND:** You MUST understand executing-plans.
+
+Coding tasks assume the executor follows practicing-tdd's loop.
 
 # Plan document
 
@@ -66,33 +68,23 @@ The template below guarantees every task is agent-executable. Merge local ticket
 
 **Coding template** — use when Category is Coding:
 
-1. Write failing test:
+The test-first loop is owned by practicing-tdd; the plan supplies the contract, not the code. Do not embed test code, expected-failure text, or implementation code in a coding task.
 
-[code block with test that should be created]
+**Contract** (REQUIRED — precise enough that a fresh executor can write a deterministic failing test without guessing):
 
-2. Verify test fails:
+- Function/endpoint signature and semantics
+- Named edge cases with expected results
+- Error conditions and what they raise/return
 
-[instructions to run tests and expected failures]
+[Behavioral contract text — this is the plan author's main deliverable for a Coding task]
 
-3. Write minimal implementation
-
-[code block with code to be added]
-
-4. Verify test pass
-
-[instructions to run tests and expected output]
-
-5. Commit
-
-```bash
-git add path/to/files path/to/test/files
-git commit -m 'feat: add feature'
-```
+**Fragile exception**: DB migrations, external integrations, and config changes that affect data or availability use literal step-by-step instructions with exact commands and expected output (as in the Non-coding template) instead of a contract.
 
 **Done when**:
 
-- All tests pass
-- Lint shows no errors or warning
+- Contract behavior verified through the test-first loop (failing test watched for the expected reason, then green)
+- Full test suite passes with no regressions
+- Lint shows no errors or warnings
 - Application builds locally
 
 ---
@@ -166,7 +158,7 @@ Before finalizing, dispatch a subagent to review the plan against the checklist 
 - Each task has a **Satisfies** field referencing its ACs
 - Each task has a Category and Type
 - Exact file paths always
-- Complete code (never "add code here")
+- Complete code (never "add code here") for Non-coding tasks, AC eval procedures, and exact contract values — coding implementation code is delegated to practicing-tdd
 - Exact commands with expected output
 - Every task has a "Done when:" statement
 - Every coding AC has an eval with prescriptive steps and expected evidence
