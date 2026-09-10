@@ -14,47 +14,21 @@
 **Satisfies:** AC-1
 
 **Files:**
+
 - Create: app.py
+- Test: test_app.py
 
-1. Write failing test
+**Contract:**
 
-```python
-from fastapi.testclient import TestClient
-from app import app
-
-def test_count_returns_zero():
-    client = TestClient(app)
-    assert client.get("/count").json() == {"count": 0}
-```
-
-2. Verify test fails
-
-```bash
-pytest test_app.py  # expect a collection error: app.py missing
-```
-
-3. Write minimal implementation
-
-```python
-from fastapi import FastAPI
-
-app = FastAPI()
-count = 0
-
-@app.get("/count")
-def read_count():
-    return {"count": count}
-```
-
-4. Verify test passes
-
-```bash
-pytest test_app.py  # expect 1 passed
-```
+- `app` is a FastAPI application exposing `GET /count`
+- On initial request, returns HTTP 200 with JSON body `{"count": 0}`
+- No request body, no query parameters
 
 **Done when:**
 
-- Test passes
+- Contract behavior verified through the test-first loop (failing test watched for the expected reason, then green)
+- Full test suite passes
+- Application starts under uvicorn and answers on port 8000
 
 ---
 
