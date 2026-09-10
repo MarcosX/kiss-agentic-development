@@ -11,7 +11,7 @@ Review the plan and report issues under these categories:
 
 **Ambiguous**: any task whose completion criteria are vague, subjective, or untestable (no "works correctly" or "looks good").
 
-**Incomplete task specs**: tasks missing exact file paths, exact commands and expected outputs, or code placeholders (tasks with pseudocode "add validation here" is not acceptable)
+**Incomplete task specs**: tasks missing exact file paths or exact commands with expected outputs. Coding tasks that follow the contract-delegate shape are acceptable without implementation code provided the contract is precise enough to write a deterministic failing test (signatures, semantics, named edge cases, error conditions). Flag contracts that are vague, untestable, or use placeholder-level pseudocode ("add validation here") — those are not acceptable in a contract or in Non-coding task steps.
 
 **HITL without human instructions**: HITL tasks that do not explain what the human needs to do, where, and how to confirm.
 
