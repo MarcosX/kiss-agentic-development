@@ -33,7 +33,7 @@ If you have questions about:
 Once you're clear on requirements:
 
 1. Implement exactly what the task specifies
-2. Follow the task steps as specified. Coding tasks follow practicing-tdd's loop: write the failing test first, watch it fail for the expected reason, then make it pass, then run the full suite. Non-coding tasks use simple change→verify→commit steps.
+2. Follow the task steps as specified. Coding tasks follow practicing-tdd's loop: write the failing test first, watch it fail for the expected reason, then make it pass, then run the full suite, then refactor. Non-coding tasks use simple change→verify→commit steps.
 3. Verify implementation works
 4. Commit your work
 5. Self-review (see below)

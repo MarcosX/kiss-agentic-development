@@ -26,8 +26,8 @@
 
 **Done when:**
 
-- Contract behavior verified through the test-first loop (failing test watched for the expected reason, then green)
-- Full test suite passes
+- Contract behavior verified through the test-first loop (failing test watched for the expected reason, then green, then refactored)
+- Full test suite passes with no regressions
 - Application starts under uvicorn and answers on port 8000
 
 ---

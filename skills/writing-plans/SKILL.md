@@ -8,7 +8,7 @@ Write agent-executable implementation plans, assuming zero codebase context.
 <IMPORTANT>
 Tasks must be self-contained: file paths, exact commands with expected outputs, clear definition of done. Coding tasks carry a behavioral contract instead of implementation code — the test-first loop is owned by practicing-tdd.
 
-Coding tasks delegate the test-first loop to practicing-tdd (write the failing test first, watch it fail for the expected reason, then make it pass, then run the full suite). Non-coding tasks (docs, config, CI/CD) skip the loop — use simple change→verify→commit steps.
+Coding tasks delegate the test-first loop to practicing-tdd (write the failing test first, watch it fail for the expected reason, then make it pass, then run the full suite, then refactor). Non-coding tasks (docs, config, CI/CD) skip the loop — use simple change→verify→commit steps.
 
 The template below guarantees every task is executor-runnable. Merge local ticket conventions into it — keep the Test: file path.
 </IMPORTANT>
@@ -82,7 +82,7 @@ The test-first loop is owned by practicing-tdd; the plan supplies the contract, 
 
 **Done when**:
 
-- Contract behavior verified through the test-first loop (failing test watched for the expected reason, then green)
+- Contract behavior verified through the test-first loop (failing test watched for the expected reason, then green, then refactored)
 - Full test suite passes with no regressions
 - Lint shows no errors or warnings
 - Application builds locally
@@ -158,7 +158,7 @@ Before finalizing, dispatch a subagent to review the plan against the checklist 
 - Each task has a **Satisfies** field referencing its ACs
 - Each task has a Category and Type
 - Exact file paths always
-- Complete code (never "add code here") for Non-coding tasks, AC eval procedures, and exact contract values — coding implementation code is delegated to practicing-tdd
+- Complete code (never "add code here") for Non-coding tasks, AC eval procedures, and exact contract values — coding implementation code is delegated to practicing-tdd. Fragile-exception tasks (DB migrations, external integrations, config affecting data/availability) may use literal steps instead of a contract.
 - Exact commands with expected output
 - Every task has a "Done when:" statement
 - Every coding AC has an eval with prescriptive steps and expected evidence
