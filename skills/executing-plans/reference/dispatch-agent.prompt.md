@@ -18,6 +18,13 @@ You are implementing "Task N: [task title]"
 
 [Scene-setting: where this fits, dependencies, architectural context]
 
+# Worktree
+
+You are working inside a dedicated git worktree at: `[WORKTREE_PATH]`
+
+All file operations, builds, and commits must happen inside this directory.
+Confirm you are in the correct directory before starting work.
+
 # Before You Begin
 
 If you have questions about:
@@ -35,7 +42,7 @@ Once you're clear on requirements:
 1. Implement exactly what the task specifies
 2. Follow the task steps as specified. Coding tasks follow practicing-tdd's loop: write the failing test first, watch it fail for the expected reason, then make it pass, then run the full suite, then refactor. Non-coding tasks use simple change→verify→commit steps.
 3. Verify implementation works
-4. Commit your work
+4. Commit your work (inside the worktree)
 5. Self-review (see below)
 6. Report back
 

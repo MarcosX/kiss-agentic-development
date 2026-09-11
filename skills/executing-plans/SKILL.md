@@ -5,7 +5,7 @@ description: Use when executing implementation plans with independent tasks in t
 
 Execute the plan by dispatching fresh subagents per task, then run spec compliance and code quality reviews after completion.
 
-**Why subagents:** You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
+**Why subagents:** You delegate tasks to specialized agents with isolated context. They never inherit your session's context — you construct what they need, preserving your own context for coordination.
 
 **Core principle:** Fresh subagent per task + two-stage review (spec, quality) + AC evals = high quality, fast iteration
 
@@ -14,7 +14,7 @@ Execute the plan by dispatching fresh subagents per task, then run spec complian
 <IMPORTANT>
 Development should happen in isolation and using fresh subagents for each task.
 
-Ensure a dedicated git worktree is used before making changes.
+Before making changes, follow the Worktree Lifecycle steps in the RULE section.
 
 ALWAYS inspect agent completion report, to ensure implementation met task specification, and code, to ensure quality concerns are addressed early.
 </IMPORTANT>
@@ -26,13 +26,26 @@ If no plan is provided, use `brainstorming` before proceeding.
 **Understand plan**: Load and review plan to identify questions, concerns and assumptions.
 If there are concerns, raise them and do not proceed. If the plan is clear, proceed with execution of each task.
 
+**Worktree Lifecycle:**
+
+Before dispatching tasks, create a dedicated git worktree:
+
+1. Derive a branch name from the plan filename: `plan/<plan-name-slug>`
+2. Create the worktree: `git worktree add .worktrees/<plan-name-slug> -b plan/<plan-name-slug>`
+3. Record the worktree path as a session variable — all subsequent steps reference it
+4. If `git worktree add` fails (e.g., branch exists, dirty tree), resolve the conflict before proceeding — do not skip worktree creation
+
+All work happens inside this worktree; the main repo stays untouched.
+
+After all tasks and AC evals complete, report the worktree path to the user. Do not auto-merge or delete.
+
 **Execute plan**: Identify what tasks can be executed independently and what tasks have dependencies. Group independent tasks into batches for parallel dispatch. Dependent tasks execute sequentially (each forms its own batch).
 
 For each batch, follow the fan-out/fan-in pattern:
 
 1. **Extract tasks**: Read the plan once and extract all tasks in this batch with full text and context. Save to TodoWrite.
 
-2. **Fan-out (parallel dispatch)**: Dispatch ALL tasks in the batch simultaneously, each as a fresh subagent using `reference/dispatch-agent.prompt.md` with the full task text pasted in. Do not make subagents read the plan file or inherit session context.
+2. **Fan-out (parallel dispatch)**: Dispatch ALL tasks in the batch simultaneously, each as a fresh subagent using `reference/dispatch-agent.prompt.md` with the full task text pasted in. Do not make subagents read the plan file.
 
  3. **Fan-in (review after completion)**: Wait for all subagents to complete. For each completed task:
    a. Handle implementer status:
@@ -89,3 +102,5 @@ If task implementation itself failed, determine next steps:
 - **Do not skip reviews** — spec compliance first, then code quality. Both required. No exceptions.
 - **Never ignore subagent questions** — answer before letting them proceed.
 - **Never accept "close enough"** — reviewer found issues means not done.
+- **Subagent reports files changed outside the worktree** — isolation has failed, re-dispatch with explicit worktree path
+- **git diff in main repo shows uncommitted changes from this session** — worktree was not used, stop and assess damage

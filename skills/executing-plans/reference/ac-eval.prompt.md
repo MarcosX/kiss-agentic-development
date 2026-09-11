@@ -22,6 +22,12 @@ You are evaluating "AC-N: [AC title]" to confirm the feature works as specified.
 
 [FULL TEXT of the expected evidence from the plan]
 
+# Worktree
+
+The implementation lives in a dedicated git worktree at: `[WORKTREE_PATH]`
+
+Stand up the application and run the eval procedure inside this directory.
+
 # Your goal
 
 # Context

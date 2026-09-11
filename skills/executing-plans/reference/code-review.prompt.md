@@ -18,12 +18,18 @@ You are reviewing a set of commits to assess code quality, maintainability and a
 
 [FULL TEXT of execution report]
 
+# Worktree
+
+The implementation lives in a dedicated git worktree at: `[WORKTREE_PATH]`
+
+Run git diff and explore files inside this directory.
+
 # Your goal
 
 Use `git diff` to review the code implemented, considering the base and head commits:
 
-**Base:** [commit SHA for latest changes made by the agent]
-**Head:** [commit SHA for head commit where the agent started]
+**Base:** [commit SHA for latest changes made by the agent — in the worktree]
+**Head:** [commit SHA for head commit where the agent started — in the worktree]
 
 If more context is needed, explore related files outside of the commit, but do not consider them as part of your review.
 

@@ -18,6 +18,12 @@ You are reviewing the implementation for "Task N: [task title]" to ensure it mat
 
 [FULL TEXT of execution report]
 
+# Worktree
+
+The implementation lives in a dedicated git worktree at: `[WORKTREE_PATH]`
+
+Read the actual code from this directory. Do not look at the main repo.
+
 # CRITICAL: Do Not Trust the Report
 
 The implementer finished suspiciously quickly. Their report may be incomplete,

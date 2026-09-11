@@ -9,7 +9,8 @@
       "expectations": [
         "Tasks identified as independent (no dependency chain blocking either)",
         "Tasks dispatched in parallel batch",
-        "Completion report inspected for each subagent"
+        "Completion report inspected for each subagent",
+        "Worktree created before task dispatch (git worktree add or equivalent)"
       ]
     },
     {
@@ -30,7 +31,8 @@
         "BLOCKED status correctly identified and not ignored",
         "Completed tasks (Task 1 and Task 2) reviewed for spec compliance — agent dispatches spec review using spec-review.prompt.md or equivalent spec-against-code comparison and produces a review report with findings, not just a statement that they are done",
         "Unstarted task (Task 4) not dispatched until blocker resolved",
-        "User notified about the blocker"
+        "User notified about the blocker",
+        "Worktree created before task dispatch (git worktree add or equivalent)"
       ]
     },
     {

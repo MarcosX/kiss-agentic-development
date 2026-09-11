@@ -5,6 +5,7 @@ test/tmp/
 *.tgz
 __pycache__
 *-workspace/
+.worktrees/
 
 # Opencode dependencies
 .opencode/node_modules
