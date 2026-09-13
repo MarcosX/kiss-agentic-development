@@ -4,12 +4,12 @@
     {
       "id": 1,
       "prompt": "The login endpoint is returning 500 errors. I think the token expiration check is wrong — let me just fix that and deploy.",
-      "expected_output": "Agent blocks the proposed fix until root cause is investigated: the HARD-GATE stops the fix before evidence gathering, 'I think it's X' is treated as a hypothesis rather than accepted as root cause, and the root cause is confirmed before any fix is implemented.",
+      "expected_output": "The agent treats the user's suspected cause as a hypothesis, not a conclusion. It gathers evidence before agreeing with or acting on “I think it's X”, confirms the root cause grounded in that evidence, and only then proposes or implements a fix — no fix or endorsement precedes evidence.",
       "expectations": [
-        "HARD-GATE blocks fix before root cause investigation",
-        "Evidence gathering phase dispatched before forming hypotheses",
-        "'I think it's X' treated as hypothesis, not accepted as root cause",
-        "Root cause confirmed before fix implemented"
+        "“I think it's X” is treated as a hypothesis — the agent seeks evidence (reads the error, runs an investigation) before agreeing with or acting on it",
+        "The agent gathers evidence before forming a root-cause conclusion",
+        "The confirmed root cause is grounded in the evidence gathered, not the user's guess",
+        "The root cause is confirmed before a fix is implemented"
       ]
     },
     {

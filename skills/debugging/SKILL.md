@@ -3,61 +3,53 @@ name: debugging
 description: Use when debugging any bug, error, test failure, crash, or unexpected behavior. Triggered by error output, stack traces, crash logs, failure reports, or verbal descriptions of incorrect behavior.
 ---
 
-<HARD-GATE>
-Systematic debugging is faster than guess-and-check.
+The goal is not to stop the error — it's to be able to say why the fix works.
 
-Do not fix until root cause is confirmed. Symptom-only fixes waste time and accumulate debt — they are not allowed.
-</HARD-GATE>
+Every bug is a claim about a system you can't see. The reliable way to a fix
+that stays fixed is to make the system say what's wrong before you change
+anything. Guessing looks fast; evidence is the route to a fix you can defend.
 
-## When to Use
+## The Loop
 
-Use for any technical issue: test failures, production bugs, unexpected behavior, build failures, performance problems. Do not skip because of time pressure — systematic debugging is faster than guess-and-check.
+**Gather evidence — make the bug talk.** Read the error completely: stack
+trace, line numbers, paths. Check recent changes — diff, config, dependencies,
+deploys. Reproduce it if you can. When the system spans components, capture
+what enters and leaves each boundary — what happens at the edge outranks what
+you assume in the middle. For large or cross-component systems, a focused
+investigation (see `references/gather-evidence.prompt.md`) returns a structured
+report and keeps your context clean. Return an evidence report before forming
+conclusions.
 
-## Phase 1: Gather Evidence
+**Form one hypothesis — then test it cheaply.** State the suspected cause as
+one specific claim, with your reasoning. Change the smallest thing that could
+confirm or deny it — one variable at a time. Confirmed? Fix it. Not confirmed?
+New hypothesis. Never stack fixes: each unverified fix is a second bug you
+haven't seen yet.
 
-When investigating a bug or failure, dispatch a subagent using `references/gather-evidence.prompt.md`, providing: the error message, relevant file paths, and recent git diff. The subagent returns a structured evidence report. Bring the report back to the main session before forming hypotheses.
+**Fix the root cause — prove it with a test that failed first.** Write the
+reproduction before the fix (see practicing-tdd): a test that shows the wrong
+behavior, watched to fail for the expected reason. Then fix. A fix verified by
+a failing-then-passing test is done; a fix verified by hope is a hypothesis.
 
-The user will often volunteer a suspected cause ("I think it's X"). Treat it as a hypothesis to test, not a lead — do not restate or endorse it until the evidence report is back. Restating the guess before evidence makes it look confirmed.
+**Close the loop.** The test passes, no regressions, issue gone. Record
+reproduction, root cause, fix, and prevention (see `reference/debug-report.md`)
+so the next bug doesn't start from zero.
 
-If subagent dispatch is not avialable, follow the prompt directly. Bring findings into the next phase before forming hypotheses.
+## The user's suspected cause
 
-When a system spans multiple components, instruct the subagent to add diagnostic instrumentation at each component boundary and run once to gather boundary-level evidence before returning.
+The user offers "I think it's X" — often confidently. Treat it as the first
+hypothesis, not a lead. Do not endorse or restate it until evidence exists;
+restating an unchecked guess makes it look confirmed.
 
-## Phase 2: Hypothesize and Test
+## When you're stuck
 
-Apply the scientific method:
+Three fixes with the bug still present means you're not iterating on evidence.
+Stop changing things. Question the fundamentals — the architecture, the pattern,
+the inherited assumption. Bring your partner in before a fourth attempt.
 
-- **Form a single hypothesis** — State the suspected root cause and why. Be specific.
-- **Test minimally** — Smallest possible change to test the hypothesis. One variable at a time.
-- **Verify before continuing** — Confirmed? Proceed to Phase 4. Not confirmed? Form a new hypothesis. Do not stack fixes.
-- **When stuck** — Acknowledge uncertainty and research more.
+## Why evidence first is the fast path
 
-## Phase 3: Fix and Verify
-
-Fix the root cause, not the symptom:
-
-- **Create a failing test first** — Write the simplest reproduction test using `practicing-tdd`. The test MUST fail before the fix.
-- When the user claims to have found the root cause ("I've investigated, it's X"), treat the claim as a hypothesis: prove it with a failing reproduction test before fixing. If no code is available to test against, ask for the file path or method needed to write the test — do not skip it.
-- **Implement a single fix** — Address the root cause. One change at a time. No bundled improvements.
-- **Verify the fix** — Test passes. No regressions. Issue resolved.
-- **Document the outcome** — Fill in `reference/debug-report.md` with reproduction, root cause, fix, and prevention.
-
-## The 3-Fix Rule
-
-If you have tried 3 fixes and none worked:
-
-1. STOP. Do not attempt a 4th fix.
-2. Consider the architecture itself may be the problem.
-3. Question fundamentals: Is this pattern sound? Are we fixing symptoms of a wrong design?
-4. Discuss with your human partner before attempting more fixes.
-
-## Red Flags — STOP and Follow Process
-
-- Proposing fixes before root cause is identified
-- "Quick fix for now, investigate later"
-- Multiple fixes applied at once
-- Skipping the reproduction test
-- "It is probably X, let me fix that" without verification
-- Stacking fixes when previous ones did not work
-- 3+ failed fixes without questioning architecture
-- "I do not fully understand but this might work"
+The evidence-first loop is the shortest route to "I'm sure this is fixed." The
+failing run names exactly what's missing; the passing run confirms you're done.
+Without it, every fix is a fresh guess and the bug keeps finding you. The loop
+pays for itself the moment anything changes.
