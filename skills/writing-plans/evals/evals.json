@@ -3,25 +3,35 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Write a plan for adding password reset functionality to our FastAPI app. Users request a reset link via email, click it, and set a new password. The app uses Pydantic models and stores users in an in-memory dict. Assume you've asked all necessary clarifying questions and I've answered them.",
+      "prompt": "Write a plan for adding password reset functionality to our FastAPI app. Users request a reset link via email, click it, and set a new password. The app uses Pydantic models and stores users in an in-memory dict. This feature also requires migrating user storage from the in-memory dict to a real Postgres table. Assume you've asked all necessary clarifying questions and I've answered them.",
       "expected_output": "Agent produces a plan saved to a prefixed file (<prefix>-plan.md), with tasks that are self-contained and use exact file paths, and all acceptance criteria covered by tasks.",
       "expectations": [
         "Plan saved to a prefixed file (<prefix>-plan.md)",
         "Tasks are self-contained with exact file paths",
         "All acceptance criteria covered by tasks",
         "Every coding AC has an eval in the AC Evals section with prescriptive steps and expected evidence",
-        "Runtime-behavior AC evals exercise the running application and capture runtime evidence"
+        "Runtime-behavior AC evals exercise the running application and capture runtime evidence",
+        "Work is decomposed into vertical end-to-end slices (schema → API → logic → tests → UI), not horizontal per-layer tasks — each slice is demoable on its own",
+        "Every task is typed AFK or HITL",
+        "Steps within each task are atomic — each step completes one atomic action with no judgment required",
+        "Coding task contracts describe behavior only (signatures, semantics, named edge cases, error conditions) — no embedded implementation code or test code anywhere in the plan",
+        "No AC eval relies on test output, git diff, type-check, or lint as its evidence — checked exhaustively across every AC eval, not spot-checked",
+        "AC-eval dependencies are declared where one eval's precondition depends on another (e.g., the reset-completion eval needs a token produced by the reset-request eval)",
+        "The DB migration task uses literal step-by-step instructions with exact commands and expected output rather than a behavioral contract",
+        "A self-review pass against the skill's checklist was performed before the plan was presented as final (evidenced in notes.md or the transcript)"
       ]
     },
     {
       "id": 2,
-      "prompt": "Plan this feature: Add a dark mode toggle to our site. While we're at it, we should also redesign the landing page, add analytics tracking, migrate the database, and containerize the app.",
-      "expected_output": "Agent explicitly flags scope creep, applies YAGNI to remove unrelated features, keeps only dark-mode-toggle-related work, and quizzes the user about granularity or scope.",
+      "prompt": "Plan this feature: Add a dark mode toggle to our site. While we're at it, we should also redesign the landing page, add analytics tracking, migrate the database, and containerize the app. Also, the PM mentioned the selected theme should sync to the user's account, so it follows them across devices.",
+      "expected_output": "Agent explicitly flags scope creep, applies YAGNI to remove unrelated features, keeps only dark-mode-toggle-related work, makes the account-sync item's disposition explicit (quizzed with the user or cut with justification), quizzes the user about the retained deliverable's granularity or scope, and types every task AFK or HITL.",
       "expectations": [
         "Scope creep flagged explicitly",
         "YAGNI applied — out-of-scope features removed",
         "Only dark mode toggle related features kept",
-        "User quizzed about granularity or scope"
+        "The plan poses explicit quiz questions or hold-points to the user about the retained dark-mode deliverable's own decomposition — how the work splits into tasks/slices, their ordering or dependencies, or HITL/AFK assignment. Setup, stack, or scope-confirmation questions, or silently-documented assumptions, don't satisfy this",
+        "Every proposed task for the retained dark-mode deliverable specifies an explicit Type — AFK or HITL. \"Category: Coding\" alone doesn't count",
+        "The account-sync theme preference item's disposition is explicit — either quizzed with the user before inclusion, or cut/flagged as out-of-scope with justification. It is not silently absorbed into the feature or silently dropped"
       ]
     }
   ]
