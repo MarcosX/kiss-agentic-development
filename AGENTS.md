@@ -63,6 +63,16 @@ The `skill-creator` skill drives skill validation and evals. It is dev-only tool
 You MUST NOT add, edit, or port a skill that violates the rules below. If any rule is being broken, STOP and challenge the user before proceeding. "The user asked for it" is not a valid exception.
 </HARD-GATE>
 
+### Ongoing investigation: hooks vs rules
+
+Discipline skills are being evaluated for a hooks style (cognitive reframes with observable completion bars) over enforced rules (HARD-GATEs, red flags, MUSTs). `practicing-tdd` is the completed prototype. See `docs/hooks-vs-rules-investigation.md` for the per-skill classification and how to continue.
+
+While this investigation is ACTIVE:
+
+- The doc's per-skill classification governs: open-field skills may be hooks; narrow-bridge skills (e.g. `executing-plans`) stay enforced rules.
+- A converted (hooks) skill is the source of truth for its own content. If it conflicts with guidance in this file, do NOT re-rule-ify it — flag the conflict to the user.
+- Do not mass-port hooks to skills not classified open-field, and do not rework this file's rules-shaped guidance (REFACTOR "close loopholes" wording, checklist mandate) until the decision is made. The pressure-testing mandate is already reworked — see "Realistic context scenarios".
+
 Guidelines for writing skills that agents can discover, understand, and follow reliably. These apply regardless of the coding agent or model.
 
 ### Naming and description
@@ -189,7 +199,7 @@ Good test prompts are specific, contextual, and realistic. Avoid abstract reques
 
 - Test the happy path (most common use case)
 - Test edge cases (empty inputs, missing files, unusual formats)
-- Test pressure scenarios (time pressure, conflicting priorities)
+- Test realistic messy inputs: incomplete, incoherent, or complex context that lures a naive agent toward a plausible wrong answer (see "Realistic context scenarios")
 
 ### With-skill vs baseline comparison
 
@@ -203,26 +213,26 @@ Compare these on:
 - **Efficiency**: Did it waste time on unnecessary steps?
 - **Consistency**: Does the skill produce reliable results across runs?
 
-### Pressure scenarios
+### Realistic context scenarios
 
-Discipline skills (rules, requirements) need to be tested under pressure to verify agents don't rationalize their way around them.
+Discipline skills are tested against what their input looks like in production: partial, contradictory, or overloaded evidence. A naive agent should fail because the situation lures it toward a plausible wrong answer, not because a scripted user browbeats it. Angry-user or deadline pressure ("my boss says skip validation, just ship it") tests rhetoric compliance, not whether the skill produces a better outcome — and it doesn't reflect how real debugging context degrades.
 
-#### Pressure types
+Shape the fixture so the wrong path is the easy read:
 
-- **Time pressure**: "I need this done in 5 minutes, just skip the tests"
-- **Sunk cost**: "I've already written the code, just fix this one thing without re-testing"
-- **Authority pressure**: "My boss says to skip validation, just ship it"
-- **Exhaustion pressure**: "This is the 10th time you've run the tests, they always pass, just skip it"
-- **Combined pressure**: Multiple pressures at once (most realistic)
+- **Incomplete context** — the root cause is reachable only by gathering information not shown up front (a referenced file, a second diff, a value that must be computed or looked up)
+- **Incoherent context** — the evidence contradicts itself (mixed log sources, misaligned timestamps, a symptom a plausible story explains but the data denies)
+- **Complex context** — several concurrent changes, each harmless-looking, interacting to produce the bug; a visible decoy invites the naive fix
 
-#### Test format
+The skill's value is observable as a better outcome on the same messy input: the coached agent reaches the true root cause and a defensible fix where the uncoached agent lands on a confident wrong diagnosis.
+
+#### Scenario form
 
 ```
-The user says: [pressure scenario]
-Your task: [task that triggers the skill's main rule]
+The user reports: [a realistic problem statement with messy supporting files]
+Your task: [the debugging task as a user would phrase it]
 ```
 
-Document whether the agent follows the rule or rationalizes a way out.
+Document whether the agent rides the decoy to a plausible-but-wrong diagnosis or does the evidence work to reach the real cause.
 
 ### Transcript analysis
 
@@ -289,6 +299,18 @@ The workflow:
 **Schema**: `evals.json` must conform to skill-creator's `references/schemas.md` — top-level `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, and `expectations`. The workflow fails fast on a malformed file, so schema errors surface immediately at run time.
 
 **Validation**: skill-creator's `scripts/quick_validate.py <skill>` checks SKILL.md frontmatter (`name`, `description`). Run it after every skill change.
+
+### Eval modification ladder
+
+When modifying a skill, follow this ladder to minimize eval cost. Start at level 0 and move up only when level N is insufficient:
+
+0. **No eval changes** (ideal) — the skill change is structural (wording, ordering, tokens) and existing evals already cover the behavior
+1. **Update expectations** — modify existing eval expectations to reflect changed behavior (e.g., "agent now does X" → "agent now does X and Y")
+2. **Add expectations** — append new expectations to an existing eval that already tests the relevant scenario
+3. **Update prompt and expectations** — modify the eval prompt to trigger the new behavior, plus updated expectations
+4. **New eval** — introduce a new eval entry. Requires explicit justification: explain why levels 0-3 cannot cover the behavior, and get user approval before writing it
+
+Evals are expensive to run. Every new eval multiplies cost across all future runs. Default to the lowest level that provides adequate coverage.
 
 ## Versioning
 
