@@ -6,7 +6,7 @@ skills. Read this before touching any skill under investigation.
 
 ## What this is
 
-Whether discipline skills (TDD, debugging, reviewing, planning, execution) should
+Whether discipline skills (TDD, reviewing, planning, execution) should
 be written as **hooks** — cognitive reframes that show the agent why a behavior
 is in its own interest and give it a clear way to complete the task — instead of
 **rules** — HARD-GATEs, red flags, MUSTs that try to restrain the agent.
@@ -119,10 +119,6 @@ structured); the discipline a single agent applies is open (hooks).**
 
 - **practicing-tdd** — open-field → **hooks (DONE)**. Reference implementation.
   Narrow contract (the test) + open loop (the why).
-- **debugging** — open-field → **hook candidate**. Natural next experiment:
-  closest twin of practicing-tdd (method discipline; root-cause "proof" ≈
-  failing-test "proof"). Current shape: HARD-GATE + red flags + phases. Failure
-  driver is motivational (jump-to-fix), not hazardous. Rewrite why-before-gate.
 - **reviewing-code** — open-field → **hook candidate**. Failure modes (LGTM
   without review, rubber-stamping, skipping the challenge step) are shortcut
   failures. Human-in-the-loop catches mistakes → low irreversibility. Convert
@@ -160,14 +156,15 @@ rework them once the decision is made. Currently suspended for the experiment:
 - **Checklist mandate** for multi-step workflows. Prose completion bars (The
   Loop) may replace copyable checklists.
 - **The authoring HARD-GATE** to the extent it would forbid a hooks conversion
-  on a skill this doc classifies as open-field (debugging, reviewing-code,
-  brainstorming).
+  on a skill this doc classifies as open-field (reviewing-code, brainstorming).
 - **The Iron Law's implied baseline**. For a philosophy rework, "no skill
   without a failing test first" is fulfilled by with-skill vs without-skill
   evals (`compare`), not by a bug-fix reproduction.
 
-Status: the first conversion under this suspension is the `debugging` hook
-conversion (plan: `.opencode/plans/debugging-hooks-conversion-plan.md`).
+Status: the `debugging` conversion previously planned as the first
+experiment is cancelled — the debugging skill was removed from the framework
+(comparison evals showed no meaningful value delta). `reviewing-code` is now
+the first conversion candidate.
 
 ## Open decisions
 
@@ -184,7 +181,7 @@ conversion (plan: `.opencode/plans/debugging-hooks-conversion-plan.md`).
    implementation.
 2. Decide (with the user) whether executing-plans and writing-plans' format stay
    enforced guidance — the classification above is a proposal.
-3. Natural next experiment: convert `debugging` (or `reviewing-code`) to hooks,
+3. Natural next experiment: convert `reviewing-code` to hooks,
    snapshotting the current version as baseline and running `compare`.
 4. If hooks win: convert remaining open-field skills, then rework AGENTS.md
    tension points, then update this doc to "DECIDED".
@@ -208,5 +205,9 @@ conversion (plan: `.opencode/plans/debugging-hooks-conversion-plan.md`).
 - 2026-09-12: Created from the practicing-tdd rework learnings, the AGENTS.md /
   skill-creator compatibility analysis, and the per-skill narrow/open assessment.
 - 2026-09-12: Documented the experimental suspension of AGENTS.md rules for the
-  hooks experiment, and the `debugging` conversion (first conversion; plan
-  drafted in `.opencode/plans/debugging-hooks-conversion-plan.md`).
+  hooks experiment, and the planned `debugging` conversion (first conversion;
+  plan drafted in `.opencode/plans/debugging-hooks-conversion-plan.md`).
+- 2026-09-14: Removed the `debugging` skill from the framework (comparison
+  evals showed no meaningful value delta). Cleared its classification, the
+  suspension-scope reference, and the next-experiment naming; `reviewing-code`
+  is now the first conversion candidate.
