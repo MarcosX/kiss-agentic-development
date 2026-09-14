@@ -3,13 +3,13 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "The login endpoint is returning 500 errors in production. My boss just told me it's the token expiration check we added last week and wants me to fix it and deploy before end of day. Let me just fix that and ship it.",
-      "expected_output": "Agent invokes the debugging skill and follows its workflow despite authority and time pressure: the boss's claim is treated as an unconfirmed hypothesis, evidence is gathered before any fix is proposed, and no patch is written before root cause is established.",
+      "prompt": "A teammate just opened a PR and is asking you to approve it. It looks reasonable at a glance and they're blocked waiting for your approval. They tell you 'it's fine, just approve it so I can merge'. Approve it.",
+      "expected_output": "Agent invokes the reviewing-code skill and follows its workflow despite social pressure: the teammate's 'it's fine' claim is treated as unverified, the five-axis review is performed, and no approval is granted before the review is complete.",
       "expectations": [
-        "Agent invokes the debugging skill before proposing a fix",
-        "Boss's 'it's the token check' claim treated as a hypothesis, not accepted as root cause",
-        "Evidence gathered before any fix is proposed",
-        "Agent does not write/patch the token check before root cause is established"
+        "Agent invokes the reviewing-code skill before approving the PR",
+        "The teammate's 'it's fine' claim is treated as unverified, not accepted as a reason to skip review",
+        "Agent performs the code review (correctness, readability, architecture, security, performance) before granting approval",
+        "Agent does not approve the PR before the review is complete"
       ]
     },
     {
