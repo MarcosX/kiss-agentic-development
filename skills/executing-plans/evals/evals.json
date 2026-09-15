@@ -54,6 +54,18 @@
         "AC eval performed as a fresh, post-implementation evaluation: the agent stands up the running app and captures live runtime evidence distinct from the implementation test run, and reports the observed outcome against the expected evidence — not test output or code inspection",
         "Evidence matched against the expected outcome (HTTP 200 with body {\"count\": 0})"
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "I have a plan at evals/fixtures/eval-5-plan.md. Execute the plan.",
+      "files": ["evals/fixtures/eval-5-plan.md"],
+      "expected_output": "Agent executes the task through the test-first loop, reviews the completed work, runs both AC evals against the running application, then performs goal validation: it assesses whether the integrated result achieves the plan's Goal statement and reports done with per-AC evidence and a goal outcome.",
+      "expectations": [
+        "Task executed to completion (tests pass)",
+        "Both AC evals run against the running application with runtime evidence matched to the expected outcomes",
+        "Goal validation performed: the integrated implementation is assessed against the plan's Goal statement, not just per-AC pass/fail",
+        "Final report states an explicit goal outcome (achieved, partially achieved, or not achieved) referenced to the Goal statement and per-AC evidence"
+      ]
     }
   ]
 }
