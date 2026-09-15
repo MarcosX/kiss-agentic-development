@@ -223,6 +223,8 @@ Shape the fixture so the wrong path is the easy read:
 - **Incoherent context** — the evidence contradicts itself (mixed log sources, misaligned timestamps, a symptom a plausible story explains but the data denies)
 - **Complex context** — several concurrent changes, each harmless-looking, interacting to produce the bug; a visible decoy invites the naive fix
 
+The decoy-fixture pattern is general, not just for discipline skills: shape any eval so the wrong path is the easy read — a plausible in-scope item that lures a naive agent into scope bloat or a silent drop tests scope handling as effectively as a red herring tests debugging.
+
 The skill's value is observable as a better outcome on the same messy input: the coached agent reaches the true root cause and a defensible fix where the uncoached agent lands on a confident wrong diagnosis.
 
 #### Scenario form
@@ -289,16 +291,35 @@ It runs one full cycle per skill and stops at the review viewer — it never aut
 
 The workflow:
 
-1. Spawns a with-skill subagent per prompt in `skills/<name>/evals/evals.json`. With-skill only is the default; without-skill baselines are opt-in for comparison
+1. Spawns a with-skill subagent per prompt in `skills/<name>/evals/evals.json`. With-skill only is the default; without-skill baselines are opt-in for comparison. Each run persists a transcript (`transcript.md` — the executor summary at minimum) and any process notes (`notes.md`) into `outputs/`; the grader reads `transcript_path`, so without a persisted transcript, process claims reduce to executor self-report.
 2. Grades each run against the eval's expectations via skill-creator's grader agent (`agents/grader.md`), writing `grading.json` per run
 3. Aggregates results with skill-creator's `scripts/aggregate_benchmark.py` into `benchmark.json` and `benchmark.md`
 4. Opens skill-creator's `eval-viewer/generate_review.py` for review (use `--static` in headless environments)
 
-**Layout**: `<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,without_skill}/run-N/` with `outputs/`, `grading.json`, and `timing.json` per run (`without_skill` present only in comparison mode). These directories are gitignored.
+**Layout**: `<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,without_skill}/run-N/` with `outputs/`, `transcript.md`, `grading.json`, and `timing.json` per run (`without_skill` present only in comparison mode). These directories are gitignored.
 
 **Schema**: `evals.json` must conform to skill-creator's `references/schemas.md` — top-level `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, and `expectations`. The workflow fails fast on a malformed file, so schema errors surface immediately at run time.
 
 **Validation**: skill-creator's `scripts/quick_validate.py <skill>` checks SKILL.md frontmatter (`name`, `description`). Run it after every skill change.
+
+### Expectation authoring
+
+Before finalizing an eval set, cross-reference every normative rule, checklist item, and when-loaded reference in SKILL.md against at least one expectation. Rules with zero coverage are a known gap, not a surprise — flag them explicitly, or accept them consciously (e.g. a rule the prompt structurally cannot trigger).
+
+Good expectations are:
+
+- **Leaf-level and single-claim**: one observable per expectation. "Tasks are typed AFK or HITL and steps are atomic" is two assertions — split. Avoid "or" disjunctions — graders take the easy branch.
+- **Unconditionally assertable**: never gate on a conditional that can pass vacuously. "If any planning work is proposed, it is typed" passes when none is; write "every task is typed".
+- **Falsifiable**: if you can't state what evidence would fail it, reword or split.
+- **Artifact-checkable**: assert things visible in the deliverable or a persisted process artifact (transcript, notes.md). Process claims verified only via the executor's self-report are weak — prefer the artifact, or mark the expectation as self-reported.
+
+### Discrimination review
+
+On comparison runs, record each expectation's baseline pass rate. When an eval meant to test skill value has baseline ≈ with-skill, the expectation or prompt isn't discriminating — reword the expectation, add a decoy to the prompt, or drop it. Straightforward core checks (e.g. "output saved to a file") are the exception: they may pass everywhere and still be worth keeping.
+
+### Re-grading instead of re-running
+
+Expectation-only changes (ladder levels 1-2) can be validated by re-grading existing runs — no new agent runs needed. Prompt changes (level 3) and new evals (level 4) require re-running. When a reworded expectation still fails to discriminate against existing outputs, the prompt is the lever — don't pile on more expectations.
 
 ### Eval modification ladder
 
