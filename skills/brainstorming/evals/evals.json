@@ -4,32 +4,32 @@
     {
       "id": 1,
       "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. What should we build? Assume you've asked all necessary clarifying questions and I've answered them.",
-      "expected_output": "Agent runs a design brainstorm: compares multiple solution metaphors with explicit trade-offs, justifies a selection with reasoning, and outputs a structured task list.",
+      "expected_output": "Agent runs a design brainstorm: compares multiple solution approaches with explicit trade-offs, leads with a recommendation justified by reasoning, and presents the chosen design clearly for user review.",
       "expectations": [
-        "Multiple solution metaphors compared before selecting one",
-        "Trade-offs between metaphors explicitly discussed",
+        "Multiple solution approaches compared before selecting one",
+        "Trade-offs between approaches explicitly discussed",
         "Selected approach justified with reasoning",
-        "Output includes structured task list"
+        "Chosen design presented for user review with a clear recommendation"
       ]
     },
     {
       "id": 2,
-      "prompt": "Let me add dark mode toggle. Just a CSS change. What do you think?",
-      "expected_output": "Agent frames the problem before jumping to a solution, challenges or probes the user's premature 'just a CSS change' framing, surfaces related concerns (e.g. persistence, contrast), and captures open questions or assumptions to validate.",
+      "prompt": "Customers are getting charged twice for the same order. The team suggests adding a 'double-charge refund' button to the admin panel so support can fix these manually. What do you think?",
+      "expected_output": "Agent does not ride the suggestion: it steps back from the premature symptom-fix, probes the root cause (where/how the double charge originates), asks clarifying questions one at a time, reframes the problem, and surfaces related concerns before comparing solutions — without implementing anything.",
       "expectations": [
-        "Problem framed before jumping to solution",
-        "User's premature solution challenged or probed",
-        "Alternatives or related concerns surfaced (e.g. persistence, contrast)",
-        "Scope of problem understood before design decisions",
-        "Output includes open questions or assumptions to validate"
+        "The double-charge problem is framed before the suggested refund-button solution is accepted",
+        "Root cause of the double charge is probed (where/how the second charge originates), not just the symptom designed around",
+        "Clarifying questions are asked one at a time, not batched into a single questionnaire",
+        "Related concerns or alternative approaches beyond the refund button are surfaced",
+        "Open questions or assumptions are captured for validation"
       ]
     },
     {
       "id": 3,
-      "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. Brainstorm the design, ask whatever clarifying questions you need, then produce the PRD as a standalone artifact in the workspace this session can hand to a plan-writer later. Assume I've answered your questions.",
-      "expected_output": "The agent conceives the design, then writes a standalone PRD document (not just an in-conversation reply) whose decisions are tied back to numbered user stories with rationale.",
+      "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. Brainstorm the design, ask whatever clarifying questions you need, then produce the PRD as a standalone document in the workspace. Assume I've answered your questions.",
+      "expected_output": "The agent conceives the design, then writes a standalone PRD document (not just an in-conversation reply) whose decisions are tied back to numbered user stories with rationale, presenting a coherent design the user can review.",
       "expectations": [
-        "Standalone PRD artifact produced (design decisions captured in a document, not only in the chat reply)",
+        "Design is captured as a standalone PRD document, not only in the chat reply",
         "User stories are numbered US-N sequentially in the order written",
         "Each decision references one or more story IDs that exist in the user stories",
         "Decisions carry a why/rationale line (chosen path, rejected alternative, or trade-off)",
