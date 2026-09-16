@@ -119,10 +119,11 @@ structured); the discipline a single agent applies is open (hooks).**
 
 - **practicing-tdd** — open-field → **hooks (DONE)**. Reference implementation.
   Narrow contract (the test) + open loop (the why).
-- **reviewing-code** — open-field → **hook candidate**. Failure modes (LGTM
-  without review, rubber-stamping, skipping the challenge step) are shortcut
-  failures. Human-in-the-loop catches mistakes → low irreversibility. Convert
-  red flags to a "done when" bar.
+- **reviewing-code** — open-field → **hooks (DONE)**. Reframe: "The task is to
+  produce findings worth acting on — verified against the actual code."
+  Challenge-findings folded into SKILL.md (always loaded). Receiving-feedback
+  dropped (rarely used, ungrounded eval). Evals: severity categorization,
+  approval standard (decoy: hardcoded threshold), false-positive challenge.
 - **brainstorming** — open-field with one guarded boundary → **hook candidate**.
   Content is open-context work and already argues its own why. The one
   load-bearing rule — no implementation before user approval — is human-reinforced
@@ -181,8 +182,7 @@ the first conversion candidate.
    implementation.
 2. Decide (with the user) whether executing-plans and writing-plans' format stay
    enforced guidance — the classification above is a proposal.
-3. Natural next experiment: convert `reviewing-code` to hooks,
-   snapshotting the current version as baseline and running `compare`.
+3. ~~Natural next experiment: convert `reviewing-code` to hooks~~ Done (see changelog). Next candidate: none currently classified open-field for hooks conversion.
 4. If hooks win: convert remaining open-field skills, then rework AGENTS.md
    tension points, then update this doc to "DECIDED".
 
@@ -211,3 +211,4 @@ the first conversion candidate.
   evals showed no meaningful value delta). Cleared its classification, the
   suspension-scope reference, and the next-experiment naming; `reviewing-code`
   is now the first conversion candidate.
+- 2026-09-15: Converted `reviewing-code` to hooks (reframe + folded challenge-findings, receiving-feedback dropped, 3 evals reworked). Eval-2 tests approval standard with a validation-refactor decoy fixture.
