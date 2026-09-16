@@ -164,8 +164,8 @@ rework them once the decision is made. Currently suspended for the experiment:
 
 Status: the `debugging` conversion previously planned as the first
 experiment is cancelled — the debugging skill was removed from the framework
-(comparison evals showed no meaningful value delta). `reviewing-code` is now
-the first conversion candidate.
+(comparison evals showed no meaningful value delta). `reviewing-code` was
+converted to hooks. `brainstorming` is the next candidate (hook candidate).
 
 ## Open decisions
 
@@ -182,7 +182,7 @@ the first conversion candidate.
    implementation.
 2. Decide (with the user) whether executing-plans and writing-plans' format stay
    enforced guidance — the classification above is a proposal.
-3. ~~Natural next experiment: convert `reviewing-code` to hooks~~ Done (see changelog). Next candidate: none currently classified open-field for hooks conversion.
+3. ~~Natural next experiment: convert `reviewing-code` to hooks~~ Done (see changelog). Next candidate: `brainstorming` (open-field, hook candidate).
 4. If hooks win: convert remaining open-field skills, then rework AGENTS.md
    tension points, then update this doc to "DECIDED".
 
