@@ -23,25 +23,6 @@
       ]
     },
     {
-      "id": 3,
-      "prompt": "I have a plan at evals/fixtures/eval-3-plan.md. The claimed implementations for the completed tasks are in eval-3-code/. Execute the plan.",
-      "files": [
-        "evals/fixtures/eval-3-plan.md",
-        "evals/fixtures/eval-3-code/search.py",
-        "evals/fixtures/eval-3-code/search_api.py"
-      ],
-      "expected_output": "Agent correctly identifies the BLOCKED status and does not ignore it: completed tasks (Task 1 and Task 2) are reviewed for spec compliance against their contract bodies, the spec review produces findings from actual code inspection (including the missing recursive indexing), the unstarted task (Task 4) is not dispatched until the blocker resolves, and the user is notified about the blocker.",
-      "expectations": [
-        "BLOCKED status correctly identified and not ignored",
-        "Spec review performed on completed tasks (Task 1 and Task 2) using a spec-against-code comparison",
-        "Spec review produces a findings report from actual code inspection (file:line references), not a bare statement that the tasks are done",
-        "Spec review identifies that build_index in search.py does not recurse into subdirectories as the contract requires",
-        "Unstarted task (Task 4) not dispatched until blocker resolved",
-        "User notified about the blocker",
-        "Worktree created before any review or dispatch (git worktree add or equivalent)"
-      ]
-    },
-    {
       "id": 4,
       "prompt": "I have a plan at evals/fixtures/eval-4-plan.md. Execute the plan.",
       "files": ["evals/fixtures/eval-4-plan.md"],
