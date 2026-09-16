@@ -31,7 +31,8 @@
         "Only dark mode toggle related features kept",
         "The plan poses explicit quiz questions or hold-points to the user about the retained dark-mode deliverable's own decomposition — how the work splits into tasks/slices, their ordering or dependencies, or HITL/AFK assignment. Setup, stack, or scope-confirmation questions, or silently-documented assumptions, don't satisfy this",
         "Every proposed task for the retained dark-mode deliverable specifies an explicit Type — AFK or HITL. \"Category: Coding\" alone doesn't count",
-        "The account-sync theme preference item's disposition is explicit — either quizzed with the user before inclusion, or cut/flagged as out-of-scope with justification. It is not silently absorbed into the feature or silently dropped"
+        "The account-sync theme-preference item is not silently absorbed into the dark-mode feature",
+        "The account-sync theme-preference item is not silently dropped — its disposition is explicit (quizzed with the user before inclusion, or cut/flagged as out-of-scope with justification)"
       ]
     }
   ]
