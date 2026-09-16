@@ -3,30 +3,40 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Plan task: palindrome-checker\n\nFiles:\n- Create: test_palindrome.py\n- Existing: palindrome.py\n\nBehavioral contract for is_palindrome(s): returns True when s reads the same forwards and backwards ignoring case and non-alphanumeric characters, False otherwise.\n\nExisting code (palindrome.py):\n\ndef is_palindrome(s):\n    return s == s[::-1]\n\nVerify test fails: run `python -m pytest test_palindrome.py -q` and confirm it fails for the expected reason — the asserted full-contract behavior (ignoring case and non-alphanumerics) is missing from the implementation.\nThen adapt the implementation so the test passes. Keep the function name and signature.\n\nDone when: the contract test passes and the implementation is adapted rather than replaced.",
-      "expected_output": "The agent treats the plan task as 'make the failing test pass'. It writes a specification test against the full contract, watches it fail for the expected reason (behavior missing) before touching the implementation, then adapts the existing function to satisfy it and runs the full suite to confirm no regressions.",
+      "prompt": "is_palindrome in palindrome.py is too strict: it returns True only when a string equals its exact reverse. It should return True when the string reads the same forwards and backwards ignoring case and non-alphanumeric characters, and False otherwise. Keep the function name and signature. The repo has other modules (utils.py) with existing tests that must keep passing.",
+      "expected_output": "The agent writes a specification test covering the full contract (ignoring case and non-alphanumerics), watches it fail for the expected reason (behavior missing) before touching the implementation, then adapts is_palindrome to satisfy it without changing its name or signature, and runs the full suite to confirm no regressions, including the pre-existing utils tests.",
       "expectations": [
         "A specification test is written against the full contract before the implementation is modified",
         "The test is watched to fail for the expected reason (behavior missing) before the implementation is touched",
         "The implementation is adapted to satisfy the test without changing the function's name or signature",
-        "After green, the full suite is run and shows no regressions"
+        "After green, the full suite is run and shows no regressions, including the pre-existing tests"
+      ],
+      "files": [
+        "evals/fixtures/palindrome/palindrome.py",
+        "evals/fixtures/palindrome/utils.py",
+        "evals/fixtures/palindrome/test_utils.py"
       ]
     },
     {
       "id": 2,
-      "prompt": "Plan task: fix-registration-duplicate-email\n\nFiles:\n- Create: test_registration_bug.py\n- Existing: registration.py\n\nBehavioral contract: registering with an email that already exists must be rejected (a duplicate-email error), not silently overwrite the existing user.\n\nExisting code (registration.py):\n\nfrom typing import Dict\nimport re\n\nclass UserRegistration:\n    def __init__(self):\n        self._users: Dict[str, dict] = {}\n\n    def register_user(self, email: str, name: str) -> dict:\n        if not re.match(r'[^@]+@[^@]+\\.[^@]+', email):\n            raise ValueError(\"Invalid email format\")\n        # BUG: No check for existing email before insertion; duplicates overwrite\n        user = {\"email\": email, \"name\": name, \"id\": len(self._users) + 1}\n        self._users[email] = user\n        return user\n\nVerify test fails: run `python -m pytest test_registration_bug.py -q` and confirm it fails for the expected reason — the duplicate-email guard is missing, so a second registration with the same email overwrites the first.\nThen modify registration.py so duplicate emails are rejected and existing users are preserved.\n\nDone when: the reproduction test passes and an already-registered user's data is unchanged.",
-      "expected_output": "The agent treats the bug as its failing test. It writes a reproduction test first, watches it fail for the expected reason (duplicate overwrites) before any fix, then modifies registration.py to reject duplicates, confirms the reproduction passes, and runs the full suite to check for regressions.",
+      "prompt": "Users report a bug: registering with an email address that's already in use silently overwrites the original account. Fix registration.py so registering with a duplicate email is rejected with a duplicate-email error and the existing user's data is preserved. Malformed emails should still raise a ValueError. The repo has other modules (products.py) with existing tests.",
+      "expected_output": "The agent treats the bug as its failing test. It writes a reproduction test, watches it fail for the expected reason (duplicate overwrites) before any modification, then fixes register_user to reject duplicates, confirms the reproduction passes and the existing user's data is preserved, and runs the full suite — including the pre-existing products tests — to check for regressions.",
       "expectations": [
         "A reproduction test is written and watched to fail for the expected reason before registration.py is modified",
         "register_user is changed to reject duplicate emails after the failing run",
         "The reproduction test passes after the fix and a pre-existing user's data is preserved",
-        "After green, the full suite is run and shows no regressions"
+        "After green, the full suite is run and shows no regressions, including the pre-existing tests"
+      ],
+      "files": [
+        "evals/fixtures/registration/registration.py",
+        "evals/fixtures/registration/products.py",
+        "evals/fixtures/registration/test_products.py"
       ]
     },
     {
       "id": 3,
-      "prompt": "Plan task: implement-discount\n\nFiles:\n- Existing: app.py\n- Existing: test_app.py (tests apply_discount, which does not exist yet)\n\nBehavioral contract for apply_discount(total, percent): returns total reduced by percent%, and raises ValueError for a non-numeric total.\n\nVerify test fails: run `python -m pytest test_app.py -q`. The plan predicts `ModuleNotFoundError: No module named 'app'` because app.py does not exist yet.\nThen implement so the test passes.\n\nDone when: test_app.py passes and nothing else in the repository is broken.",
-      "expected_output": "The agent runs the loop and hits a mismatch: the actual failure is a NameError from an existing app.py, not the ModuleNotFoundError the plan predicts. It does not force the implementation through to green pretending the prediction held; it reconciles by diagnosing the real cause (undefined DISCOUNT_RATE), fixes it, makes the contract test pass, and runs the full suite — which must stay green including the unrelated existing test file.",
+      "prompt": "Implement apply_discount(total, percent): return the total reduced by percent%, and raise ValueError for a non-numeric total. This is a plan-driven task: the plan assumed app.py did not exist yet, so it predicted the first test run would fail with ModuleNotFoundError: No module named 'app'. In reality app.py is already present. test_app.py covers apply_discount; test_services.py covers other code that must keep working.",
+      "expected_output": "The agent runs the loop and hits a mismatch: the actual failure is a NameError from the existing app.py, not the ModuleNotFoundError the plan predicts. It does not force the implementation through to green pretending the prediction held; it reconciles by diagnosing the real cause (undefined DISCOUNT_RATE), fixes it, makes the contract test pass, and runs the full suite — which must stay green including the unrelated existing test file.",
       "expectations": [
         "The agent detects that the actual failure (NameError from existing app.py) differs from the plan's stated expected reason (ModuleNotFoundError)",
         "The mismatch is reconciled by fixing the real cause (undefined DISCOUNT_RATE), not by forcing the implementation past the plan's predicted error",
