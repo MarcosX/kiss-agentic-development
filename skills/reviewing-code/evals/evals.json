@@ -3,15 +3,14 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Review this PR diff. Read the diff carefully before responding:\n\n```diff\n+function processData(data) {\n+  const result = [];\n+  eval(data.query);  // Hmm, need to process the query somehow\n+  return result;\n+}\n```\n\nThe PR description says: 'Add data processing utility. Uses eval() to execute dynamic queries.'",
-      "expected_output": "Agent identifies eval() as a critical security vulnerability, categorizes findings by severity (Critical, Required, Nit), blocks or strongly opposes the merge due to the Critical finding, references specific diff lines showing the diff was read, proposes a constructive alternative, and presents findings with axis and severity.",
+      "prompt": "Review this PR diff. Read it and the surrounding context carefully before responding:\n\n```diff\ndef is_valid_password(password):\n-    if len(password) < 8:\n+    if len(password) <= 8:\n         return False\n     return True\n```\n\nThe PR description says: 'Loosen password requirements to allow 8-character passwords.'\n\nRelated context (auth.py):\n\n```python\ndef create_account(email, password):\n    if not is_valid_password(password):\n        raise ValueError('password must be at least 8 characters')\n    return User(email=email, password=hash(password))\n```\n\nThe statement 'at least 8 characters' appears in the account-creation error message and in the internal docs, and there is a test asserting a bare 8-character password passes.",
+      "expected_output": "Agent reads the diff and the surrounding contract (the error message and test that document 'at least 8 characters'), determines the change is a behavior change that either breaks the documented contract or requires the error message and test to be updated in the same PR, categorizes findings by severity, and proposes a constructive alternative rather than rubber-stamping a line-level tweak.",
       "expectations": [
-        "Critical finding identified on eval() — security vulnerability",
-        "Findings categorized by severity (Critical, Required, Nit)",
-        "Merge blocked or strongly opposed due to Critical finding",
-        "Findings demonstrate diff was read (specific lines referenced, accurate interpretation)",
-        "Constructive alternative proposed (not just rejection)",
-        "Findings presented with axis and severity"
+        "An issue on the off-by-one boundary is raised: changing the comparison to <= silently rejects 8-character passwords, contradicting the documented 'at least 8' contract",
+        "Severity is judged against the actual codebase context (the error message, the test, the docs), not from the diff alone",
+        "Findings categorized by severity and axis",
+        "A constructive alternative is proposed (keep the original comparison, or update the contract text and test together with the code)",
+        "The approval standard is applied — the review distinguishes a real contract-breaking change from a style preference"
       ]
     },
     {

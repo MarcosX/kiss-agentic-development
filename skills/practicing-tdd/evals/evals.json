@@ -3,18 +3,13 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "is_palindrome in palindrome.py is too strict: it returns True only when a string equals its exact reverse. It should return True when the string reads the same forwards and backwards ignoring case and non-alphanumeric characters, and False otherwise. Keep the function name and signature. The repo has other modules (utils.py) with existing tests that must keep passing.",
-      "expected_output": "The agent writes a specification test covering the full contract (ignoring case and non-alphanumerics), watches it fail for the expected reason (behavior missing) before touching the implementation, then adapts is_palindrome to satisfy it without changing its name or signature, and runs the full suite to confirm no regressions, including the pre-existing utils tests.",
+      "prompt": "Plan task: slugify\n\nFiles:\n- Create: test_slugify.py\n- Existing: slugify.py\n\nBehavioral contract for slugify(title): converts a page title into a URL-safe slug:\n- lowercases the input\n- replaces spaces with hyphens\n- strips any characters that are not alphanumeric or hyphens\n- collapses consecutive hyphens into one\n- strips leading and trailing hyphens\n- returns empty string for empty or whitespace-only input\n\nExisting code (slugify.py):\n\ndef slugify(title):\n    return title.lower()\n\nVerify test fails: run `python -m pytest test_slugify.py -q` and confirm it fails for the expected reason — the full slugification contract (space replacement, character stripping, hyphen collapsing, edge-case handling) is missing from the implementation.\nThen adapt the implementation so the test passes. Keep the function name and signature.\n\nDone when: the contract test passes and the implementation is adapted rather than replaced.",
+      "expected_output": "The agent treats the plan task as 'make the failing test pass'. It writes a specification test against the full contract (case, spaces, non-alphanumerics, collapsed hyphens, edge cases), watches it fail for the expected reason (behavior missing) before touching the implementation, then adapts the existing function to satisfy it and runs the full suite to confirm no regressions.",
       "expectations": [
         "A specification test is written against the full contract before the implementation is modified",
         "The test is watched to fail for the expected reason (behavior missing) before the implementation is touched",
         "The implementation is adapted to satisfy the test without changing the function's name or signature",
-        "After green, the full suite is run and shows no regressions, including the pre-existing tests"
-      ],
-      "files": [
-        "evals/fixtures/palindrome/palindrome.py",
-        "evals/fixtures/palindrome/utils.py",
-        "evals/fixtures/palindrome/test_utils.py"
+        "After green, the full suite is run and shows no regressions"
       ]
     },
     {

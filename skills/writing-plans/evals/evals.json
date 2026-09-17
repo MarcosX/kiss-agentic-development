@@ -23,16 +23,13 @@
     },
     {
       "id": 2,
-      "prompt": "Plan this feature: Add a dark mode toggle to our site. While we're at it, we should also redesign the landing page, add analytics tracking, migrate the database, and containerize the app. Also, the PM mentioned the selected theme should sync to the user's account, so it follows them across devices.",
-      "expected_output": "Agent explicitly flags scope creep, applies YAGNI to remove unrelated features, keeps only dark-mode-toggle-related work, makes the account-sync item's disposition explicit (quizzed with the user or cut with justification), quizzes the user about the retained deliverable's granularity or scope, and types every task AFK or HITL.",
+      "prompt": "Plan this feature: Add a dark mode toggle to our web app. The user chooses light or dark. While we're at it, we should also auto-detect the system color scheme, persist the user's preference across sessions, and make sure the hero image doesn't look washed out in dark mode.",
+      "expected_output": "Agent explicitly flags scope creep, applies YAGNI to separate the explicitly-requested dark mode toggle from the adjoining asks (auto-detection, hero-image restyle), keeps only toggle-related work that the requirements justify, and quizzes the user about scope or granularity.",
       "expectations": [
-        "Scope creep flagged explicitly",
-        "YAGNI applied — out-of-scope features removed",
-        "Only dark mode toggle related features kept",
-        "The plan poses explicit quiz questions or hold-points to the user about the retained dark-mode deliverable's own decomposition — how the work splits into tasks/slices, their ordering or dependencies, or HITL/AFK assignment. Setup, stack, or scope-confirmation questions, or silently-documented assumptions, don't satisfy this",
-        "Every proposed task for the retained dark-mode deliverable specifies an explicit Type — AFK or HITL. \"Category: Coding\" alone doesn't count",
-        "The account-sync theme-preference item is not silently absorbed into the dark-mode feature",
-        "The account-sync theme-preference item is not silently dropped — its disposition is explicit (quizzed with the user before inclusion, or cut/flagged as out-of-scope with justification)"
+        "Scope creep flagged explicitly — the adjoined asks (auto-detect system scheme, hero-image restyle) are distinguished from the explicitly requested toggle",
+        "YAGNI applied — unrequested features are removed or explicitly deferred, not silently absorbed into the plan",
+        "Only the dark mode toggle plus genuinely justified support (e.g. persisted preference) kept in the plan",
+        "User quizzed about scope or granularity before finalizing"
       ]
     }
   ]

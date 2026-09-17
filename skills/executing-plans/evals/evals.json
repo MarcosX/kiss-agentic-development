@@ -8,7 +8,8 @@
       "expected_output": "Agent identifies the two tasks as independent (no dependency chain blocking either), dispatches them in a parallel batch, and inspects each subagent's completion report.",
       "expectations": [
         "Tasks identified as independent (no dependency chain blocking either)",
-        "Tasks dispatched in parallel batch",
+        "Tasks dispatched in parallel batch and in a single turn",
+        "Each task dispatched as a separate subagent — no task implemented inline by the main session",
         "Completion report inspected for each subagent",
         "Worktree created before task dispatch (git worktree add or equivalent)"
       ]
@@ -26,13 +27,14 @@
       "id": 4,
       "prompt": "I have a plan at evals/fixtures/eval-4-plan.md. Execute the plan.",
       "files": ["evals/fixtures/eval-4-plan.md"],
-      "expected_output": "Agent executes the task through the test-first loop, reviews the completed work for spec compliance and code quality before finishing, then runs the AC eval from the plan's AC Evals section. The eval stands up the app, calls the endpoint, and captures fresh runtime evidence matched against the expected outcome — not test output or code inspection.",
+      "expected_output": "Agent executes the task through the test-first loop, reviews the completed work for spec compliance and code quality before finishing, then dispatches the AC eval from the plan's AC Evals section to a fresh subagent that stands up the app, calls the endpoint, and captures fresh runtime evidence matched against the expected outcome — not test output or code inspection.",
       "expectations": [
         "Task executed to completion (tests pass)",
         "Completed task spec-reviewed against the plan before AC evals — a spec-against-code comparison produces a verdict, not just a 'done' statement",
         "Completed task code-quality reviewed before AC evals (review produces findings, not skipped)",
         "AC eval run after implementation from the plan's AC Evals section (not skipped)",
-        "AC eval performed as a fresh, post-implementation evaluation: the agent stands up the running app and captures live runtime evidence distinct from the implementation test run, and reports the observed outcome against the expected evidence — not test output or code inspection",
+        "AC eval executed as a fresh subagent (or equivalently isolated session) with no access to the implementation context — not run inline in the implementation session",
+        "AC eval evidence is runtime evidence distinct from test output or code inspection: the agent stands up the running app, exercises the endpoint, and captures the live result (HTTP response, server log, process output)",
         "Evidence matched against the expected outcome (HTTP 200 with body {\"count\": 0})"
       ]
     },
