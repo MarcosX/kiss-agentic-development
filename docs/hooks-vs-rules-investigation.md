@@ -6,7 +6,7 @@ skills. Read this before touching any skill under investigation.
 
 ## What this is
 
-Whether discipline skills (TDD, reviewing, planning, execution) should
+Whether discipline skills (TDD, debugging, reviewing, planning, execution) should
 be written as **hooks** — cognitive reframes that show the agent why a behavior
 is in its own interest and give it a clear way to complete the task — instead of
 **rules** — HARD-GATEs, red flags, MUSTs that try to restrain the agent.
@@ -124,6 +124,11 @@ structured); the discipline a single agent applies is open (hooks).**
   Challenge-findings folded into SKILL.md (always loaded). Receiving-feedback
   dropped (rarely used, ungrounded eval). Evals: severity categorization,
   approval standard (decoy: hardcoded threshold), false-positive challenge.
+- **debugging** — open-field → **hook candidate**. Restored to the framework
+  (see changelog). Closest twin of practicing-tdd (method discipline; root-cause
+  "proof" ≈ failing-test "proof"). Current shape: HARD-GATE + red flags + phases.
+  Failure driver is motivational (jump-to-fix), not hazardous. Rewrite
+  why-before-gate.
 - **brainstorming** — open-field with one guarded boundary → **hook candidate**.
   Content is open-context work and already argues its own why. The one
   load-bearing rule — no implementation before user approval — is human-reinforced
@@ -157,15 +162,16 @@ rework them once the decision is made. Currently suspended for the experiment:
 - **Checklist mandate** for multi-step workflows. Prose completion bars (The
   Loop) may replace copyable checklists.
 - **The authoring HARD-GATE** to the extent it would forbid a hooks conversion
-  on a skill this doc classifies as open-field (reviewing-code, brainstorming).
+  on a skill this doc classifies as open-field (debugging, reviewing-code,
+  brainstorming).
 - **The Iron Law's implied baseline**. For a philosophy rework, "no skill
   without a failing test first" is fulfilled by with-skill vs without-skill
   evals (`compare`), not by a bug-fix reproduction.
 
-Status: the `debugging` conversion previously planned as the first
-experiment is cancelled — the debugging skill was removed from the framework
-(comparison evals showed no meaningful value delta). `reviewing-code` was
-converted to hooks. `brainstorming` is the next candidate (hook candidate).
+Status: `reviewing-code` was converted to hooks. The `debugging` skill had been
+removed from the framework (comparison evals showed no meaningful value delta)
+but has since been restored — see changelog. `brainstorming` is the next
+candidate (hook candidate).
 
 ## Open decisions
 
@@ -212,3 +218,7 @@ converted to hooks. `brainstorming` is the next candidate (hook candidate).
   suspension-scope reference, and the next-experiment naming; `reviewing-code`
   is now the first conversion candidate.
 - 2026-09-15: Converted `reviewing-code` to hooks (reframe + folded challenge-findings, receiving-feedback dropped, 3 evals reworked). Eval-2 tests approval standard with a validation-refactor decoy fixture.
+- 2026-09-17: Restored the `debugging` skill to the framework and re-classified
+  it as an open-field hook candidate. Its evals now use a runnable reproduction
+  fixture (`repro-fixture/`) instead of the pressure-framed payment-gateway
+  scenario.
