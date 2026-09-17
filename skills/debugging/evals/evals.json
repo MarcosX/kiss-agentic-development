@@ -7,7 +7,8 @@
       "files": ["evals/fixtures/deploy-vs-logs.md"],
       "expected_output": "The agent checks whether the failures predate the deploy. Working from the provided fixture, it reads the log timestamps, observes that the same FxApi.TimeoutError appears on 2026-09-09 — two days before the 2026-09-10 deploy — and rejects the cache-deploy theory. The agent names the upstream FX API degradation as the root cause, not the cache, and recommends addressing the upstream issue rather than reverting the cache.",
       "expectations": [
-        "The agent reads the log timestamps and checks whether the failures predate the recent deploy before accepting the user's cache explanation",
+        "Conclusion is reached only after evidence gathering: the agent reads the log timestamps and checks whether the failures predate the recent deploy before accepting or rejecting the user's cache explanation",
+        "The user's cache theory is not endorsed or restated as confirmed before the timestamp evidence is examined",
         "The agent observes that FxApi.TimeoutError appears in the log on 2026-09-09 — before the 2026-09-10 deploy — and treats that as evidence against the deploy-caused theory",
         "The root cause the agent names is the upstream FX API degradation or the fallback-into-degraded-path, not the cache key or the cache deploy itself",
         "The agent's recommended fix addresses the upstream issue or fallback behavior and does not simply revert the cache deploy"
@@ -15,24 +16,31 @@
     },
     {
       "id": 2,
-      "prompt": "I'm looking at evals/fixtures/payment-gateway-scenario.md. Production is having issues — users can't check out. I'm under pressure to fix this quickly. What should I do?",
-      "files": ["evals/fixtures/payment-gateway-scenario.md"],
-      "expected_output": "Agent recommends systematic debugging over guess-and-check rather than jumping straight to a fix, and identifies the root cause (gateway timeout lowered to 5s while the Stripe API typically responds in 10-15s) before applying any fix.",
+      "prompt": "I'm looking at evals/fixtures/repro-fixture/. Customers say discounted orders total wrong — the discount seems to give more than expected. Sales thinks someone changed the tax rate. Here's the checkout module and its tests. Figure out what's actually going on and fix it.",
+      "files": [
+        "evals/fixtures/repro-fixture/checkout.py",
+        "evals/fixtures/repro-fixture/test_checkout.py"
+      ],
+      "expected_output": "The agent treats the symptom as a bug to reproduce, not a theory to adopt. It runs the test suite before changing code, observes the wrong total (90.0 instead of 88.0 for 20% off 100), identifies the tax is computed on the undiscounted subtotal, makes exactly one code change, and re-runs the suite to confirm the reproduction now passes and the unrelated tests still pass. It does not settle for the user's tax-rate theory.",
       "expectations": [
-        "Systematic debugging recommended over guess-and-check — the agent recommends the methodical approach rather than jumping straight to a fix",
-        "Root cause identified before any fix applied"
+        "The agent runs the test suite or a reproduction before modifying checkout.py and observes the failing discount test (90.0 vs expected 88.0) in the output",
+        "The failing output is evidenced (shown or described from the run), not merely asserted as a predicted outcome",
+        "The user's tax-rate theory is not adopted; the root cause the agent names is the tax/discount ordering (tax computed on the undiscounted subtotal)",
+        "After the fix, the same reproduction run shows the correct total, and the unrelated passing tests still pass",
+        "The fix is root-cause (tax computed after discount), not symptom-masking (no hardcoded value, no deleted test)"
       ]
     },
     {
       "id": 3,
-      "prompt": "I'm looking at evals/fixtures/retry-pool-scenario.md. Our checkout endpoint times out intermittently — I keep seeing 'timed out after 5s' in the logs. Started after some recent infra changes but I can't tell which one. What's the fix?",
+      "prompt": "I'm looking at evals/fixtures/retry-pool-scenario.md. Our checkout endpoint times out intermittently — I keep seeing 'timed out after 5s' in the logs. Started after some recent infra changes but I can't tell which one. I keep thinking we should just bump the timeout to 30s. What's the fix?",
       "files": ["evals/fixtures/retry-pool-scenario.md"],
-      "expected_output": "The agent reads both recent changes (pooling and retry wrapper) as potentially interacting. It correlates the timeout cadence in the log with the retry backoff, identifies the retry-into-exhausted-pool feedback loop (backoff shorter than connection hold time) as the root cause, and proposes a fix that addresses the interaction rather than bumping a single threshold.",
+      "expected_output": "The agent reads both recent changes (pooling and retry wrapper) as potentially interacting. It correlates the timeout cadence in the log with the retry backoff, identifies the retry-into-exhausted-pool feedback loop (backoff shorter than connection hold time) as the root cause, and proposes a fix that addresses the interaction rather than bumping a single threshold. It does not simply raise the timeout despite the user's stated preference.",
       "expectations": [
         "The agent reads both recent changes (pooling and retry wrapper) as potentially interacting rather than treating either one in isolation",
         "The agent correlates the timeout cadence in the log with the retry backoff as evidence that retries are the proximate trigger",
         "The root cause the agent names is the retry-into-exhausted-pool feedback loop, not a single threshold (timeout value or pool_size) treated as the sole root cause",
-        "The agent's proposed fix addresses the interaction rather than bumping only one threshold"
+        "The agent's proposed fix addresses the interaction rather than bumping only the timeout, and it does not simply adopt the user's timeout-bump suggestion",
+        "The user's suggested fix is treated as a hypothesis to verify, not a directive to execute"
       ]
     }
   ]

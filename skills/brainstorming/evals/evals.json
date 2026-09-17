@@ -3,13 +3,14 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. What should we build? Assume you've asked all necessary clarifying questions and I've answered them.",
-      "expected_output": "Agent runs a design brainstorm: compares multiple solution approaches with explicit trade-offs, leads with a recommendation justified by reasoning, and presents the chosen design clearly for user review.",
+      "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. What should we build?",
+      "expected_output": "Agent runs a design brainstorm: explores the context, asks clarifying questions to stress-test understanding, compares multiple solution approaches with explicit trade-offs, leads with a recommendation justified by reasoning, and presents the design for approval before any implementation.",
       "expectations": [
-        "Multiple solution approaches compared before selecting one",
-        "Trade-offs between approaches explicitly discussed",
-        "Selected approach justified with reasoning",
-        "Chosen design presented for user review with a clear recommendation"
+        "Clarifying questions asked to stress-test understanding before proposing solutions",
+        "Multiple solution approaches presented with explicit trade-offs",
+        "A recommendation is made and justified with reasoning — the agent leads with it rather than presenting a neutral list",
+        "Unrequested scope is pruned (YAGNI)",
+        "No implementation started, code written, or implementation skill invoked before approval"
       ]
     },
     {
