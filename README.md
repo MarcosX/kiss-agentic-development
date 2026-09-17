@@ -54,6 +54,8 @@ Every session is gated by a [global using-skills instruction](instructions/using
 
 From there the workflow follows a natural rhythm: `brainstorming` to explore and design, `writing-plans` to turn the design into categorized tasks (coding vs non-coding), `executing-plans` to dispatch each task to an isolated subagent, `practicing-tdd` which each subagent follows to implement with tests first, and `reviewing-code` to catch issues before merge.
 
+When something breaks, `debugging` makes sure the agent finds the root cause before proposing a fix.
+
 ```mermaid
 flowchart TB
     B[brainstorming] --> C[writing-plans]
@@ -79,7 +81,7 @@ flowchart TB
 | `executing-plans` | Isolated subagent tasks with spec and code review gates                                                                    |
 | `practicing-tdd`  | Test-first discipline — no code without a failing test                                                                     |
 | `reviewing-code`  | Five-axis review (correctness, readability, architecture, security, performance) with structured severity-labeled feedback |
-
+| `debugging`       | Root cause investigation before any fix                                                                                    |
 
 ## Installation
 
@@ -98,7 +100,7 @@ git clone https://github.com/MarcosX/kiss-agentic-development.git /tmp/kiss-agen
 cp -r /tmp/kiss-agentic-dev/skills/* <TARGET_PATH>/
 ```
 
-Replace `<TARGET_PATH>` with your tool's global skills path (see the per-tool table in the install prompt). This installs 5 domain skills. You then need to manually add the [using-skills](./instructions/using-skills.md) global instruction to your tool's config (see per-tool sections below).
+Replace `<TARGET_PATH>` with your tool's global skills path (see the per-tool table in the install prompt). This installs 6 domain skills. You then need to manually add the [using-skills](./instructions/using-skills.md) global instruction to your tool's config (see per-tool sections below).
 
 ### OpenCode
 
@@ -153,7 +155,7 @@ You can also confirm the domain skills are installed:
 
 ```bash
 ls <TARGET_PATH>/
-# Expected: brainstorming  executing-plans  practicing-tdd  reviewing-code  writing-plans
+# Expected: brainstorming  debugging  executing-plans  practicing-tdd  reviewing-code  writing-plans
 ```
 
 Where `<TARGET_PATH>` is your tool's global skills path from the manual install section.

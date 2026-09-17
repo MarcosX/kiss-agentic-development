@@ -63,10 +63,11 @@ A response without this line is non-compliant; rewrite it before sending.
 
 Load a skill whenever there is any chance it applies, not only when you're sure. The signal scan is the floor, not the ceiling.
 
+- bug, error, crash, fail, unexpected → `debugging`
 - idea, approach, explore, design → `brainstorming`
 - plan, implement, build, add, feature → `writing-plans`
 
-Process skills first (`brainstorming`), implementation skills after.
+Process skills first (`brainstorming`, `debugging`), implementation skills after.
 
 ## After loading
 
@@ -136,7 +137,7 @@ You can also confirm the domain skills are installed:
 
 ```bash
 ls <TARGET_PATH>/
-# Expected: brainstorming  executing-plans  practicing-tdd  reviewing-code  writing-plans
+# Expected: brainstorming  debugging  executing-plans  practicing-tdd  reviewing-code  writing-plans
 ```
 
 Replace `<TARGET_PATH>` with the path you copied skills to in step 2.

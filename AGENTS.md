@@ -55,7 +55,7 @@ The `skill-creator` skill drives skill validation and evals. It is dev-only tool
 - Store plans, specs, and session artifacts in `.opencode/plans/` — it is gitignored and will not be committed
 - Use prefixed filenames with 2-3 key words, never generics like `plan.md`. Example: `password-reset-plan.md`
 - Do not store plans, temp files, or generated reports at the repo root, in `skills/`, or anywhere tracked by git
-- Use `*-workspace/` directories for eval runs (e.g., `practicing-tdd-workspace/iteration-1/`) — these are gitignored
+- Use `*-workspace/` directories for eval runs (e.g., `debugging-workspace/iteration-1/`) — these are gitignored
 
 ## Skill authoring guidelines
 
