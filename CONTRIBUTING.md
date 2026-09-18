@@ -36,11 +36,11 @@ In the GREEN phase, after writing or editing a skill, run the skill-creator eval
 
 ## Evaluation
 
-Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. In OpenCode, open the `/eval-skills` slash command (`.opencode/commands/eval-skills.md`) to evaluate skills; pass skill names, `all`, or nothing to be prompted, and add `compare` to include without-skill baselines. In any other agent, invoke the `skill-creator` skill in a session and ask it to run the eval workflow for `skills/<name>`.
+Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. In OpenCode, open the `/eval-skills` slash command (`.opencode/commands/eval-skills.md`) to evaluate skills; pass skill names, `all`, or nothing to be prompted, and add `compare` to include without-skill baselines. In any other agent that can run the skill-creator workflow, note that the without-skill baseline requiring genuine skill isolation is an OpenCode-specific concern; outside OpenCode, baseline executors must be given no skills at all by construction (see AGENTS.md "Evaluation").
 
 The workflow:
 
-1. Spawns a with-skill subagent per prompt in `skills/<name>/evals/evals.json` (with-skill only is the default; without-skill baselines are opt-in for comparison)
+1. Spawns a with-skill subagent per prompt in `skills/<name>/evals/evals.json` (with-skill only is the default; without-skill baselines are opt-in for comparison). Without-skill baselines MUST run through an executor with the skill tool disabled — in OpenCode that is the repo-owned `eval-baseline` agent (`.opencode/agents/eval-baseline.md`)
 2. Grades each run against the eval's expectations via skill-creator's grader agent (`agents/grader.md`), writing `grading.json` per run
 3. Aggregates results with skill-creator's `scripts/aggregate_benchmark.py` into `benchmark.json` and `benchmark.md`
 4. Opens skill-creator's `eval-viewer/generate_review.py` for review (use `--static` in headless environments)
