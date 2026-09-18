@@ -33,7 +33,7 @@ Before running any skill-creator script, ensure the repo venv has its dependenci
 For each target skill, in order, run skill-creator's eval workflow for exactly one cycle:
 
 1. Use workspace <skill>-workspace/ at the repo root. Use the lowest positive N such that iteration-N does not already exist in that workspace.
-2. For each eval in skills/<name>/evals/evals.json, spawn a with_skill executor subagent. In comparison mode, also spawn a without_skill baseline executor (no skill) in the same turn. Save to eval-<id>-<name>/with_skill/run-1/outputs/ and, when present, eval-<id>-<name>/without_skill/run-1/outputs/, where <name> is a short descriptive eval name.
+2. For each eval in skills/<name>/evals/evals.json, spawn a with_skill executor subagent. In comparison mode, also spawn a without_skill baseline executor in the same turn — you MUST dispatch it through the eval-baseline subagent (defined in .opencode/agents/eval-baseline.md), whose skill tool is disabled; do NOT dispatch baselines through a subagent that still has the skill tool, or the baseline will be contaminated. Save to eval-<id>-<name>/with_skill/run-1/outputs/ and, when present, eval-<id>-<name>/without_skill/run-1/outputs/, where <name> is a short descriptive eval name.
 3. Write an eval_metadata.json per eval directory (eval_id, eval_name, prompt, expectations used as assertions).
 4. While runs execute, draft assertions from each eval's expectations, update eval_metadata.json (and evals/evals.json if assertions change), and explain them to the user.
 5. Capture timing.json for each run from the subagent task notification, saved to <run-dir>/timing.json with fields total_tokens, duration_ms, total_duration_seconds — it is not persisted elsewhere.

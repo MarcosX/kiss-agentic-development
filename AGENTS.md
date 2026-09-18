@@ -291,7 +291,7 @@ It runs one full cycle per skill and stops at the review viewer — it never aut
 
 The workflow:
 
-1. Spawns a with-skill subagent per prompt in `skills/<name>/evals/evals.json`. With-skill only is the default; without-skill baselines are opt-in for comparison. Each run persists a transcript (`transcript.md` — the executor summary at minimum) and any process notes (`notes.md`) into `outputs/`; the grader reads `transcript_path`, so without a persisted transcript, process claims reduce to executor self-report.
+1. Spawns a with-skill subagent per prompt in `skills/<name>/evals/evals.json`. With-skill only is the default; without-skill baselines are opt-in for comparison. Without-skill baselines MUST be dispatched through the repo-owned `eval-baseline` subagent (`.opencode/agents/eval-baseline.md`), which disables the skill tool so the baseline genuinely has no skills available — an ordinary subagent still sees skills and self-triggers, contaminating the baseline. Each run persists a transcript (`transcript.md` — the executor summary at minimum) and any process notes (`notes.md`) into `outputs/`; the grader reads `transcript_path`, so without a persisted transcript, process claims reduce to executor self-report.
 2. Grades each run against the eval's expectations via skill-creator's grader agent (`agents/grader.md`), writing `grading.json` per run
 3. Aggregates results with skill-creator's `scripts/aggregate_benchmark.py` into `benchmark.json` and `benchmark.md`
 4. Opens skill-creator's `eval-viewer/generate_review.py` for review (use `--static` in headless environments)
