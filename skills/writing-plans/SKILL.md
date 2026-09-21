@@ -27,7 +27,7 @@ The template below guarantees every task is executor-runnable. Merge local ticke
 
 **Each Task is self-contained**: Tasks contain clear implementation, verification, and completion steps.
 
-**Each step is one atomic action**: No judgment required. Ambiguity means revisit the plan. Each step completes one atomic action.
+**Each step is one atomic action**: No judgment required. Ambiguity means revisit the plan. Each step completes one atomic action. Placeholder stubs (`[run command]`, `[add endpoint]`, ellipsis) are forbidden — every step must be executable verbatim from the plan.
 
 **Ensure all ACs are covered**: Map every AC to tasks as they are created. If ACs are left with no task assigned, review the plan to identify gaps/duplication.
 
@@ -58,6 +58,7 @@ Coding tasks assume the executor follows practicing-tdd's loop.
 ## Task N: [Task Name]
 
 **Category:** Coding | Non-coding
+**Type:** HITL | AFK
 **Satisfies:** AC-1, AC-2
 
 **Files:**
@@ -68,7 +69,7 @@ Coding tasks assume the executor follows practicing-tdd's loop.
 
 **Coding template** — use when Category is Coding:
 
-The test-first loop is owned by practicing-tdd; the plan supplies the contract, not the code. Do not embed test code, expected-failure text, or implementation code in a coding task.
+The test-first loop is owned by practicing-tdd; the plan supplies the contract, not the code. Do not embed test code, expected-failure text, or implementation code in a coding task. A contract that needs a code sample to be understood is underspecified — write precise semantics instead.
 
 **Contract** (REQUIRED — precise enough that a fresh executor can write a deterministic failing test without guessing):
 
