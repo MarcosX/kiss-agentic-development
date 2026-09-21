@@ -5,12 +5,11 @@
       "id": 1,
       "prompt": "I have a plan file at evals/fixtures/eval-1-plan.md with 2 independent tasks. Execute the plan.",
       "files": ["evals/fixtures/eval-1-plan.md"],
-      "expected_output": "Agent identifies the two tasks as independent (no dependency chain blocking either), dispatches them in a parallel batch, and inspects each subagent's completion report.",
+      "expected_output": "Agent identifies the two tasks as independent (no dependency chain blocking either), dispatches them in a parallel batch, and inspects each task's completion report.",
       "expectations": [
         "Tasks identified as independent (no dependency chain blocking either)",
         "Tasks dispatched in parallel batch and in a single turn",
-        "Each task dispatched as a separate subagent — no task implemented inline by the main session",
-        "Completion report inspected for each subagent",
+        "Completion report inspected for each task",
         "Worktree created before task dispatch (git worktree add or equivalent)"
       ]
     },
@@ -33,7 +32,7 @@
         "Completed task spec-reviewed against the plan before AC evals — a spec-against-code comparison produces a verdict, not just a 'done' statement",
         "Completed task code-quality reviewed before AC evals (review produces findings, not skipped)",
         "AC eval run after implementation from the plan's AC Evals section (not skipped)",
-        "AC eval executed as a fresh subagent (or equivalently isolated session) with no access to the implementation context — not run inline in the implementation session",
+        "AC eval executed with fresh context isolated from the implementation session — not evaluated inline in the implementation session",
         "AC eval evidence is runtime evidence distinct from test output or code inspection: the agent stands up the running app, exercises the endpoint, and captures the live result (HTTP response, server log, process output)",
         "Evidence matched against the expected outcome (HTTP 200 with body {\"count\": 0})"
       ]
