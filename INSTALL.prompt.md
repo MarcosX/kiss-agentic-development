@@ -90,21 +90,7 @@ These thoughts are how agents skip skills. If you catch yourself thinking one, s
 
 ### OpenCode
 
-1. Create the instructions directory:
-
-```bash
-mkdir -p ~/.config/opencode/instructions/
-```
-
-2. Save the above content to `~/.config/opencode/instructions/using-skills.md`.
-
-3. Add to `~/.config/opencode/opencode.json`:
-
-```json
-{
-  "instructions": ["~/.config/opencode/instructions/using-skills.md"]
-}
-```
+1. Save the above content to `~/.config/opencode/AGENTS.md` (OpenCode v2 loads global instructions only from `AGENTS.md`).
 
 ### Claude Code
 
