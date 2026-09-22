@@ -17,13 +17,13 @@ Collection of AI agent skills that enforce skill-first workflows.
 └── .opencode/
     ├── skills/ → ../skills           # Symlink for native discovery (domain skills only)
     ├── commands/eval-skills.md       # Command that runs the eval workflow
-    ├── opencode.json                 # Local dev config (loads instructions/using-skills.md)
+    ├── opencode.json                 # Local dev config (schema only; global AGENTS.md loads using-skills)
     └── plans/                        # Plans, specs, and short-term artifacts (gitignored)
 ```
 
 ## Local development
 
-When working on skills in this repo, the local config (`.opencode/opencode.json`) loads `instructions/using-skills.md` into every opencode session, while the symlink provides native discovery for all domain skills via the `skill` tool.
+When working on skills in this repo, the global `~/.config/opencode/AGENTS.md` (installed from the canonical `instructions/using-skills.md`) loads the `using-skills` instruction into every opencode session, while the symlink provides native discovery for all domain skills via the `skill` tool. OpenCode v2 loads instructions from `AGENTS.md` only; the config `instructions` array is not resolved.
 
 The `skill-creator` skill drives skill validation and evals. It is dev-only tooling — it lives in `.agents/skills/skill-creator/` (gitignored, never shipped) and must be installed separately on a fresh clone. The `eval-skills` command reports when it is missing.
 
