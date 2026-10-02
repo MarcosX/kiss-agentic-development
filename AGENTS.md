@@ -6,8 +6,7 @@ Collection of AI agent skills that enforce skill-first workflows.
 
 ```
 ├── instructions/
-│   ├── using-skills.md              # Global instruction (always loaded, not a skill)
-│   └── using-skills/evals/          # Evals for the using-skills instruction
+│   └── using-skills.md              # Global instruction (always loaded, not a skill)
 ├── skills/                           # All skill directories (source of truth)
 │   ├── [skill name]/
 │   │   ├── SKILL.md
@@ -16,7 +15,6 @@ Collection of AI agent skills that enforce skill-first workflows.
 │   └── before-1.0.0.md              # Migration steps for users upgrading from pre-1.0
 └── .opencode/
     ├── skills/ → ../skills           # Symlink for native discovery (domain skills only)
-    ├── commands/eval-skills.md       # Command that runs the eval workflow
     ├── opencode.json                 # Local dev config (schema only; global AGENTS.md loads using-skills)
     └── plans/                        # Plans, specs, and short-term artifacts (gitignored)
 ```
@@ -25,14 +23,14 @@ Collection of AI agent skills that enforce skill-first workflows.
 
 When working on skills in this repo, the global `~/.config/opencode/AGENTS.md` (installed from the canonical `instructions/using-skills.md`) loads the `using-skills` instruction into every opencode session, while the symlink provides native discovery for all domain skills via the `skill` tool. OpenCode v2 loads instructions from `AGENTS.md` only; the config `instructions` array is not resolved.
 
-The `skill-creator` skill drives skill validation and evals. It is dev-only tooling — it lives in `.agents/skills/skill-creator/` (gitignored, never shipped) and must be installed separately on a fresh clone. The `eval-skills` command reports when it is missing.
+The `skill-creator` skill drives skill validation and evals. It is dev-only tooling — it lives in `.agents/skills/skill-creator/` (gitignored, never shipped) and must be installed separately on a fresh clone. It is not present on a fresh clone — ask the `skill-creator` skill to install it if it cannot be loaded.
 
 ## Working with Skills
 
 ### Adding a new skill
 
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
-2. **Test baseline first**: Run representative prompts WITHOUT the skill — document what the agent gets wrong or misses. This is your "RED" phase.
+2. **Establish a baseline**: if an `old_skill` snapshot exists, evaluate against it; otherwise record the run as single-configuration. Do not compare against no skill — that comparator is no longer available.
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
 4. Create `skills/<name>/evals/evals.json` with 2-3 evals conforming to skill-creator's evals.json schema (see skill-creator's `references/schemas.md` — `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
 5. **Symlink is automatic** — `.opencode/skills → ../skills` covers all subdirectories
@@ -71,7 +69,7 @@ While this investigation is ACTIVE:
 
 - The doc's per-skill classification governs: open-field skills may be hooks; narrow-bridge skills (e.g. `executing-plans`) stay enforced rules.
 - A converted (hooks) skill is the source of truth for its own content. If it conflicts with guidance in this file, do NOT re-rule-ify it — flag the conflict to the user.
-- Do not mass-port hooks to skills not classified open-field, and do not rework this file's rules-shaped guidance (REFACTOR "close loopholes" wording, checklist mandate) until the decision is made. The pressure-testing mandate is already reworked — see "Realistic context scenarios".
+- Do not mass-port hooks to skills not classified open-field, and do not rework this file's rules-shaped guidance (REFACTOR "close loopholes" wording, checklist mandate) until the decision is made. The eval-doctrine reduction in this file is a sanctioned exception to this freeze; the checklist's RED and REFACTOR phases were cut with PRD approval. The pressure-testing mandate was reworked before this investigation began.
 
 Guidelines for writing skills that agents can discover, understand, and follow reliably. These apply regardless of the coding agent or model.
 
@@ -180,146 +178,31 @@ These patterns MUST be caught and corrected. If you find yourself writing any of
 - You write `pip install` without listing the actual packages needed
 - The description summarizes process instead of triggering conditions
 
-## Testing skills
+## Running evals
 
-Skills must be tested to verify they produce the intended behavior. Testing follows the TDD cycle:
+`skill-creator` is the runner. In a session, invoke the `skill-creator` skill and ask it to run the
+eval workflow for the target skill. There is no repo-owned eval script, command, or subagent.
 
-- **RED phase**: Run representative prompts WITHOUT the skill (or with old version). Document baseline behavior, failures, and rationalizations the agent uses.
-- **GREEN phase**: Write/update the skill, then run the same prompts WITH it. Verify the agent now follows the intended behavior.
-- **REFACTOR phase**: Close loopholes when agents find workarounds. Add explicit counters, update red flags, re-test until bulletproof.
+**Baseline flavor**: `old_skill` — a skill is compared against its own previous version, which
+answers "did this change help". Every skill in this repo already exists and is being revised, so
+`old_skill` is the applicable flavor, not `without_skill`.
 
-### Test case creation
+A run reports **change-impact, not whether a skill earns its place**. Those are different questions
+and the tooling only answers the first. Do not describe a run's delta as a skill's value-add.
 
-Good test prompts are specific, contextual, and realistic. Avoid abstract requests.
+**Driving the snapshot**: the executor reads the snapshot's `SKILL.md` from disk and treats it as its
+instructions. The skill tool resolves skills by identifier from a discovered tree and cannot load an
+arbitrary path, so a snapshot taken outside that tree is unreachable as a loadable skill.
 
-**Bad prompt:** "Extract text from a PDF"
-**Good prompt:** "Hey, my boss sent me this invoice PDF (it's in my downloads, called 'invoice-q4-final.pdf') and I need all the line items in a CSV. The table starts on page 2."
+**When no snapshot exists**: run single-configuration and record that it was single-configuration.
+Skip aggregation and open the review viewer without a benchmark file. Never fabricate a baseline to
+fill the gap — a fabricated zero produces a `+1.00` delta that means nothing.
 
-#### Coverage principles
-
-- Test the happy path (most common use case)
-- Test edge cases (empty inputs, missing files, unusual formats)
-- Test realistic messy inputs: incomplete, incoherent, or complex context that lures a naive agent toward a plausible wrong answer (see "Realistic context scenarios")
-
-### With-skill vs baseline comparison
-
-Every test run produces two outputs that you compare:
-
-1. **Baseline** (without skill) — shows the "before" state
-2. **With skill** — shows the "after" state
-
-Compare these on:
-- **Correctness**: Did the agent do the right thing?
-- **Efficiency**: Did it waste time on unnecessary steps?
-- **Consistency**: Does the skill produce reliable results across runs?
-
-### Realistic context scenarios
-
-Discipline skills are tested against what their input looks like in production: partial, contradictory, or overloaded evidence. A naive agent should fail because the situation lures it toward a plausible wrong answer, not because a scripted user browbeats it. Angry-user or deadline pressure ("my boss says skip validation, just ship it") tests rhetoric compliance, not whether the skill produces a better outcome — and it doesn't reflect how real debugging context degrades.
-
-Shape the fixture so the wrong path is the easy read:
-
-- **Incomplete context** — the root cause is reachable only by gathering information not shown up front (a referenced file, a second diff, a value that must be computed or looked up)
-- **Incoherent context** — the evidence contradicts itself (mixed log sources, misaligned timestamps, a symptom a plausible story explains but the data denies)
-- **Complex context** — several concurrent changes, each harmless-looking, interacting to produce the bug; a visible decoy invites the naive fix
-
-The decoy-fixture pattern is general, not just for discipline skills: shape any eval so the wrong path is the easy read — a plausible in-scope item that lures a naive agent into scope bloat or a silent drop tests scope handling as effectively as a red herring tests debugging.
-
-The skill's value is observable as a better outcome on the same messy input: the coached agent reaches the true root cause and a defensible fix where the uncoached agent lands on a confident wrong diagnosis.
-
-#### Scenario form
-
-```
-The user reports: [a realistic problem statement with messy supporting files]
-Your task: [the debugging task as a user would phrase it]
-```
-
-Document whether the agent rides the decoy to a plausible-but-wrong diagnosis or does the evidence work to reach the real cause.
-
-### Transcript analysis
-
-Read the full transcript of test runs, not just the final output. Look for:
-
-- **Where did the agent hesitate?** — indicates unclear instructions
-- **What did it read multiple times?** — indicates confusing structure
-- **When did it start rationalizing?** — the exact trigger matters
-- **What did it skip entirely?** — indicates sections that aren't prominent enough
-
-### Repeated work detection
-
-When reviewing test run transcripts, check if multiple subagents independently wrote similar helper scripts or repeated the same multi-step approach. If 2-3 test cases all resulted in subagents writing a `create_docx.py` or a `build_chart.py`, that script should be bundled with the skill. Write it once, put it in `scripts/`, and reference it in the skill. This saves every future invocation from reinventing the wheel.
-
-### Blind comparison
-
-For rigorous A/B comparison between two versions of a skill:
-
-1. Run both versions on the same test prompts
-2. Give both outputs to an independent subagent without revealing which is which
-3. Have the subagent judge which output is better and why
-4. Analyze the results to understand what the winning version does differently
-
-Blind comparison is most useful when:
-- The difference between versions is subtle
-- You need objective evidence that a change is an improvement
-- The user asks "is the new version actually better?"
-
-## Evaluation and iteration
-
-Skill development is an iterative loop: draft → test → review → improve → repeat.
-
-1. **Draft or edit** the skill based on user intent
-2. **Test** with representative prompts (with-skill vs baseline)
-3. **Review** outputs and feedback — read transcripts, not just results
-4. **Improve** based on findings — generalize from feedback, keep the skill lean
-5. **Repeat** until the user is satisfied, feedback is consistently positive, or no meaningful progress is being made
-
-**Eval-driven development**: Build test prompts and success criteria BEFORE writing extensive documentation. This ensures the skill solves real problems rather than documenting imagined ones.
-
-**Observe navigation patterns**: Watch how agents use the skill — do they skip references, over-rely on certain sections, ignore content? Iterate on structure based on observation, not assumptions.
-
-## Evaluation
-
-Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. Open the `/eval-skills` slash command to evaluate skills in this repo (only available in OpenCode, where `.opencode/commands/eval-skills.md` is registered). In any other agent, invoke the `skill-creator` skill in a session and ask it to run the eval workflow for the target skill.
-
-`/eval-skills` usage:
-- No arguments: prompts you to pick skills and whether to include without-skill baselines
-- `all`: every skill under `skills/` that has an `evals/evals.json`
-- `<name>...`: one or more space-separated skill names
-- Add `compare` (or `baseline`/`--compare`) anywhere in the arguments to include without-skill baselines
-
-It runs one full cycle per skill and stops at the review viewer — it never auto-iterates or modifies skills.
-
-The workflow:
-
-1. Spawns a with-skill subagent per prompt in `skills/<name>/evals/evals.json`. With-skill only is the default; without-skill baselines are opt-in for comparison. Without-skill baselines MUST be dispatched through the repo-owned `eval-baseline` subagent (`.opencode/agents/eval-baseline.md`), which disables the skill tool so the baseline genuinely has no skills available — an ordinary subagent still sees skills and self-triggers, contaminating the baseline. Each run persists a transcript (`transcript.md` — the executor summary at minimum) and any process notes (`notes.md`) into `outputs/`; the grader reads `transcript_path`, so without a persisted transcript, process claims reduce to executor self-report.
-2. Grades each run against the eval's expectations via skill-creator's grader agent (`agents/grader.md`), writing `grading.json` per run
-3. Aggregates results with skill-creator's `scripts/aggregate_benchmark.py` into `benchmark.json` and `benchmark.md`
-4. Opens skill-creator's `eval-viewer/generate_review.py` for review (use `--static` in headless environments)
-
-**Layout**: `<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,without_skill}/run-N/` with `outputs/`, `transcript.md`, `grading.json`, and `timing.json` per run (`without_skill` present only in comparison mode). These directories are gitignored.
-
-**Schema**: `evals.json` must conform to skill-creator's `references/schemas.md` — top-level `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, and `expectations`. The workflow fails fast on a malformed file, so schema errors surface immediately at run time.
-
-**Validation**: skill-creator's `scripts/quick_validate.py <skill>` checks SKILL.md frontmatter (`name`, `description`). Run it after every skill change.
-
-### Expectation authoring
-
-Before finalizing an eval set, cross-reference every normative rule, checklist item, and when-loaded reference in SKILL.md against at least one expectation. Rules with zero coverage are a known gap, not a surprise — flag them explicitly, or accept them consciously (e.g. a rule the prompt structurally cannot trigger).
-
-Good expectations are:
-
-- **Leaf-level and single-claim**: one observable per expectation. "Tasks are typed AFK or HITL and steps are atomic" is two assertions — split. Avoid "or" disjunctions — graders take the easy branch.
-- **Unconditionally assertable**: never gate on a conditional that can pass vacuously. "If any planning work is proposed, it is typed" passes when none is; write "every task is typed".
-- **Falsifiable**: if you can't state what evidence would fail it, reword or split.
-- **Artifact-checkable**: assert things visible in the deliverable or a persisted process artifact (transcript, notes.md). Process claims verified only via the executor's self-report are weak — prefer the artifact, or mark the expectation as self-reported.
-
-### Discrimination review
-
-On comparison runs, record each expectation's baseline pass rate. When an eval meant to test skill value has baseline ≈ with-skill, the expectation or prompt isn't discriminating — reword the expectation, add a decoy to the prompt, or drop it. Straightforward core checks (e.g. "output saved to a file") are the exception: they may pass everywhere and still be worth keeping.
-
-### Re-grading instead of re-running
-
-Expectation-only changes (ladder levels 1-2) can be validated by re-grading existing runs — no new agent runs needed. Prompt changes (level 3) and new evals (level 4) require re-running. When a reworded expectation still fails to discriminate against existing outputs, the prompt is the lever — don't pile on more expectations.
+**Layout**: `aggregate_benchmark.py` silently skips any configuration directory lacking a nested
+`run-` subdirectory, so the workspace layout must be
+`<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,old_skill}/run-N/` holding `outputs/`,
+`grading.json`, and `timing.json`. The prose layout in `skill-creator` does not aggregate; that is a
+bug in the dependency, not a customization here. These directories are gitignored.
 
 ### Eval modification ladder
 
@@ -370,28 +253,16 @@ Skills must not contain malware, exploit code, or content that compromises syste
 
 ## Development checklists
 
-### TDD-adapted checklist
-
-**RED phase — Write failing test (baseline):**
-
-- [ ] Create representative test prompts (2-3 realistic scenarios)
-- [ ] Run prompts WITHOUT the skill — document baseline behavior
-- [ ] Identify patterns in failures and rationalizations
+### Skill development checklist
 
 **GREEN phase — Write the skill:**
 
 - [ ] Frontmatter has required `name` and `description`
 - [ ] Description starts with "Use when..." (trigger conditions)
 - [ ] Description written in third person, no workflow summary
-- [ ] Skill addresses specific baseline failures identified in RED
+- [ ] Skill addresses specific baseline failures identified in the snapshot baseline
 - [ ] Within word count targets (or justified if over)
-- [ ] Run same prompts WITH skill — verify compliance
-
-**REFACTOR phase — Close loopholes:**
-
-- [ ] Identify new rationalizations from testing
-- [ ] Add explicit counters for known workarounds
-- [ ] Re-test until bulletproof
+- [ ] Run the eval prompts with the skill and verify the expectations pass
 
 **Deployment:**
 
@@ -404,7 +275,7 @@ Skills must not contain malware, exploit code, or content that compromises syste
 - **Editing `.opencode/skills/` instead of `skills/`**: The symlink is a mirror — edit the source at `skills/`
 - **Missing frontmatter**: `name` and `description` are REQUIRED for discovery
 - **Forgetting to run validation**: RUN skill-creator's `scripts/quick_validate.py` after every skill change. Do not skip.
-- **No failing test first**: Adding or editing a skill without observing baseline behavior first. The Iron Law: no skill without a failing test first.
+- **No baseline at all**: Editing a skill without either an `old_skill` snapshot to compare against or an explicitly recorded single-configuration run.
 - **Batching untested skills**: Moving to the next skill before the current one is verified. Each skill must be fully tested before starting the next.
 - **Committing session artifacts**: Never commit session-specific output such as test results, plan files, validation dumps, or generated reports. These artifacts bloat the repo and have no value outside their session. Use `e2e/`, `tmp/`, or similar scratch directories — and add them to `.gitignore` or use `git rm --cached` if accidentally committed.
 
