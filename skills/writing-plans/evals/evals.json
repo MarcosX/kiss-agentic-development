@@ -8,28 +8,17 @@
       "expectations": [
         "Plan saved to a prefixed file (<prefix>-plan.md)",
         "Tasks are self-contained with exact file paths",
-        "All acceptance criteria covered by tasks",
-        "Every coding AC has an eval in the AC Evals section with prescriptive steps and expected evidence",
-        "Runtime-behavior AC evals exercise the running application and capture runtime evidence",
-        "Work is decomposed into vertical end-to-end slices (schema → API → logic → tests → UI), not horizontal per-layer tasks — each slice is demoable on its own",
-        "Every task is typed AFK or HITL",
-        "Steps within each task are atomic — each step completes one atomic action with no judgment required",
-        "Coding task contracts describe behavior only (signatures, semantics, named edge cases, error conditions) — no embedded implementation code or test code anywhere in the plan",
-        "No AC eval relies on test output, git diff, type-check, or lint as its evidence — checked exhaustively across every AC eval, not spot-checked",
-        "AC-eval dependencies are declared where one eval's precondition depends on another (e.g., the reset-completion eval needs a token produced by the reset-request eval)",
-        "The DB migration task uses literal step-by-step instructions with exact commands and expected output rather than a behavioral contract",
-        "A self-review pass against the skill's checklist was performed before the plan was presented as final (evidenced in notes.md or the transcript)"
+        "All acceptance criteria covered by tasks"
       ]
     },
     {
       "id": 2,
       "prompt": "Plan this feature: Add a dark mode toggle to our web app. The user chooses light or dark. While we're at it, we should also auto-detect the system color scheme, persist the user's preference across sessions, and make sure the hero image doesn't look washed out in dark mode.",
-      "expected_output": "Agent explicitly flags scope creep, applies YAGNI to separate the explicitly-requested dark mode toggle from the adjoining asks (auto-detection, hero-image restyle), keeps only toggle-related work that the requirements justify, and quizzes the user about scope or granularity.",
+      "expected_output": "Agent explicitly flags scope creep, applies YAGNI to separate the explicitly-requested dark mode toggle from the adjoining asks (auto-detection, hero-image restyle), and quizzes the user about scope or granularity.",
       "expectations": [
-        "Scope creep flagged explicitly — the adjoined asks (auto-detect system scheme, hero-image restyle) are distinguished from the explicitly requested toggle",
-        "YAGNI applied — unrequested features are removed or explicitly deferred, not silently absorbed into the plan",
-        "Only the dark mode toggle plus genuinely justified support (e.g. persisted preference) kept in the plan",
-        "User quizzed about scope or granularity before finalizing"
+        "Scope creep is flagged explicitly — the adjoined asks (auto-detect system scheme, hero-image restyle) are distinguished from the explicitly requested dark-mode toggle",
+        "Unrequested features are removed from the plan or explicitly deferred rather than silently absorbed into it",
+        "The user is asked about scope or granularity before the plan is finalized"
       ]
     }
   ]
