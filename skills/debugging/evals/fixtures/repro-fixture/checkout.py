@@ -14,5 +14,5 @@ class Cart:
     def total(self, discount=0.0):
         subtotal = self.subtotal()
         discounted = subtotal * (1 - discount)
-        tax = discounted * TAX_RATE
+        tax = subtotal * TAX_RATE
         return round(discounted + tax, 2)
