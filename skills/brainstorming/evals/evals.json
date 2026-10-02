@@ -4,25 +4,11 @@
     {
       "id": 1,
       "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. What should we build?",
-      "expected_output": "Agent runs a design brainstorm: explores the context, asks clarifying questions to stress-test understanding, compares multiple solution approaches with explicit trade-offs, leads with a recommendation justified by reasoning, and presents the design for approval before any implementation.",
+      "expected_output": "A reply that asks clarifying questions before proposing anything, leads with one recommended design and the reason for it, and stops there for approval instead of starting implementation.",
       "expectations": [
-        "Clarifying questions asked to stress-test understanding before proposing solutions",
-        "Multiple solution approaches presented with explicit trade-offs",
-        "A recommendation is made and justified with reasoning — the agent leads with it rather than presenting a neutral list",
-        "Unrequested scope is pruned (YAGNI)",
-        "No implementation started, code written, or implementation skill invoked before approval"
-      ]
-    },
-    {
-      "id": 2,
-      "prompt": "Customers are getting charged twice for the same order. The team suggests adding a 'double-charge refund' button to the admin panel so support can fix these manually. What do you think?",
-      "expected_output": "Agent does not ride the suggestion: it steps back from the premature symptom-fix, probes the root cause (where/how the double charge originates), asks clarifying questions one at a time, reframes the problem, and surfaces related concerns before comparing solutions — without implementing anything.",
-      "expectations": [
-        "The double-charge problem is framed before the suggested refund-button solution is accepted",
-        "Root cause of the double charge is probed (where/how the second charge originates), not just the symptom designed around",
-        "Clarifying questions are asked one at a time, not batched into a single questionnaire",
-        "Related concerns or alternative approaches beyond the refund button are surfaced",
-        "Open questions or assumptions are captured for validation"
+        "Clarifying questions are asked before any solution is proposed — a reply that opens with a concrete design and asks no questions fails this",
+        "The reply states one recommended approach ahead of any alternatives; a reply presenting only a neutral list of options with no recommendation fails this",
+        "No implementation is started before approval — no code written, no implementation skill invoked; any implementation written before the user approves the design fails this"
       ]
     },
     {
@@ -30,11 +16,9 @@
       "prompt": "We need a way for users to reset their passwords when they forget them. The app is a FastAPI web app with Pydantic models and an in-memory user store. Brainstorm the design, ask whatever clarifying questions you need, then produce the PRD as a standalone document in the workspace. Assume I've answered your questions.",
       "expected_output": "The agent conceives the design, then writes a standalone PRD document (not just an in-conversation reply) whose decisions are tied back to numbered user stories with rationale, presenting a coherent design the user can review.",
       "expectations": [
-        "Design is captured as a standalone PRD document, not only in the chat reply",
-        "User stories are numbered US-N sequentially in the order written",
-        "Each decision references one or more story IDs that exist in the user stories",
-        "Decisions carry a why/rationale line (chosen path, rejected alternative, or trade-off)",
-        "PRD section list equals problem statement, solution, user stories, implementation decisions, testing decisions, out of scope, further notes"
+        "The PRD is saved as a file in the workspace, not only as a chat reply — a PRD delivered only in the conversation fails this",
+        "Each implementation decision names a user-story ID, and every ID it names exists in the plan's user-story list — a decision naming no ID fails this; a decision citing an ID absent from the user-story list fails this",
+        "Each decision carries a line of rationale — a decision stated with no stated reason fails this"
       ]
     }
   ]
