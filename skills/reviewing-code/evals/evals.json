@@ -2,45 +2,33 @@
   "skill_name": "reviewing-code",
   "evals": [
     {
-      "id": 1,
-      "prompt": "Review this PR diff. Read it and the surrounding context carefully before responding:\n\n```diff\ndef is_valid_password(password):\n-    if len(password) < 8:\n+    if len(password) <= 8:\n         return False\n         return True\n```\n\nThe PR description says: 'Loosen password requirements to allow 8-character passwords.'\n\nRelated context (auth.py):\n\n```python\ndef create_account(email, password):\n    if not is_valid_password(password):\n        raise ValueError('password must be at least 8 characters')\n    return User(email=email, password=hash(password))\n```\n\nThe statement 'at least 8 characters' appears in the account-creation error message and in the internal docs, and there is a test asserting a bare 8-character password passes.",
-      "expected_output": "Agent reads the diff and the surrounding contract (the error message and test that document 'at least 8 characters'), determines the change is a behavior change that either breaks the documented contract or requires the error message and test to be updated in the same PR, names that contract as the reason for the severity it assigns, cites file and line for each finding, and proposes a constructive alternative rather than rubber-stamping a line-level tweak.",
-      "expectations": [
-        "An issue on the off-by-one boundary is raised: changing the comparison to <= silently rejects 8-character passwords, contradicting the documented 'at least 8' contract",
-        "The severity is justified by naming what was read outside the diff — the 'password must be at least 8 characters' error message, the test asserting an 8-character password passes, or the internal docs — because that is what a diff-only review cannot reach",
-        "Findings categorized by severity and axis, each with the file and line it cites",
-        "A constructive alternative is proposed (keep the original comparison, or update the contract text and test together with the code)",
-        "The approval standard is applied — the review distinguishes a real contract-breaking change from a style preference"
-      ]
-    },
-    {
       "id": 2,
-      "prompt": "I got this PR review request. Here's the diff:\n\n```diff\n from flask import Flask, request\n+from validator import validate_order\n \n app = Flask(__name__)\n \n+MAX_RETRY_ATTEMPTS = 3\n+\n @app.route(\"/orders\", methods=[\"POST\"])\n def create_order():\n     data = request.get_json()\n-    if not data.get(\"customer_id\"):\n-        return {\"error\": \"missing customer_id\"}, 400\n-    if not data.get(\"items\"):\n-        return {\"error\": \"missing items\"}, 400\n-    if not isinstance(data[\"items\"], list):\n-        return {\"error\": \"items must be a list\"}, 400\n-    if len(data[\"items\"]) == 0:\n-        return {\"error\": \"items cannot be empty\"}, 400\n+    validate_order(data)\n     return {\"status\": \"created\"}, 201\n \n @app.route(\"/admin/orders\", methods=[\"POST\"])\n def admin_create_order():\n     data = request.get_json()\n-    if not data.get(\"customer_id\"):\n-        return {\"error\": \"missing customer_id\"}, 400\n-    if not data.get(\"items\"):\n-        return {\"error\": \"missing items\"}, 400\n-    if not isinstance(data[\"items\"], list):\n-        return {\"error\": \"items must be a list\"}, 400\n+    validate_order(data)\n     if not data.get(\"admin_token\"):\n         return {\"error\": \"missing admin_token\"}, 400\n     return {\"status\": \"created\"}, 201\n```\n\nPR description says: 'Refactor duplicated validation checks from both endpoints into a shared validator class.'\n\nReview the change and tell me what to tell the author.",
+      "prompt": "Can you review the order-validation change in evals/fixtures/validation-refactor/? Intent: the duplicated validation was extracted out of the request handler into a shared validator. Read the files and tell me what to tell the author.",
       "files": [
         "evals/fixtures/validation-refactor/validator.py",
         "evals/fixtures/validation-refactor/app.py"
       ],
-      "expected_output": "Agent reads the actual code, understands the intent (validation deduplication), reviews it directly across the five axes, catches that the extraction turned 400 responses into 500s because the new validator raises ValueError that neither call site catches, flags the hardcoded MAX_RETRY_ATTEMPTS without treating it as blocking, and requests changes on the status-code regression.",
+      "expected_output": "A review in which every finding cites a file and line from the fixture files and carries a review axis plus one of the skill's severity labels, closing with an explicit verdict.",
       "expectations": [
-        "The 400 to 500 HTTP contract change is identified from the code read — validator.py raises ValueError on the rejection paths and neither app.py call site catches it — and it is treated as blocking, so the verdict is Request changes rather than Approve",
-        "Agent acknowledges MAX_RETRY_ATTEMPTS is hardcoded but does not block on it",
-        "Findings presented with axis and severity"
+        "Every finding cites a file path and a line number from the fixture files; a finding with no such citation fails this",
+        "Every finding names a review axis and a severity label drawn from Critical, Required, Nit, Optional, or FYI; a finding missing either label fails this",
+        "The review ends with an explicit verdict of approve, request changes, or comment"
       ]
     },
     {
       "id": 3,
-      "prompt": "I made a change locally that makes the queue parser fail loudly instead of returning {} for malformed payloads. The codebase is in evals/fixtures/order-service-false-positive/. Review it and tell me what's actually worth acting on.\n\nDiff:\n```diff\n import json\n \n \n def parse_payload(raw):\n-    try:\n-        data = json.loads(raw)\n-    except (ValueError, TypeError):\n-        return {}\n-    return data\n+    return json.loads(raw)\n```\n\nPR intent: \"Stop silently swallowing malformed payloads. Payloads are validated at the producer before enqueueing, so parsing should fail loudly if corrupted.\"",
+      "prompt": "Can you review the change to how the queue parses its payload in evals/fixtures/order-service-false-positive/? Intent: the parser now raises on a malformed payload instead of returning an empty dict. Read the files and give me the review.",
       "files": [
         "evals/fixtures/order-service-false-positive/parser.py",
         "evals/fixtures/order-service-false-positive/producer.py",
         "evals/fixtures/order-service-false-positive/queue.py",
         "evals/fixtures/order-service-false-positive/tests/test_payload.py"
       ],
-      "expected_output": "Agent reads the fixture code instead of grading from the diff (opens producer.py, queue.py, and tests/test_payload.py), determines that the producer validates before enqueueing so the consumer cannot receive a malformed payload, does not report the consumer-side crash as blocking, and presents findings with axis, severity, and file:line.",
+      "expected_output": "A review grounded in the fixture code rather than the request text, with an axis, severity, and file:line citation on every finding, closing with an explicit verdict.",
       "expectations": [
-        "The producer-side validation is identified from the code that was read — build_payload rejects unknown event types and non-object data, and queue.enqueue pushes through build_payload — not taken on faith from the PR description",
-        "The consumer-side crash is not presented as Critical or as blocking; it is downgraded or dropped with codebase evidence",
-        "Findings presented with axis, severity, and file:line"
+        "The review names producer-side validation as the code it read, naming build_payload called from queue.enqueue at queue.py:6 and its type and data checks in producer.py; an assertion taken from the request text alone fails this",
+        "Every finding carries a review axis, a severity label, and a file:line citation; a finding missing any of the three fails this",
+        "The review ends with an explicit verdict of approve, request changes, or comment"
       ]
     }
   ]
