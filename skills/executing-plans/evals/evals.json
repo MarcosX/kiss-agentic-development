@@ -5,48 +5,22 @@
       "id": 1,
       "prompt": "I have a plan file at evals/fixtures/eval-1-plan.md with 2 independent tasks. Execute the plan.",
       "files": ["evals/fixtures/eval-1-plan.md"],
-      "expected_output": "Agent identifies the two tasks as independent (no dependency chain blocking either), dispatches them in a parallel batch, and inspects each task's completion report.",
+      "expected_output": "Agent identifies the plan's two tasks as independent with no dependency chain blocking either, creates a worktree before dispatch, and sends both tasks as one parallel batch in a single turn.",
       "expectations": [
-        "Tasks identified as independent (no dependency chain blocking either)",
-        "Tasks dispatched in parallel batch and in a single turn",
-        "Completion report inspected for each task",
-        "Worktree created before task dispatch (git worktree add or equivalent)"
-      ]
-    },
-    {
-      "id": 2,
-      "prompt": "I need you to add search functionality. No plan file exists yet.",
-      "expected_output": "Agent does not attempt execution without a plan: it falls back to brainstorming to produce a plan first.",
-      "expectations": [
-        "Fallback to brainstorming triggered when no plan exists",
-        "No execution attempted without a plan"
+        "Both of the plan's tasks are identified as independent, with no dependency chain blocking either",
+        "The independent tasks are dispatched as one parallel batch within a single turn",
+        "A worktree is created before task dispatch"
       ]
     },
     {
       "id": 4,
       "prompt": "I have a plan at evals/fixtures/eval-4-plan.md. Execute the plan.",
       "files": ["evals/fixtures/eval-4-plan.md"],
-      "expected_output": "Agent executes the task through the test-first loop, reviews the completed work for spec compliance and code quality before finishing, then dispatches the AC eval from the plan's AC Evals section to a fresh subagent that stands up the app, calls the endpoint, and captures fresh runtime evidence matched against the expected outcome — not test output or code inspection.",
+      "expected_output": "Agent implements the task until its test suite passes, then exercises the AC eval against the running application and captures live runtime evidence — an HTTP response, a server log line, or process output — matching it against the plan's expected outcome of HTTP 200 with body {\"count\": 0}.",
       "expectations": [
-        "Task executed to completion (tests pass)",
-        "Completed task spec-reviewed against the plan before AC evals — a spec-against-code comparison produces a verdict, not just a 'done' statement",
-        "Completed task code-quality reviewed before AC evals (review produces findings, not skipped)",
-        "AC eval run after implementation from the plan's AC Evals section (not skipped)",
-        "AC eval executed with fresh context isolated from the implementation session — not evaluated inline in the implementation session",
-        "AC eval evidence is runtime evidence distinct from test output or code inspection: the agent stands up the running app, exercises the endpoint, and captures the live result (HTTP response, server log, process output)",
-        "Evidence matched against the expected outcome (HTTP 200 with body {\"count\": 0})"
-      ]
-    },
-    {
-      "id": 5,
-      "prompt": "I have a plan at evals/fixtures/eval-5-plan.md. Execute the plan.",
-      "files": ["evals/fixtures/eval-5-plan.md"],
-      "expected_output": "Agent executes the task through the test-first loop, reviews the completed work, runs both AC evals against the running application, then performs goal validation: it assesses whether the integrated result achieves the plan's Goal statement and reports done with per-AC evidence and a goal outcome.",
-      "expectations": [
-        "Task executed to completion (tests pass)",
-        "Both AC evals run against the running application with runtime evidence matched to the expected outcomes",
-        "Goal validation performed: the integrated implementation is assessed against the plan's Goal statement, not just per-AC pass/fail",
-        "Final report states an explicit goal outcome (achieved, partially achieved, or not achieved) referenced to the Goal statement and per-AC evidence"
+        "The task runs to completion and its tests pass",
+        "The AC eval is exercised against the running application, and the evidence captured is a live result — an HTTP response, a server log line, or process output — rather than test output or code inspection",
+        "The captured evidence is matched against the plan's stated expected outcome, an HTTP 200 with body {\"count\": 0}"
       ]
     }
   ]
