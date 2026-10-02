@@ -18,3 +18,6 @@ __pycache__
 
 # Dev-only tooling (skill-creator), installed locally, never shipped
 .agents/
+
+# Python environment for skill-creator scripts (dev-only)
+.venv/
