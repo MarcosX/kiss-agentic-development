@@ -23,7 +23,7 @@ Collection of AI agent skills that enforce skill-first workflows.
 
 When working on skills in this repo, the global `~/.config/opencode/AGENTS.md` (installed from the canonical `instructions/using-skills.md`) loads the `using-skills` instruction into every opencode session, while the symlink provides native discovery for all domain skills via the `skill` tool. OpenCode v2 loads instructions from `AGENTS.md` only; the config `instructions` array is not resolved.
 
-The `skill-creator` skill drives skill validation and evals. It is dev-only tooling — it lives in `.agents/skills/skill-creator/` (gitignored, never shipped) and must be installed separately on a fresh clone. It is not present on a fresh clone — ask the `skill-creator` skill to install it if it cannot be loaded.
+The `skill-creator` skill drives skill validation and evals. It is dev-only tooling — it lives in `.agents/skills/skill-creator/` (gitignored, never shipped) and must be installed separately; it is absent from a fresh clone.
 
 ## Working with Skills
 

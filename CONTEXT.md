@@ -44,7 +44,7 @@ _Avoid_: red herring (one specific decoy for debugging misdirection)
 **skill-creator**:
 The external dev-only skill that drives skill validation, evals, and grading (scripts, grader
 agent, review viewer). Not shipped; install separately.
-It is absent on a fresh clone; ask the `skill-creator` skill to install it if it cannot be loaded.
+Not shipped; install it separately before running evals.
 _Avoid_: the eval tooling, "the skill" (ambiguous with domain skills)
 
 **Shipped artifact**:
