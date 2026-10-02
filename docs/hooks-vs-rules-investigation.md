@@ -120,10 +120,13 @@ structured); the discipline a single agent applies is open (hooks).**
 - **practicing-tdd** — open-field → **hooks (DONE)**. Reference implementation.
   Narrow contract (the test) + open loop (the why).
 - **reviewing-code** — open-field → **hooks (DONE)**. Reframe: "The task is to
-  produce findings worth acting on — verified against the actual code."
-  Challenge-findings folded into SKILL.md (always loaded). Receiving-feedback
-  dropped (rarely used, ungrounded eval). Evals: severity categorization,
-  approval standard (decoy: hardcoded threshold), false-positive challenge.
+  produce findings worth acting on — each one grounded in code you actually
+  read." Subagent dispatch removed: the reviewing session reads the branch and
+  reviews the code, so no verification pass and no folded challenge-findings
+  section are needed. Receiving-feedback dropped (rarely used, ungrounded
+  eval). Evals: severity calibrated against a documented contract, approval
+  standard (decoy: hardcoded threshold), diff-level decoy caught by reading the
+  producer.
 - **debugging** — open-field → **hook candidate**. Restored to the framework
   (see changelog). Closest twin of practicing-tdd (method discipline; root-cause
   "proof" ≈ failing-test "proof"). Current shape: HARD-GATE + red flags + phases.
@@ -222,3 +225,9 @@ candidate (hook candidate).
   it as an open-field hook candidate. Its evals now use a runnable reproduction
   fixture (`repro-fixture/`) instead of the pressure-framed payment-gateway
   scenario.
+- 2026-10-01: `reviewing-code` now reviews the code in the session instead of
+  dispatching a subagent over the diff. The loop gains code acquisition and a
+  stated context-reading mechanism; the subagent prompt reference was folded
+  into SKILL.md and deleted; eval 1's expectations now require naming the
+  contract behind the severity, and eval 3 was inverted onto its existing
+  fixture to drop the third-party-analysis scope.
