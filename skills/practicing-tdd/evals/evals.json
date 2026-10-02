@@ -4,44 +4,21 @@
     {
       "id": 1,
       "prompt": "Plan task: slugify\n\nFiles:\n- Create: test_slugify.py\n- Existing: slugify.py\n\nBehavioral contract for slugify(title): converts a page title into a URL-safe slug:\n- lowercases the input\n- replaces spaces with hyphens\n- strips any characters that are not alphanumeric or hyphens\n- collapses consecutive hyphens into one\n- strips leading and trailing hyphens\n- returns empty string for empty or whitespace-only input\n\nExisting code (slugify.py):\n\ndef slugify(title):\n    return title.lower()\n\nVerify test fails: run `python -m pytest test_slugify.py -q` and confirm it fails for the expected reason — the full slugification contract (space replacement, character stripping, hyphen collapsing, edge-case handling) is missing from the implementation.\nThen adapt the implementation so the test passes. Keep the function name and signature.\n\nDone when: the contract test passes and the implementation is adapted rather than replaced.",
-      "expected_output": "The agent treats the plan task as 'make the failing test pass'. It writes a specification test against the full contract (case, spaces, non-alphanumerics, collapsed hyphens, edge cases), watches it fail for the expected reason (behavior missing) before touching the implementation, then adapts the existing function to satisfy it and runs the full suite to confirm no regressions.",
+      "expected_output": "The agent treats the plan task as 'make the failing test pass'. It writes a specification test covering the full contract, runs it and sees it fail for the expected reason — the behavior is missing, not a typo, import error, or collection failure — before modifying the implementation, then makes it pass and runs the whole suite, showing the previously passing tests still pass.",
       "expectations": [
-        "A specification test is written against the full contract before the implementation is modified",
-        "The test is watched to fail for the expected reason (behavior missing) before the implementation is touched",
-        "The implementation is adapted to satisfy the test without changing the function's name or signature",
-        "After green, the full suite is run and shows no regressions"
+        "A specification test covering the full contract is written before the implementation module is modified",
+        "The test is run and observed failing for the expected reason — the behavior is missing, not a typo, import error, or collection failure — before the implementation is touched",
+        "After the implementation goes green, the whole suite is run and the previously passing tests still pass"
       ]
     },
     {
       "id": 2,
-      "prompt": "Users report a bug: registering with an email address that's already in use silently overwrites the original account. Fix registration.py so registering with a duplicate email is rejected with a duplicate-email error and the existing user's data is preserved. Malformed emails should still raise a ValueError. The repo has other modules (products.py) with existing tests.",
-      "expected_output": "The agent treats the bug as its failing test. It writes a reproduction test, watches it fail for the expected reason (duplicate overwrites) before any modification, then fixes register_user to reject duplicates, confirms the reproduction passes and the existing user's data is preserved, and runs the full suite — including the pre-existing products tests — to check for regressions.",
+      "prompt": "Users are telling us that signing up with an email that already exists overwrites the existing account instead of being rejected. Here's the module and its test — find out why and fix it.\n\nBoth files sit in the repo root. Run the suite with `python -m pytest -q`.\n\nregistration.py:\n\n    def register_user(user, users):\n        users[user[\"email\"]] = user\n        return user\n\ntest_registration.py:\n\n    from registration import register_user\n\n\n    def test_registers_a_new_user():\n        users = {}\n        register_user({\"email\": \"ada@example.com\", \"name\": \"Ada\"}, users)\n\n        assert users == {\"ada@example.com\": {\"email\": \"ada@example.com\", \"name\": \"Ada\"}}",
+      "expected_output": "The agent writes a reproduction test asserting that a duplicate email is rejected, runs it and watches it fail before modifying the module, then changes `register_user` to reject a duplicate email and shows a single run where both the reproduction and the pre-existing test pass.",
       "expectations": [
-        "A reproduction test is written and watched to fail for the expected reason before registration.py is modified",
-        "register_user is changed to reject duplicate emails after the failing run",
-        "The reproduction test passes after the fix and a pre-existing user's data is preserved",
-        "After green, the full suite is run and shows no regressions, including the pre-existing tests"
-      ],
-      "files": [
-        "evals/fixtures/registration/registration.py",
-        "evals/fixtures/registration/products.py",
-        "evals/fixtures/registration/test_products.py"
-      ]
-    },
-    {
-      "id": 3,
-      "prompt": "Implement apply_discount(total, percent): return the total reduced by percent%, and raise ValueError for a non-numeric total. This is a plan-driven task: the plan assumed app.py did not exist yet, so it predicted the first test run would fail with ModuleNotFoundError: No module named 'app'. In reality app.py is already present. test_app.py covers apply_discount; test_services.py covers other code that must keep working.",
-      "expected_output": "The agent runs the loop and hits a mismatch: the actual failure is a NameError from the existing app.py, not the ModuleNotFoundError the plan predicts. It does not force the implementation through to green pretending the prediction held; it reconciles by diagnosing the real cause (undefined DISCOUNT_RATE), fixes it, makes the contract test pass, and runs the full suite — which must stay green including the unrelated existing test file.",
-      "expectations": [
-        "The agent detects that the actual failure (NameError from existing app.py) differs from the plan's stated expected reason (ModuleNotFoundError)",
-        "The mismatch is reconciled by fixing the real cause (undefined DISCOUNT_RATE), not by forcing the implementation past the plan's predicted error",
-        "The contract test for apply_discount passes with the fixed implementation",
-        "The full suite is run and shows no regressions, including the unrelated existing test file"
-      ],
-      "files": [
-        "evals/fixtures/deviation/app.py",
-        "evals/fixtures/deviation/test_app.py",
-        "evals/fixtures/deviation/test_services.py"
+        "A reproduction test asserting that a duplicate email is rejected is written and observed failing before `register_user` is modified",
+        "`register_user` is changed to reject a duplicate email rather than the reproduction test being weakened or deleted",
+        "After the fix, the reproduction test and the pre-existing test both pass in a single shown run"
       ]
     }
   ]
