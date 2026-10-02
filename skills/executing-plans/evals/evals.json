@@ -18,7 +18,7 @@
       "files": ["evals/fixtures/eval-4-plan.md"],
       "expected_output": "Agent implements the task until its test suite passes, then exercises the AC eval against the running application and captures live runtime evidence — an HTTP response, a server log line, or process output — matching it against the plan's expected outcome of HTTP 200 with body {\"count\": 0}.",
       "expectations": [
-        "The task runs to completion and its tests pass",
+        "The task's full test suite passes with no regressions; a red suite fails this",
         "The AC eval is exercised against the running application, and the evidence captured is a live result — an HTTP response, a server log line, or process output — rather than test output or code inspection",
         "The captured evidence is matched against the plan's stated expected outcome, an HTTP 200 with body {\"count\": 0}"
       ]

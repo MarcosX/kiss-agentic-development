@@ -24,10 +24,10 @@
         "evals/fixtures/order-service-false-positive/queue.py",
         "evals/fixtures/order-service-false-positive/tests/test_payload.py"
       ],
-      "expected_output": "A review grounded in the fixture code rather than the request text, with an axis, severity, and file:line citation on every finding, closing with an explicit verdict.",
+      "expected_output": "A review grounded in the fixture code rather than the request text — findings drawn from more than one module and one finding anchored to the test that documents the contract — closing with an explicit verdict.",
       "expectations": [
-        "The review names producer-side validation as the code it read, naming build_payload called from queue.enqueue at queue.py:6 and its type and data checks in producer.py; an assertion taken from the request text alone fails this",
-        "Every finding carries a review axis, a severity label, and a file:line citation; a finding missing any of the three fails this",
+        "Findings are grounded in code from at least two of the three source modules (parser.py, producer.py, queue.py); a review whose findings all cite a single file fails this",
+        "At least one finding cites tests/test_payload.py as evidence for what the payload contract already guarantees; a review that files findings without reference to the documenting test fails this",
         "The review ends with an explicit verdict of approve, request changes, or comment"
       ]
     }

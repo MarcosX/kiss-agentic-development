@@ -22,7 +22,7 @@
       "expected_output": "The agent treats the pooling change and the retry wrapper as potentially interacting, ties the log's timeout cadence to the retry backoff as evidence of the proximate trigger, and names the retry-into-exhausted-pool feedback loop as the root cause rather than any single threshold.",
       "expectations": [
         "Both recent changes — the connection pooling change and the retry wrapper — are read as potentially interacting rather than in isolation",
-        "The timeout cadence in the log is correlated with the retry backoff, and that correlation is cited as evidence for the proximate trigger",
+        "The agent ties the roughly 105ms spacing between the pool-exhausted warnings (11.042, 11.149, 11.256, 11.361) to the fixture's fixed 100ms retry backoff and names that correlation the proximate trigger; noting the spacing without connecting it to the backoff fails this",
         "The root cause named is the retry-into-exhausted-pool feedback loop rather than a single threshold"
       ]
     }

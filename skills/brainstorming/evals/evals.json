@@ -17,7 +17,7 @@
       "expected_output": "The agent conceives the design, then writes a standalone PRD document (not just an in-conversation reply) whose decisions are tied back to numbered user stories with rationale, presenting a coherent design the user can review.",
       "expectations": [
         "The PRD is saved as a file in the workspace, not only as a chat reply — a PRD delivered only in the conversation fails this",
-        "Each implementation decision names a user-story ID, and every ID it names exists in the plan's user-story list — a decision naming no ID fails this; a decision citing an ID absent from the user-story list fails this",
+        "Every user-story ID an implementation decision names resolves to an entry in the plan's user-story list, and no decision goes without one; a decision citing an ID absent from that list fails this, and so does a decision citing none",
         "Each decision carries a line of rationale — a decision stated with no stated reason fails this"
       ]
     }
