@@ -27,8 +27,17 @@ git clone https://github.com/MarcosX/kiss-agentic-development.git /tmp/kiss-agen
 Then pick the target path for your tool and copy the skills:
 
 ```bash
-cp -r /tmp/kiss-agentic-dev/skills/* <TARGET_PATH>/
+for skill in /tmp/kiss-agentic-dev/skills/*/; do
+  name=$(basename "$skill")
+  mkdir -p "<TARGET_PATH>/$name"
+  for item in "$skill"*; do
+    [ "$(basename "$item")" = "evals" ] && continue
+    cp -r "$item" "<TARGET_PATH>/$name/"
+  done
+done
 ```
+
+The loop skips each skill's `evals/` directory; evaluation fixtures are development-only and no skill references them at runtime.
 
 | Agent          | Global skills path                          |
 | -------------- | ------------------------------------------- |
@@ -136,8 +145,19 @@ Replace `<TARGET_PATH>` with the path you copied skills to in step 2.
 
 ```bash
 cd /tmp/kiss-agentic-dev && git pull
-cp -r skills/* <TARGET_PATH>/
+for skill in skills/*/; do
+  name=$(basename "$skill")
+  mkdir -p "<TARGET_PATH>/$name"
+  for item in "$skill"*; do
+    [ "$(basename "$item")" = "evals" ] && continue
+    cp -r "$item" "<TARGET_PATH>/$name/"
+  done
+done
 ```
+
+The loop skips each skill's `evals/` directory; evaluation fixtures are development-only and no skill references them at runtime.
+
+The copy runs from the clone directory, which the `cd` above sets up.
 
 Replace `<TARGET_PATH>` with your tool's skills path (see table in section 2).
 
