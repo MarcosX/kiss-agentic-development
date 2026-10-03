@@ -12,7 +12,7 @@ Skill validation runs through skill-creator's `scripts/quick_validate.py <skill>
 ## Adding a new skill
 
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
-2. **Establish a baseline**: if an `old_skill` snapshot exists, evaluate against it and record the result; otherwise record the run as single-configuration. Do not compare against no skill.
+2. **Establish a baseline**: follow skill-creator's baseline selection — `without_skill` for a new skill, `old_skill` (a snapshot of the current version) for a revision
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
 4. Create `skills/<name>/evals/evals.json` with 2-3 evals conforming to skill-creator's schema (`skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
 5. Run skill-creator's `scripts/quick_validate.py <name>` to confirm frontmatter
@@ -36,6 +36,6 @@ Skill development is iterative: draft, evaluate, review the results, improve. `s
 
 Evals run through the `skill-creator` workflow, which is the runner.
 
-**Layout**: `<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,without_skill}/run-N/` with `outputs/`, `grading.json`, and `timing.json` per run (`without_skill` present only in comparison mode). These directories are gitignored.
+**Layout**: `<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,without_skill,old_skill}/run-N/` with `outputs/`, `grading.json`, and `timing.json` per run. These directories are gitignored.
 
-See [AGENTS.md](AGENTS.md#evaluation) for the full evaluation documentation.
+See [AGENTS.md](AGENTS.md#running-evals) for the full evaluation documentation.

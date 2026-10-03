@@ -13,8 +13,9 @@ distinct, legitimate sense — that homonym is noted in its entry.
 
 **Skill value-add**:
 The difference in outcome between an agent holding a skill and an agent without it. It names the
-question the maintainer asks, not a figure the tooling reports: the `old_skill` baseline compares
-a skill to its own previous version, so no run returns this number.
+question the maintainer asks, not a figure the tooling reports. An `old_skill` baseline compares a
+skill to its own previous version and so returns change-impact, not this number; only the
+`without_skill` comparator measures value-add directly.
 _Avoid_: skill value, impact, skill effectiveness, skill works, conformance
 
 **Conformance**:

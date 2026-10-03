@@ -30,7 +30,7 @@ The `skill-creator` skill drives skill validation and evals. It is dev-only tool
 ### Adding a new skill
 
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
-2. **Establish a baseline**: if an `old_skill` snapshot exists, evaluate against it; otherwise record the run as single-configuration. Do not compare against no skill — that comparator is no longer available.
+2. **Establish a baseline**: follow skill-creator's baseline selection — `without_skill` for a new skill, `old_skill` (a snapshot of the current version) for a revision
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
 4. Create `skills/<name>/evals/evals.json` with 2-3 evals conforming to skill-creator's evals.json schema (see skill-creator's `references/schemas.md` — `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
 5. **Symlink is automatic** — `.opencode/skills → ../skills` covers all subdirectories
@@ -183,26 +183,17 @@ These patterns MUST be caught and corrected. If you find yourself writing any of
 `skill-creator` is the runner. In a session, invoke the `skill-creator` skill and ask it to run the
 eval workflow for the target skill. There is no repo-owned eval script, command, or subagent.
 
-**Baseline flavor**: `old_skill` — a skill is compared against its own previous version, which
-answers "did this change help". Every skill in this repo already exists and is being revised, so
-`old_skill` is the applicable flavor, not `without_skill`.
+**Baseline selection follows `skill-creator`** — `without_skill` for a new skill, `old_skill` for a
+revision. Nothing here overrides that choice. Never fabricate a baseline to fill a gap; an invented
+zero produces a `+1.00` delta that means nothing.
 
 A run reports **change-impact, not whether a skill earns its place**. Those are different questions
 and the tooling only answers the first. Do not describe a run's delta as a skill's value-add.
 
-**Driving the snapshot**: the executor reads the snapshot's `SKILL.md` from disk and treats it as its
-instructions. The skill tool resolves skills by identifier from a discovered tree and cannot load an
-arbitrary path, so a snapshot taken outside that tree is unreachable as a loadable skill.
+Two operational notes. Both fill gaps in `skill-creator`; neither changes its method:
 
-**When no snapshot exists**: run single-configuration and record that it was single-configuration.
-Skip aggregation and open the review viewer without a benchmark file. Never fabricate a baseline to
-fill the gap — a fabricated zero produces a `+1.00` delta that means nothing.
-
-**Layout**: `aggregate_benchmark.py` silently skips any configuration directory lacking a nested
-`run-` subdirectory, so the workspace layout must be
-`<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,old_skill}/run-N/` holding `outputs/`,
-`grading.json`, and `timing.json`. The prose layout in `skill-creator` does not aggregate; that is a
-bug in the dependency, not a customization here. These directories are gitignored.
+- **Driving a snapshot**: the executor reads the snapshot's `SKILL.md` from disk and treats it as its instructions. The skill tool resolves by identifier from a discovered tree and cannot load an arbitrary path.
+- **Layout**: `aggregate_benchmark.py` silently skips any configuration directory lacking a nested `run-` subdirectory, so the workspace layout must be `<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,without_skill,old_skill}/run-N/` holding `outputs/`, `grading.json`, and `timing.json`. The prose layout in `skill-creator` does not aggregate; that is a bug in the dependency. These directories are gitignored.
 
 ### Eval modification ladder
 
@@ -275,7 +266,7 @@ Skills must not contain malware, exploit code, or content that compromises syste
 - **Editing `.opencode/skills/` instead of `skills/`**: The symlink is a mirror — edit the source at `skills/`
 - **Missing frontmatter**: `name` and `description` are REQUIRED for discovery
 - **Forgetting to run validation**: RUN skill-creator's `scripts/quick_validate.py` after every skill change. Do not skip.
-- **No baseline at all**: Editing a skill without either an `old_skill` snapshot to compare against or an explicitly recorded single-configuration run.
+- **No baseline at all**: Editing a skill without the baseline `skill-creator` calls for — `without_skill` for a new skill, `old_skill` for a revision.
 - **Batching untested skills**: Moving to the next skill before the current one is verified. Each skill must be fully tested before starting the next.
 - **Committing session artifacts**: Never commit session-specific output such as test results, plan files, validation dumps, or generated reports. These artifacts bloat the repo and have no value outside their session. Use `e2e/`, `tmp/`, or similar scratch directories — and add them to `.gitignore` or use `git rm --cached` if accidentally committed.
 
