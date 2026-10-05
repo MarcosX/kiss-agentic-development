@@ -16,8 +16,10 @@ aren't behavior tasks — when one applies, state it in a line before proceeding
 ## The Loop
 
 **Write the failing test — define done.** This is the actual ask, not a step before
-the ask. A test is your intent made checkable: describe one behavior per test,
-with real code over mocks.
+the ask. A test is your intent made checkable: describe one behavior per test.
+Prefer real code, and read the impulse to mock: a mock is what you reach for
+where the design has no seam, so that impulse is information. It marks a place
+that wants a parameter, an interface, or a boundary.
 
 **Watch it fail — earn your proof.** Run it now, and see it fail for the expected
 reason: the behavior missing, not a typo. This failing run is the receipt for
@@ -30,9 +32,14 @@ is your "enough" detector — green means the contract is met, nothing more is
 asked. Green on one test is not the end: run the whole suite, because a change
 that satisfies its own contract can still break someone else's.
 
-**Refactor — improve while the test stays green.** Remove duplication, sharpen
-names, extract helpers. Each change is verified by the next run, so cleanup is
-confident.
+**Refactor — the code you just wrote is unproven too.** Green says the contract
+holds; it says nothing about whether the code is any good, exactly as a test
+that never failed proves nothing about your intent. Read the change back as if
+someone else wrote it: a hardcoded answer that satisfies the contract is still
+hardcoded, a name that hides what it does still hides it. Take the seams your
+own tests had to work around. Change no behavior here — this is the shape of the
+code, not what it does. Remove duplication, sharpen names, extract helpers. Each
+change is verified by the next run, so cleanup is confident.
 
 ## Bug fixes
 
