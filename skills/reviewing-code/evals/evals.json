@@ -2,32 +2,19 @@
   "skill_name": "reviewing-code",
   "evals": [
     {
-      "id": 2,
-      "prompt": "Can you review the order-validation change in evals/fixtures/validation-refactor/? Intent: the duplicated validation was extracted out of the request handler into a shared validator. Read the files and tell me what to tell the author.",
+      "id": 1,
+      "prompt": "Review the changes from the patch at evals/fixtures/partial-fix.patch applied to evals/fixtures/review-repro/. The patch is a partial fix attempt. Read the files and the patch, and give me your review.",
       "files": [
-        "evals/fixtures/validation-refactor/validator.py",
-        "evals/fixtures/validation-refactor/app.py"
+        "evals/fixtures/partial-fix.patch",
+        "evals/fixtures/review-repro/checkout.py",
+        "evals/fixtures/review-repro/test_checkout.py"
       ],
-      "expected_output": "A review in which every finding cites a file and line from the fixture files and carries a review axis plus one of the skill's severity labels, closing with an explicit verdict.",
+      "expected_output": "A review that identifies issues in the changes, with each finding citing a file and line, naming a review axis and a severity label (Critical, Required, Nit, Optional, or FYI), distinguishing defects the patch introduced from ones already in the code, and ending with an explicit verdict (approve/request changes/comment) that follows from the severities it assigned.",
       "expectations": [
-        "Every finding cites a file path and a line number from the fixture files; a finding with no such citation fails this",
-        "Every finding names a review axis and a severity label drawn from Critical, Required, Nit, Optional, or FYI; a finding missing either label fails this",
-        "The review ends with an explicit verdict of approve, request changes, or comment"
-      ]
-    },
-    {
-      "id": 3,
-      "prompt": "Can you review the change to how the queue parses its payload in evals/fixtures/order-service-false-positive/? Intent: the parser now raises on a malformed payload instead of returning an empty dict. Read the files and give me the review.",
-      "files": [
-        "evals/fixtures/order-service-false-positive/parser.py",
-        "evals/fixtures/order-service-false-positive/producer.py",
-        "evals/fixtures/order-service-false-positive/queue.py",
-        "evals/fixtures/order-service-false-positive/tests/test_payload.py"
-      ],
-      "expected_output": "A review grounded in the fixture code rather than the request text — findings drawn from more than one module and one finding anchored to the test that documents the contract — closing with an explicit verdict.",
-      "expectations": [
-        "Findings are grounded in code from at least two of the three source modules (parser.py, producer.py, queue.py); a review whose findings all cite a single file fails this",
-        "At least one finding cites tests/test_payload.py as evidence for what the payload contract already guarantees; a review that files findings without reference to the documenting test fails this",
+        "Every finding cites a file path and a line number; findings with no citation fail this",
+        "Every finding names a review axis and a severity label drawn from Critical, Required, Nit, Optional, or FYI",
+        "The review's verdict follows its own findings: it requests changes when it treats a defect the patch introduced as Critical or Required, and it does not block the merge on a pre-existing defect alone",
+        "The review identifies the partial nature (e.g. only fixes the math/tax ordering bug but not the display formatting issue), with at least one finding related to the display function",
         "The review ends with an explicit verdict of approve, request changes, or comment"
       ]
     }

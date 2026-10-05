@@ -19,17 +19,17 @@ When the user introduces or uses a term:
 
 Maintain continuous awareness across three sources:
 
-| Direction | Question to ask |
-|-----------|----------------|
-| Conversation ↔ Glossary | Does the user's language match established terms? |
-| Conversation ↔ Code | Does the stated behavior match what the code does? |
-| Glossary ↔ Code | Does the code use terms consistently with the glossary? |
+| Direction               | Question to ask                                         |
+| ----------------------- | ------------------------------------------------------- |
+| Conversation ↔ Glossary | Does the user's language match established terms?       |
+| Conversation ↔ Code     | Does the stated behavior match what the code does?      |
+| Glossary ↔ Code         | Does the code use terms consistently with the glossary? |
 
 Surface every contradiction immediately. Let the user resolve — do not assume which source is correct.
 
 ## Update inline, do not batch
 
-When a term is resolved, update `CONTEXT.md` immediately. Use `references/CONTEXT-FORMAT.md` for structure. Do not batch updates — each resolution is a separate edit. This keeps the glossary precise and prevents unresolved terms from being forgotten.
+When a term is resolved, update `CONTEXT.md` immediately. Use `reference/CONTEXT-FORMAT.md` for structure. Do not batch updates — each resolution is a separate edit. This keeps the glossary precise and prevents unresolved terms from being forgotten.
 
 ## What belongs in the glossary
 

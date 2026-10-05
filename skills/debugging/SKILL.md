@@ -16,7 +16,7 @@ trace, line numbers, paths. Check recent changes — diff, config, dependencies,
 deploys. Reproduce it if you can. When the system spans components, capture
 what enters and leaves each boundary — what happens at the edge outranks what
 you assume in the middle. For large or cross-component systems, a focused
-investigation (see `references/gather-evidence.prompt.md`) returns a structured
+investigation (see `reference/gather-evidence.prompt.md`) returns a structured
 report and keeps your context clean. Return an evidence report before forming
 conclusions.
 

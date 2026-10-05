@@ -23,7 +23,7 @@ Severity is a claim about this codebase, not about the diff: whether the flagged
 
 # Approval
 
-Approve when the change improves code health, even if imperfect. Do not block because it could have been written differently.
+Approve when the change improves code health, even if imperfect. Do not block because it could have been written differently. Severity describes the code; the verdict describes the change. A defect the change did not introduce is a follow-up, not a block, whatever its severity.
 
 # Change sizing
 

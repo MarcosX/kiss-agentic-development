@@ -3,22 +3,16 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Plan task: slugify\n\nFiles:\n- Create: test_slugify.py\n- Existing: slugify.py\n\nBehavioral contract for slugify(title): converts a page title into a URL-safe slug:\n- lowercases the input\n- replaces spaces with hyphens\n- strips any characters that are not alphanumeric or hyphens\n- collapses consecutive hyphens into one\n- strips leading and trailing hyphens\n- returns empty string for empty or whitespace-only input\n\nExisting code (slugify.py):\n\ndef slugify(title):\n    return title.lower()\n\nVerify test fails: run `python -m pytest test_slugify.py -q` and confirm it fails for the expected reason — the full slugification contract (space replacement, character stripping, hyphen collapsing, edge-case handling) is missing from the implementation.\nThen adapt the implementation so the test passes. Keep the function name and signature.\n\nDone when: the contract test passes and the implementation is adapted rather than replaced.",
-      "expected_output": "The agent treats the plan task as 'make the failing test pass'. It writes a specification test covering the full contract, runs it and sees it fail for the expected reason — the behavior is missing, not a typo, import error, or collection failure — before modifying the implementation, then makes it pass and runs the whole suite, showing the previously passing tests still pass.",
+      "prompt": "Use the tdd-fixture at evals/fixtures/tdd-fixture/ to implement a simple httpbin.org client for the GET /headers endpoint. Store the response in an in-memory model. The expected response shape is like {'headers': {'Accept': 'application/json'}}. Follow the practicing-tdd skill strictly.",
+      "files": [
+        "evals/fixtures/tdd-fixture/"
+      ],
+      "expected_output": "The agent follows TDD: writes failing tests first that define the behavior (fetch_headers returning a model storing the headers), watches each one fail with an assertion executing rather than a collection error, reaches the failure path through a double on the HTTP boundary rather than live calls, covers any failure handling it writes rather than deferring it as an extra, and makes each contract pass with the simplest code before running the full suite.",
       "expectations": [
-        "A specification test covering the full contract is written before the implementation module is modified",
-        "The test is run and observed failing for the expected reason — the behavior is missing, not a typo, import error, or collection failure — before the implementation is touched",
-        "After the implementation goes green, the whole suite is run and the previously passing tests still pass"
-      ]
-    },
-    {
-      "id": 2,
-      "prompt": "Users are telling us that signing up with an email that already exists overwrites the existing account instead of being rejected. Here's the module and its test — find out why and fix it.\n\nBoth files sit in the repo root. Run the suite with `python -m pytest -q`.\n\nregistration.py:\n\n    def register_user(user, users):\n        users[user[\"email\"]] = user\n        return user\n\ntest_registration.py:\n\n    from registration import register_user\n\n\n    def test_registers_a_new_user():\n        users = {}\n        register_user({\"email\": \"ada@example.com\", \"name\": \"Ada\"}, users)\n\n        assert users == {\"ada@example.com\": {\"email\": \"ada@example.com\", \"name\": \"Ada\"}}",
-      "expected_output": "The agent writes a reproduction test asserting that a duplicate email is rejected, runs it and watches it fail before modifying the module, then changes `register_user` to reject a duplicate email and shows a single run where both the reproduction and the pre-existing test pass.",
-      "expectations": [
-        "A reproduction test asserting that a duplicate email is rejected is written and observed failing before `register_user` is modified",
-        "`register_user` is changed to reject a duplicate email rather than the reproduction test being weakened or deleted",
-        "After the fix, the reproduction test and the pre-existing test both pass in a single shown run"
+        "At least one failing run shows a test body executing and an assertion failing before the implementation existed — not a collection or import error, and not merely a narrated description of a failure",
+        "Each test asserts one behavior and no two tests read the same value from the code under test — a shape assertion and a value assertion on the same field are one test, not two",
+        "The tests replace a dependency the agent did not write (the HTTP boundary) with a double or seam so a failure path is reachable, rather than depending on live calls to a public service, and do not replace the agent's own objects",
+        "Every behavior shipped in the implementation was observed failing before it was written, including any failure handling the flaky public dependency called for — no untested retry, timeout, or exception path ships"
       ]
     }
   ]

@@ -3,24 +3,17 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "I have a plan file at evals/fixtures/eval-1-plan.md with 2 independent tasks. Execute the plan.",
-      "files": ["evals/fixtures/eval-1-plan.md"],
-      "expected_output": "Agent identifies the plan's two tasks as independent with no dependency chain blocking either, creates a worktree before dispatch, and sends both tasks as one parallel batch in a single turn.",
+      "prompt": "I have a plan file at evals/fixtures/eval-exec-plan.md. This is an evaluation run only - do NOT execute the plan. Instead, describe how you would execute it according to the executing-plans skill. Show what tasks you identify, whether they are independent/dependent, how you would batch/dispatch (fresh agents/subagents per task), that you would create a worktree before dispatch, and that you would run AC evals after all tasks complete.",
+      "files": [
+        "evals/fixtures/eval-exec-plan.md"
+      ],
+      "expected_output": "A clear description of the execution plan following executing-plans: identify tasks (Task 1-4), recognize dependencies (Task 2 feeds Task 3, Task 1 feeds others conceptually; Task 3 feeds Task 4 contextually) and batch independent tasks appropriately, state fresh subagents/agents dispatched per task, state worktree created before dispatch, and state AC evals run after all tasks complete.",
       "expectations": [
-        "Both of the plan's tasks are identified as independent, with no dependency chain blocking either",
-        "The independent tasks are dispatched as one parallel batch within a single turn",
-        "A worktree is created before task dispatch"
-      ]
-    },
-    {
-      "id": 4,
-      "prompt": "I have a plan at evals/fixtures/eval-4-plan.md. Execute the plan.",
-      "files": ["evals/fixtures/eval-4-plan.md"],
-      "expected_output": "Agent implements the task until its test suite passes, then exercises the AC eval against the running application and captures live runtime evidence — an HTTP response, a server log line, or process output — matching it against the plan's expected outcome of HTTP 200 with body {\"count\": 0}.",
-      "expectations": [
-        "The task's full test suite passes with no regressions; a red suite fails this",
-        "The AC eval is exercised against the running application, and the evidence captured is a live result — an HTTP response, a server log line, or process output — rather than test output or code inspection",
-        "The captured evidence is matched against the plan's stated expected outcome, an HTTP 200 with body {\"count\": 0}"
+        "All 4 tasks (Task 1-4) are identified from the plan",
+        "Parallel vs sequential batching is described (e.g. Task 1 and Task 2 can run in parallel as independent setup pieces, Task 3 depends on Task 2 and Task 1 context; Task 4 depends on Task 3/endpoint behavior - dependencies are reasoned about)",
+        "Fresh subagents/agents are dispatched per task (one per task)",
+        "A worktree is created before any task dispatch",
+        "AC evals are described as running after all tasks complete (not before/during)"
       ]
     }
   ]

@@ -21,7 +21,7 @@ The template below guarantees every task is executor-runnable. Merge local ticke
 
 **AC coverage**: Extract acceptance criteria from the design, prompt, or other sources and build a coverage list.
 
-**Vertical slices**: Break work into thin end-to-end slices. Each slice cuts through ALL layers (schema → API → logic → tests → UI), is demoable on its own. Type each as HITL (needs human) or AFK (agent can implement independently). Publish blockers first. Only load `references/slicing-guide.md` for the full template and edge cases around ordering — do not read it proactively.
+**Vertical slices**: Break work into thin end-to-end slices. Each slice cuts through ALL layers (schema → API → logic → tests → UI), is demoable on its own. Type each as HITL (needs human) or AFK (agent can implement independently). Publish blockers first. Only load `reference/slicing-guide.md` for the full template and edge cases around ordering — do not read it proactively.
 
 **Quiz the user**: After presenting the proposed breakdown, ask about granularity, dependency correctness, and HITL/AFK assignments. Iterate until approved.
 

@@ -6,11 +6,12 @@ Collection of AI agent skills that enforce skill-first workflows.
 
 ```
 ├── instructions/
-│   └── using-skills.md              # Global instruction (always loaded, not a skill)
+│   └── using-skills.md              # Global prompt to bias agents towards using skills
 ├── skills/                           # All skill directories (source of truth)
 │   ├── [skill name]/
 │   │   ├── SKILL.md
 │   │   └── evals/evals.json          # Evaluations for the skill
+│   ├── [skill name]-workspace/      # workspace for skill evals (not to be used, unless running or reviewing evals)
 ├── migrations/
 │   └── before-1.0.0.md              # Migration steps for users upgrading from pre-1.0
 └── .opencode/
@@ -32,7 +33,7 @@ The `skill-creator` skill drives skill validation and evals. It is dev-only tool
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
 2. **Establish a baseline**: follow skill-creator's baseline selection — `without_skill` for a new skill, `old_skill` (a snapshot of the current version) for a revision
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
-4. Create `skills/<name>/evals/evals.json` with 2-3 evals conforming to skill-creator's evals.json schema (see skill-creator's `references/schemas.md` — `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
+4. Create `skills/<name>/evals/evals.json` with 2-3 evals conforming to skill-creator's evals.json schema (see skill-creator's `reference/schemas.md` — `skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
 5. **Symlink is automatic** — `.opencode/skills → ../skills` covers all subdirectories
 6. Run skill-creator's `scripts/quick_validate.py` to confirm frontmatter
 
@@ -138,14 +139,14 @@ Agents pay for every token in a skill. Optimize ruthlessly.
 ### Structure principles
 
 - **Progressive disclosure**: SKILL.md is an overview. Split detailed content into separate reference files that agents read on demand.
-- **When-conditioned references**: When SKILL.md references a reference file, prefix with a _when_ condition so the agent knows when to load it. "When slicing tickets, see `references/slicing-guide.md`" instead of "See `references/slicing-guide.md`". This prevents eager loading — the agent defers reading until the condition is met.
+- **When-conditioned references**: When SKILL.md references a reference file, prefix with a _when_ condition so the agent knows when to load it. "When slicing tickets, see `reference/slicing-guide.md`" instead of "See `reference/slicing-guide.md`". This prevents eager loading — the agent defers reading until the condition is met.
 - **One level deep**: All reference files MUST link directly from SKILL.md. Deeply nested references (`SKILL.md → file-a.md → file-b.md`) cause agents to skip content.
 - **Domain organization**: When a skill covers multiple domains or frameworks, organize reference files by variant so agents read only what is relevant.
 
   ```
   deploy/
   ├── SKILL.md
-  └── references/
+  └── reference/
       ├── aws.md
       ├── gcp.md
       └── azure.md

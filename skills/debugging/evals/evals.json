@@ -3,27 +3,18 @@
   "evals": [
     {
       "id": 2,
-      "prompt": "I'm looking at evals/fixtures/repro-fixture/. Here's the checkout module and its tests. Discounted orders total wrong — the discount seems to give more than expected. Figure out what's actually going on and fix it.",
+      "prompt": "I'm looking at evals/fixtures/repro-fixture/. Here's the checkout module and its tests. Discounted orders total wrong \u2014 the discount seems to give more than expected. Also, when displaying amounts, we notice values like 0.1 + 0.2 display as 0.30000000000000004. Figure out what's actually going on and fix it.",
       "files": [
         "evals/fixtures/repro-fixture/checkout.py",
         "evals/fixtures/repro-fixture/test_checkout.py"
       ],
-      "expected_output": "The agent runs the test suite before changing any code, quotes the failing discount test from that run, and fixes the cause by computing tax on the discounted subtotal instead of the full one.",
+      "expected_output": "The agent runs the test suite before changing any code, identifies both issues (the tax calculation ordering bug and the floating point formatting issue in display), quotes the failing tests from that run, and fixes both causes correctly.",
       "expectations": [
+        "The falsified user's stated cause is caught, the user said \"the discount gives more than expected\", which is inverted",
         "The test suite or a reproduction is run before checkout.py is modified, and the failing discount test (90.0 against an expected 88.0) appears in that run's output",
         "The failing output is quoted or described from the run rather than predicted in prose",
-        "The fix changes the tax/discount ordering so tax is computed on the discounted subtotal; a hardcoded total or a deleted test fails this"
-      ]
-    },
-    {
-      "id": 3,
-      "prompt": "I'm looking at evals/fixtures/retry-pool-scenario.md. Our checkout endpoint times out intermittently — I keep seeing 'timed out after 5s' in the logs. Started after some recent infra changes but I can't tell which one. What's the fix?",
-      "files": ["evals/fixtures/retry-pool-scenario.md"],
-      "expected_output": "The agent treats the pooling change and the retry wrapper as potentially interacting, ties the log's timeout cadence to the retry backoff as evidence of the proximate trigger, and names the retry-into-exhausted-pool feedback loop as the root cause rather than any single threshold.",
-      "expectations": [
-        "Both recent changes — the connection pooling change and the retry wrapper — are read as potentially interacting rather than in isolation",
-        "The agent ties the roughly 105ms spacing between the pool-exhausted warnings (11.042, 11.149, 11.256, 11.361) to the fixture's fixed 100ms retry backoff and names that correlation the proximate trigger; noting the spacing without connecting it to the backoff fails this",
-        "The root cause named is the retry-into-exhausted-pool feedback loop rather than a single threshold"
+        "The fix changes the tax/discount ordering so tax is computed on the discounted subtotal; a hardcoded total or a deleted test fails this",
+        "Both bugs are identified and fixed: (1) tax is computed on discounted subtotal, and (2) the display function properly formats currency to 2 decimal places (e.g. $9.99) rather than leaking floating point representation; the display test is corrected to the proper expected behavior if needed"
       ]
     }
   ]
