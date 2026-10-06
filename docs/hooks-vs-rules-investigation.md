@@ -119,14 +119,19 @@ structured); the discipline a single agent applies is open (hooks).**
 
 - **practicing-tdd** — open-field → **hooks (DONE)**. Reference implementation.
   Narrow contract (the test) + open loop (the why).
-- **debugging** — open-field → **hook candidate**. Natural next experiment:
-  closest twin of practicing-tdd (method discipline; root-cause "proof" ≈
-  failing-test "proof"). Current shape: HARD-GATE + red flags + phases. Failure
-  driver is motivational (jump-to-fix), not hazardous. Rewrite why-before-gate.
-- **reviewing-code** — open-field → **hook candidate**. Failure modes (LGTM
-  without review, rubber-stamping, skipping the challenge step) are shortcut
-  failures. Human-in-the-loop catches mistakes → low irreversibility. Convert
-  red flags to a "done when" bar.
+- **reviewing-code** — open-field → **hooks (DONE)**. Reframe: "The task is to
+  produce findings worth acting on — each one grounded in code you actually
+  read." Subagent dispatch removed: the reviewing session reads the branch and
+  reviews the code, so no verification pass and no folded challenge-findings
+  section are needed. Receiving-feedback dropped (rarely used, ungrounded
+  eval). Evals: severity calibrated against a documented contract, approval
+  standard (decoy: hardcoded threshold), diff-level decoy caught by reading the
+  producer.
+- **debugging** — open-field → **hook candidate**. Restored to the framework
+  (see changelog). Closest twin of practicing-tdd (method discipline; root-cause
+  "proof" ≈ failing-test "proof"). Current shape: HARD-GATE + red flags + phases.
+  Failure driver is motivational (jump-to-fix), not hazardous. Rewrite
+  why-before-gate.
 - **brainstorming** — open-field with one guarded boundary → **hook candidate**.
   Content is open-context work and already argues its own why. The one
   load-bearing rule — no implementation before user approval — is human-reinforced
@@ -166,8 +171,10 @@ rework them once the decision is made. Currently suspended for the experiment:
   without a failing test first" is fulfilled by with-skill vs without-skill
   evals (`compare`), not by a bug-fix reproduction.
 
-Status: the first conversion under this suspension is the `debugging` hook
-conversion (plan: `.opencode/plans/debugging-hooks-conversion-plan.md`).
+Status: `reviewing-code` was converted to hooks. The `debugging` skill had been
+removed from the framework (comparison evals showed no meaningful value delta)
+but has since been restored — see changelog. `brainstorming` is the next
+candidate (hook candidate).
 
 ## Open decisions
 
@@ -184,8 +191,7 @@ conversion (plan: `.opencode/plans/debugging-hooks-conversion-plan.md`).
    implementation.
 2. Decide (with the user) whether executing-plans and writing-plans' format stay
    enforced guidance — the classification above is a proposal.
-3. Natural next experiment: convert `debugging` (or `reviewing-code`) to hooks,
-   snapshotting the current version as baseline and running `compare`.
+3. ~~Natural next experiment: convert `reviewing-code` to hooks~~ Done (see changelog). Next candidate: `brainstorming` (open-field, hook candidate).
 4. If hooks win: convert remaining open-field skills, then rework AGENTS.md
    tension points, then update this doc to "DECIDED".
 
@@ -208,5 +214,20 @@ conversion (plan: `.opencode/plans/debugging-hooks-conversion-plan.md`).
 - 2026-09-12: Created from the practicing-tdd rework learnings, the AGENTS.md /
   skill-creator compatibility analysis, and the per-skill narrow/open assessment.
 - 2026-09-12: Documented the experimental suspension of AGENTS.md rules for the
-  hooks experiment, and the `debugging` conversion (first conversion; plan
-  drafted in `.opencode/plans/debugging-hooks-conversion-plan.md`).
+  hooks experiment, and the planned `debugging` conversion (first conversion;
+  plan drafted in `.opencode/plans/debugging-hooks-conversion-plan.md`).
+- 2026-09-14: Removed the `debugging` skill from the framework (comparison
+  evals showed no meaningful value delta). Cleared its classification, the
+  suspension-scope reference, and the next-experiment naming; `reviewing-code`
+  is now the first conversion candidate.
+- 2026-09-15: Converted `reviewing-code` to hooks (reframe + folded challenge-findings, receiving-feedback dropped, 3 evals reworked). Eval-2 tests approval standard with a validation-refactor decoy fixture.
+- 2026-09-17: Restored the `debugging` skill to the framework and re-classified
+  it as an open-field hook candidate. Its evals now use a runnable reproduction
+  fixture (`repro-fixture/`) instead of the pressure-framed payment-gateway
+  scenario.
+- 2026-10-01: `reviewing-code` now reviews the code in the session instead of
+  dispatching a subagent over the diff. The loop gains code acquisition and a
+  stated context-reading mechanism; the subagent prompt reference was folded
+  into SKILL.md and deleted; eval 1's expectations now require naming the
+  contract behind the severity, and eval 3 was inverted onto its existing
+  fixture to drop the third-party-analysis scope.

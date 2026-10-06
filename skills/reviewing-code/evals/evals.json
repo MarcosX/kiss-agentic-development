@@ -3,43 +3,19 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Review this PR diff. Read the diff carefully before responding:\n\n```diff\n+function processData(data) {\n+  const result = [];\n+  eval(data.query);  // Hmm, need to process the query somehow\n+  return result;\n+}\n```\n\nThe PR description says: 'Add data processing utility. Uses eval() to execute dynamic queries.'",
-      "expected_output": "Agent identifies eval() as a critical security vulnerability, categorizes findings by severity (Critical, Required, Nit), blocks or strongly opposes the merge due to the Critical finding, references specific diff lines showing the diff was read, and proposes a constructive alternative.",
-      "expectations": [
-        "Critical finding identified on eval() — security vulnerability",
-        "Findings categorized by severity (Critical, Required, Nit)",
-        "Merge blocked or strongly opposed due to Critical finding",
-        "Findings demonstrate diff was read (specific lines referenced, accurate interpretation)",
-        "Constructive alternative proposed (not just rejection)"
-      ]
-    },
-    {
-      "id": 2,
-      "prompt": "I got this review comment on my PR that adds a new API endpoint:\n\nReviewer: 'You should use a connection pool instead of creating new connections per request. Also, add input validation middleware.'\n\nHow should I handle this feedback?",
-      "expected_output": "Agent handles the feedback through the skill's phases: reads the full feedback before reacting (READ), restates or asks clarifying questions (UNDERSTAND), checks the suggestions against reality (VERIFY/EVALUATE), implements one item at a time with testing, and applies YAGNI to unnecessary productionizing.",
-      "expectations": [
-        "READ phase: reads full feedback before reacting",
-        "UNDERSTAND phase: restates or asks clarifying questions",
-        "VERIFY/EVALUATE phase: checks suggestions against reality",
-        "Implements one item at a time with testing",
-        "YAGNI applied for unnecessary productionizing"
-      ]
-    },
-    {
-      "id": 4,
-      "prompt": "I got this automated review of my local changes from a bot that only sees the diff. The change removes the try/except in parser.py so malformed payloads fail loudly instead of returning {}. The codebase is in evals/fixtures/order-service-false-positive/. Before I respond to the author, double-check the bot's findings against the actual code.\n\nDiff:\n```diff\n import json\n \n \n def parse_payload(raw):\n-    try:\n-        data = json.loads(raw)\n-    except (ValueError, TypeError):\n-        return {}\n-    return data\n+    return json.loads(raw)\n```\n\nThe bot said:\n\nCritical — Correctness — parser.py: Removing the try/except means malformed queue payloads now raise and crash the whole consumer batch. This is a critical runtime failure that blocks merge.\n\nOptional — Readability — parser.py: Consider keeping the {} fallback for consistency.\n\nPR intent: \"Stop silently swallowing malformed payloads. Payloads are validated at the producer before enqueueing, so parsing should fail loudly if corrupted.\"\n\nReview the change and tell me what's actually worth acting on.",
+      "prompt": "Review the changes from the patch at evals/fixtures/partial-fix.patch applied to evals/fixtures/review-repro/. The patch is a partial fix attempt. Read the files and the patch, and give me your review.",
       "files": [
-        "evals/fixtures/order-service-false-positive/parser.py",
-        "evals/fixtures/order-service-false-positive/producer.py",
-        "evals/fixtures/order-service-false-positive/queue.py",
-        "evals/fixtures/order-service-false-positive/tests/test_payload.py"
+        "evals/fixtures/partial-fix.patch",
+        "evals/fixtures/review-repro/checkout.py",
+        "evals/fixtures/review-repro/test_checkout.py"
       ],
-      "expected_output": "Agent verifies the bot's findings against the actual code (reads producer.py and queue.py, runs the tests), challenges and dismisses or downgrades the false-positive Critical with codebase evidence (producer validates before enqueueing), does not repeat the bot's Critical verbatim without verification, and presents findings with axis and severity.",
+      "expected_output": "A review that identifies issues in the changes, with each finding citing a file and line, naming a review axis and a severity label (Critical, Required, Nit, Optional, or FYI), distinguishing defects the patch introduced from ones already in the code, and ending with an explicit verdict (approve/request changes/comment) that follows from the severities it assigned.",
       "expectations": [
-        "Bot findings verified against the actual code (producer.py, queue.py read, tests run)",
-        "False-positive Critical challenged and dismissed/downgraded with codebase evidence (producer validates before enqueueing)",
-        "Bot's Critical not repeated verbatim without verification",
-        "Findings presented with axis and severity"
+        "Every finding cites a file path and a line number; findings with no citation fail this",
+        "Every finding names a review axis and a severity label drawn from Critical, Required, Nit, Optional, or FYI",
+        "The review's verdict follows its own findings: it requests changes when it treats a defect the patch introduced as Critical or Required, and it does not block the merge on a pre-existing defect alone",
+        "The review identifies the partial nature (e.g. only fixes the math/tax ordering bug but not the display formatting issue), with at least one finding related to the display function",
+        "The review ends with an explicit verdict of approve, request changes, or comment"
       ]
     }
   ]

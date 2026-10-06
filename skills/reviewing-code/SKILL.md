@@ -1,94 +1,34 @@
 ---
 name: reviewing-code
-description: Use when reviewing code from any source (your own, another agent, or a human), before merging, or when receiving review feedback.
+description: Use when reviewing code from any source (your own, another agent, or a human), before merging.
 ---
 
-## When to Use
+# The task
 
-- Before merging any change
-- When another agent or model produced code you need to evaluate
-- When receiving review feedback from a human or peer
+Produce findings worth acting on — each one grounded in code you actually read.
 
-## Giving Review
+# Why
 
-### 1. Determine Target and Prepare
+Severity is a claim about this codebase, not about the diff: whether the flagged path is reachable, whether a test already documents the contract, whether a caller elsewhere depends on the behavior. A review that starts and ends with the diff cannot support that claim, so it inflates noise into Critical findings and downplays real ones. Reading the changed files together with their surroundings is where severity comes from.
 
-- **Local changes**: Check `git status` and `git diff`. Run preflight checks (tests, lint).
-- **Remote PR**: Fetch context — PR description, existing comments, diff. Run preflight.
-- **Always**: Understand what the change is trying to accomplish before reading code.
+# The Loop
 
-### 2. Dispatch Review Subagent
+1. **Understand intent** — read the PR description or context before reading the diff.
+2. **Get the code** — work in the repository root and switch to the branch under review, named in the request or in the PR. A branch that exists only on the remote needs no switch: fetch it and read its files from the fetched ref. For a local branch, run the switch even when the working tree looks dirty — the remedies below only exist once a failure is real. If the switch fails, report the reason, name the remedies (stash, force, or review the already-checked-out branch), and ask which to use, because a review makes no changes and stopping costs only a round trip. Never discard uncommitted work to get past a failed switch.
+3. **When the repository is absent** — clone or fetch it into a scratch location outside the user's tree, and say that the review will be slower.
+4. **Read what the diff hides** — read each changed file whole rather than its hunks, then follow the links that decide whether a finding is real: the callers of a changed function, the tests covering it, and any place the behavior is documented.
+5. **Review five axes** — Correctness (does the change do what it claims, are edge cases and error paths handled, do the tests check behavior rather than internals?), Readability (can someone follow it without the author, are abstractions earning their complexity?), Architecture (does it fit the system and follow existing patterns, are module boundaries clean?), Security (is user input validated, are secrets kept out of code, is auth checked, is external data untrusted?), Performance (N+1 queries, unbounded loops, missing pagination, sync work in an async path?).
+6. **Label every finding** — axis; severity, one of Critical (blocks merge: security vulnerability, data loss, broken functionality), Required (must address before merge), Nit (minor, formatting or style), Optional (worth considering, not required), FYI (informational, no action needed); the file and line; what is wrong; the fix or the question for the author.
+7. **Decide** — approve, request changes, or comment.
 
-When reviewing, dispatch a subagent using `references/code-review.prompt.md`, providing the diff, PR description and any existing review comments. The subagent returns structured findings per severity. Bring those findings back into the main session for the next steps.
+# Approval
 
-The subagent reviews across five axes: Correctness, Readability and Simplicity, Architecture, Security, and Performance. It returns findings per severity (Critical, Required, Nit, Optional, FYI).
+Approve when the change improves code health, even if imperfect. Do not block because it could have been written differently. Severity describes the code; the verdict describes the change. A defect the change did not introduce is a follow-up, not a block, whatever its severity.
 
-### 3. Challenge Findings
+# Change sizing
 
-The subagent works from the diff alone and lacks codebase context, so its findings can be mis-scoped — genuine issues downplayed, noise inflated. Before presenting, challenge every finding against the actual code. When challenging findings, see `references/challenge-findings.md`.
+~100 lines changed is good. ~300 lines is acceptable for a single logical change. ~1000+ lines is too large — flag it and suggest splitting. Separate refactoring from feature work.
 
-When presenting findings, always include the axis and severity.
+# Done when
 
-### 4. The Approval Standard
-
-Approve when a change improves overall code health, even if not perfect. Do not block because it could have been written differently.
-
-### 5. Handling Disagreements
-
-Resolve disputes in this order:
-
-1. Technical facts and data override opinions
-2. Style guides are absolute on style matters
-3. Software design evaluated on engineering principles
-4. Codebase consistency acceptable if it does not degrade health
-
-Do not accept "I will clean it up later" — deferred cleanup rarely happens.
-
-### 6. Change Sizing
-
-~100 lines changed is good. ~300 lines is acceptable for a single logical change. ~1000+ lines is too large — split it. Separate refactoring from feature work into different changes.
-
-## Exit Gate
-
-Before you call a review complete, check each box:
-
-- [ ] Change intent understood before reading code
-- [ ] Findings presented with axis and severity
-- [ ] Every finding challenged against the actual code
-- [ ] Approval standard applied — health improvement, not perfection
-- [ ] No red flag present (LGTM without review, tests-only check, unread diff)
-
-## Receiving Review Feedback
-
-### The Response Pattern
-
-When receiving feedback, follow this sequence:
-
-1. **READ** — Complete feedback without reacting or planning responses
-2. **UNDERSTAND** — Restate the requirement or ask for clarification
-3. **VERIFY** — Check the suggestion against codebase reality
-4. **EVALUATE** — Is it technically sound for this codebase?
-5. **RESPOND** — Technical acknowledgment or reasoned pushback
-6. **IMPLEMENT** — One item at a time, test each
-
-### Clarify Before Implementing
-
-If any item is unclear, stop and ask before implementing anything. Items may be related — partial understanding leads to wrong implementation.
-
-### YAGNI on Suggestions
-
-If a reviewer suggests productionizing code that is not currently used, grep for actual usage. If the code is not called anywhere, flag it rather than building it out.
-
-### Push Back When Wrong
-
-Push back when a suggestion breaks existing functionality, the reviewer lacks full context, it violates YAGNI, or it is technically incorrect. Use technical reasoning backed by code and tests.
-
-## Red Flags
-
-- Merging without any review
-- "LGTM" without evidence of actual review
-- Reviews that only check whether tests pass
-- Large PRs that should have been split
-- Bug fixes without reproduction tests
-- Accepting "I will fix it later"
-- Implementing unclear feedback without clarification
+Every finding you present cites a file and line you read, and its severity reflects what that code shows. You can point to the code behind each one.

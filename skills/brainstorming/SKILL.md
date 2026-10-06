@@ -15,13 +15,13 @@ Every project goes through this process. A todo list, a single-function utility,
 
 Create TODOs to track each step. Complete them in order.
 
-1. **Explore context** — dispatch an explore subagent using `references/explore-context.prompt.md`. Paste the project domain/goal into the template. The subagent returns structured context covering domain language, relevant changes, file structure, patterns, and references. Note domain language conflicts and relevant patterns. Targeted file reads are still fine for specific questions the report raises.
+1. **Explore context** — dispatch an explore subagent using `reference/explore-context.prompt.md`. Paste the project domain/goal into the template. The subagent returns structured context covering domain language, relevant changes, file structure, patterns, and references. Note domain language conflicts and relevant patterns. Targeted file reads are still fine for specific questions the report raises.
 
 2. **Stress-test understanding** — one question at a time. Provide your recommended answer with each question. Prefer multiple choice. Interview relentlessly, walk decision tree branches, sharpen domain language against existing context and code.
 
    **Load the glossary first.** Read `CONTEXT.md` if it exists. Existing terms are constraints to question against — challenge conflicts immediately, sharpen vague language, probe edge cases with concrete scenarios.
 
-   **Cross-reference all three** — code, conversation, glossary. Surface every contradiction between them. When a term is resolved, update `CONTEXT.md` inline (don't batch) using `references/CONTEXT-FORMAT.md`. When resolving domain terminology, see `references/glossary-interaction.md`.
+   **Cross-reference all three** — code, conversation, glossary. Surface every contradiction between them. When a term is resolved, update `CONTEXT.md` inline (don't batch) using `reference/CONTEXT-FORMAT.md`. When resolving domain terminology, see `reference/glossary-interaction.md`.
 
    **Assess scope first**: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this. Help the user decompose into sub-projects before diving into details. Each sub-project gets its own brainstorm → spec → plan → implementation cycle.
 
@@ -33,7 +33,7 @@ Create TODOs to track each step. Complete them in order.
 
    Explore the existing structure before proposing changes. Follow existing patterns. Where existing code has problems that affect the work, include targeted improvements. Do not propose unrelated refactoring.
 
-5. **Write PRD** — use `references/prd-template.md` (problem statement, solution, user stories, implementation decisions, testing decisions, out of scope, further notes). Adopt the anti-stale principle — avoid file paths and code snippets. Exception: prototype-produced decision-rich snippets (state machines, schemas, type shapes) can be inlined. Do NOT commit PRD documents to git.
+5. **Write PRD** — use `reference/prd-template.md` (problem statement, solution, user stories, implementation decisions, testing decisions, out of scope, further notes). Adopt the anti-stale principle — avoid file paths and code snippets. Exception: prototype-produced decision-rich snippets (state machines, schemas, type shapes) can be inlined. Do NOT commit PRD documents to git.
 
    After writing:
    1. **Spec self-review**: dispatch a subagent to scan for placeholders (TBD/TODO), contradictions, ambiguity, and scope bloat. Apply fixes in the main session. Skip if spec is under 50 lines.

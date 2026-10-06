@@ -12,11 +12,11 @@ Skill validation runs through skill-creator's `scripts/quick_validate.py <skill>
 ## Adding a new skill
 
 1. **Capture intent**: Interview the user to understand what the skill should do, when it should trigger, expected output, and edge cases.
-2. **Test baseline first**: Run representative prompts WITHOUT the skill — document what the agent gets wrong or misses. This is your "RED" phase.
+2. **Establish a baseline**: follow skill-creator's baseline selection — `without_skill` for a new skill, `old_skill` (a snapshot of the current version) for a revision
 3. Create `skills/<name>/SKILL.md` with YAML frontmatter (`name`, `description`)
-4. Create `skills/<name>/evals/evals.json` with 2-3 evals conforming to skill-creator's schema (`skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
+4. Create `skills/<name>/evals/evals.json` with evals conforming to skill-creator's schema (`skill_name`, and per eval `id`, `prompt`, `expected_output`, optional `files`, `expectations`)
 5. Run skill-creator's `scripts/quick_validate.py <name>` to confirm frontmatter
-6. Run the eval workflow (via the `/eval-skills` slash command in OpenCode, or by invoking the `skill-creator` skill) — it spawns with-skill runs per eval prompt, grades them, and aggregates the benchmark (without-skill baselines are opt-in for comparison)
+6. Run the eval workflow (invoke the `skill-creator` skill and ask it to run the eval workflow for the target skill)
 7. Test the skill with the same prompts — verify the skill now produces better output
 8. Re-run the eval workflow to confirm the final pass rate
 
@@ -30,21 +30,12 @@ Skill validation runs through skill-creator's `scripts/quick_validate.py <skill>
 
 ## Testing workflow
 
-Skill development follows the RED-GREEN-REFACTOR cycle. See [AGENTS.md](AGENTS.md) for the full testing methodology including test case creation, pressure scenarios, transcript analysis, and blind comparison.
-
-In the GREEN phase, after writing or editing a skill, run the skill-creator eval workflow to validate the skill produces the expected agent behavior against its eval prompts.
+Skill development is iterative: draft, evaluate, review the results, improve. `skill-creator` is the runner — invoke the skill and ask it to run the eval workflow for the target skill. See [AGENTS.md](AGENTS.md) for the eval modification ladder and for how evals are run.
 
 ## Evaluation
 
-Evals run through the skill-creator workflow — the skill is the runner, there is no custom eval script. In OpenCode, open the `/eval-skills` slash command (`.opencode/commands/eval-skills.md`) to evaluate skills; pass skill names, `all`, or nothing to be prompted, and add `compare` to include without-skill baselines. In any other agent, invoke the `skill-creator` skill in a session and ask it to run the eval workflow for `skills/<name>`.
+Evals run through the `skill-creator` workflow, which is the runner.
 
-The workflow:
+**Layout**: `<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,without_skill,old_skill}/run-N/` with `outputs/`, `grading.json`, and `timing.json` per run. These directories are gitignored.
 
-1. Spawns a with-skill subagent per prompt in `skills/<name>/evals/evals.json` (with-skill only is the default; without-skill baselines are opt-in for comparison)
-2. Grades each run against the eval's expectations via skill-creator's grader agent (`agents/grader.md`), writing `grading.json` per run
-3. Aggregates results with skill-creator's `scripts/aggregate_benchmark.py` into `benchmark.json` and `benchmark.md`
-4. Opens skill-creator's `eval-viewer/generate_review.py` for review (use `--static` in headless environments)
-
-**Layout**: `<skill>-workspace/iteration-N/eval-<id>-<name>/{with_skill,without_skill}/run-N/` with `outputs/`, `grading.json`, and `timing.json` per run (`without_skill` present only in comparison mode). These directories are gitignored.
-
-See [AGENTS.md](AGENTS.md#evaluation) for the full evaluation documentation.
+See [AGENTS.md](AGENTS.md#running-evals) for the full evaluation documentation.

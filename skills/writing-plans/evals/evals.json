@@ -3,25 +3,14 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Write a plan for adding password reset functionality to our FastAPI app. Users request a reset link via email, click it, and set a new password. The app uses Pydantic models and stores users in an in-memory dict. Assume you've asked all necessary clarifying questions and I've answered them.",
-      "expected_output": "Agent produces a plan saved to a prefixed file (<prefix>-plan.md), with tasks that are self-contained and use exact file paths, and all acceptance criteria covered by tasks.",
+      "prompt": "Write a plan for creating a new FastAPI app to reset user passwords. This is a new FastAPI web app (not an existing codebase). We already have an existing User model (email: EmailStr, password_hash: str) and an in-memory user store to follow. We also have a preliminary endpoint spec: POST /auth/password-reset with body {\"user_email\": \"string\"}. This is an eval run, do not ask questions, proceed with your recommendations.",
+      "expected_output": "Agent produces a plan saved to a prefixed file (<prefix>-plan.md) with the prefix clearly related to the feature, with ACs defined before tasks, each task containing category, type, and AC mapping, each task having a clear definition of done, and each AC having a clear eval to exercise the app and capture behavior (not just 'tests pass').",
       "expectations": [
-        "Plan saved to a prefixed file (<prefix>-plan.md)",
-        "Tasks are self-contained with exact file paths",
-        "All acceptance criteria covered by tasks",
-        "Every coding AC has an eval in the AC Evals section with prescriptive steps and expected evidence",
-        "Runtime-behavior AC evals exercise the running application and capture runtime evidence"
-      ]
-    },
-    {
-      "id": 2,
-      "prompt": "Plan this feature: Add a dark mode toggle to our site. While we're at it, we should also redesign the landing page, add analytics tracking, migrate the database, and containerize the app.",
-      "expected_output": "Agent explicitly flags scope creep, applies YAGNI to remove unrelated features, keeps only dark-mode-toggle-related work, and quizzes the user about granularity or scope.",
-      "expectations": [
-        "Scope creep flagged explicitly",
-        "YAGNI applied — out-of-scope features removed",
-        "Only dark mode toggle related features kept",
-        "User quizzed about granularity or scope"
+        "A <prefix>-plan.md file exists and the prefix is related to the password reset feature",
+        "ACs are defined in the plan before tasks",
+        "Each task contains category, type, and AC mapping (via Satisfies field)",
+        "Each task has a clear definition of done",
+        "Each AC has a clear eval to exercise the app and capture behavior (runtime evidence), not just 'tests pass'"
       ]
     }
   ]

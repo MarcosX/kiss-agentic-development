@@ -3,40 +3,16 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Plan task: palindrome-checker\n\nFiles:\n- Create: test_palindrome.py\n- Existing: palindrome.py\n\nBehavioral contract for is_palindrome(s): returns True when s reads the same forwards and backwards ignoring case and non-alphanumeric characters, False otherwise.\n\nExisting code (palindrome.py):\n\ndef is_palindrome(s):\n    return s == s[::-1]\n\nVerify test fails: run `python -m pytest test_palindrome.py -q` and confirm it fails for the expected reason — the asserted full-contract behavior (ignoring case and non-alphanumerics) is missing from the implementation.\nThen adapt the implementation so the test passes. Keep the function name and signature.\n\nDone when: the contract test passes and the implementation is adapted rather than replaced.",
-      "expected_output": "The agent treats the plan task as 'make the failing test pass'. It writes a specification test against the full contract, watches it fail for the expected reason (behavior missing) before touching the implementation, then adapts the existing function to satisfy it and runs the full suite to confirm no regressions.",
-      "expectations": [
-        "A specification test is written against the full contract before the implementation is modified",
-        "The test is watched to fail for the expected reason (behavior missing) before the implementation is touched",
-        "The implementation is adapted to satisfy the test without changing the function's name or signature",
-        "After green, the full suite is run and shows no regressions"
-      ]
-    },
-    {
-      "id": 2,
-      "prompt": "Plan task: fix-registration-duplicate-email\n\nFiles:\n- Create: test_registration_bug.py\n- Existing: registration.py\n\nBehavioral contract: registering with an email that already exists must be rejected (a duplicate-email error), not silently overwrite the existing user.\n\nExisting code (registration.py):\n\nfrom typing import Dict\nimport re\n\nclass UserRegistration:\n    def __init__(self):\n        self._users: Dict[str, dict] = {}\n\n    def register_user(self, email: str, name: str) -> dict:\n        if not re.match(r'[^@]+@[^@]+\\.[^@]+', email):\n            raise ValueError(\"Invalid email format\")\n        # BUG: No check for existing email before insertion; duplicates overwrite\n        user = {\"email\": email, \"name\": name, \"id\": len(self._users) + 1}\n        self._users[email] = user\n        return user\n\nVerify test fails: run `python -m pytest test_registration_bug.py -q` and confirm it fails for the expected reason — the duplicate-email guard is missing, so a second registration with the same email overwrites the first.\nThen modify registration.py so duplicate emails are rejected and existing users are preserved.\n\nDone when: the reproduction test passes and an already-registered user's data is unchanged.",
-      "expected_output": "The agent treats the bug as its failing test. It writes a reproduction test first, watches it fail for the expected reason (duplicate overwrites) before any fix, then modifies registration.py to reject duplicates, confirms the reproduction passes, and runs the full suite to check for regressions.",
-      "expectations": [
-        "A reproduction test is written and watched to fail for the expected reason before registration.py is modified",
-        "register_user is changed to reject duplicate emails after the failing run",
-        "The reproduction test passes after the fix and a pre-existing user's data is preserved",
-        "After green, the full suite is run and shows no regressions"
-      ]
-    },
-    {
-      "id": 3,
-      "prompt": "Plan task: implement-discount\n\nFiles:\n- Existing: app.py\n- Existing: test_app.py (tests apply_discount, which does not exist yet)\n\nBehavioral contract for apply_discount(total, percent): returns total reduced by percent%, and raises ValueError for a non-numeric total.\n\nVerify test fails: run `python -m pytest test_app.py -q`. The plan predicts `ModuleNotFoundError: No module named 'app'` because app.py does not exist yet.\nThen implement so the test passes.\n\nDone when: test_app.py passes and nothing else in the repository is broken.",
-      "expected_output": "The agent runs the loop and hits a mismatch: the actual failure is a NameError from an existing app.py, not the ModuleNotFoundError the plan predicts. It does not force the implementation through to green pretending the prediction held; it reconciles by diagnosing the real cause (undefined DISCOUNT_RATE), fixes it, makes the contract test pass, and runs the full suite — which must stay green including the unrelated existing test file.",
-      "expectations": [
-        "The agent detects that the actual failure (NameError from existing app.py) differs from the plan's stated expected reason (ModuleNotFoundError)",
-        "The mismatch is reconciled by fixing the real cause (undefined DISCOUNT_RATE), not by forcing the implementation past the plan's predicted error",
-        "The contract test for apply_discount passes with the fixed implementation",
-        "The full suite is run and shows no regressions, including the unrelated existing test file"
-      ],
+      "prompt": "Use the tdd-fixture at evals/fixtures/tdd-fixture/ to implement a simple httpbin.org client for the GET /headers endpoint. Store the response in an in-memory model. The expected response shape is like {'headers': {'Accept': 'application/json'}}. Follow the practicing-tdd skill strictly.",
       "files": [
-        "evals/fixtures/deviation/app.py",
-        "evals/fixtures/deviation/test_app.py",
-        "evals/fixtures/deviation/test_services.py"
+        "evals/fixtures/tdd-fixture/"
+      ],
+      "expected_output": "The agent follows TDD: writes failing tests first that define the behavior (fetch_headers returning a model storing the headers), watches each one fail with an assertion executing rather than a collection error, reaches the failure path through a double on the HTTP boundary rather than live calls, covers any failure handling it writes rather than deferring it as an extra, and makes each contract pass with the simplest code before running the full suite.",
+      "expectations": [
+        "At least one failing run shows a test body executing and an assertion failing before the implementation existed — not a collection or import error, and not merely a narrated description of a failure",
+        "Each test asserts one behavior and no two tests read the same value from the code under test — a shape assertion and a value assertion on the same field are one test, not two",
+        "The tests replace a dependency the agent did not write (the HTTP boundary) with a double or seam so a failure path is reachable, rather than depending on live calls to a public service, and do not replace the agent's own objects",
+        "Every behavior shipped in the implementation was observed failing before it was written, including any failure handling the flaky public dependency called for — no untested retry, timeout, or exception path ships"
       ]
     }
   ]

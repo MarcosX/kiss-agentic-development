@@ -37,18 +37,23 @@ Only explore files relevant to the domain/goal above. Skip node_modules, .git, b
 Return a structured report:
 
 ## Domain Language
+
 Terms found relating to the project. Note conflicts with the project's language.
 
 ## Relevant Changes
+
 Summary of recent commits touching related areas.
 
 ## File Structure
+
 Key files/directories relevant to the domain.
 
 ## Patterns
+
 Existing conventions, architecture decisions, or ADRs that constrain or inform the design.
 
 ## References
+
 Any docs, specs, or templates discovered.
 
 If nothing relevant was found, report "Nothing relevant found" per section.
