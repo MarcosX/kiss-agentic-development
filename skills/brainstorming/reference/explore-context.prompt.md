@@ -24,7 +24,7 @@ Only explore files relevant to the domain/goal above. Skip node_modules, .git, b
 3. **Recent commits** — last 10, summarize changes relevant to the domain
 4. **Relevant file structure** — which directories/files are most relevant
 5. **Existing patterns** — conventions, architecture, code organization to preserve
-6. **reference/docs** — any other documentation informing the design
+6. **References/docs** — any other documentation informing the design
 
 # Edge cases
 

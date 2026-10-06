@@ -44,7 +44,7 @@ Another commong issue is that most skill are written for humans, not agents — 
 
 **Each skill is validated against behavioral test scenarios** (see `skills/<name>/evals/evals.json`) that verify the skill produces the intended agent behavior — not just that keywords are present.
 
-Skills are evaluated through the `skill-creator` workflow — every skill carries 2-3 evaluation scenarios in the repo that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal. In any agent, invoke the `skill-creator` skill and ask it to run the eval workflow for a skill.
+Skills are evaluated through the `skill-creator` workflow — every skill carries evaluation scenarios in the repo that measure whether the skill produces the expected behavior, ensuring improvements are measurable, not anecdotal. In any agent, invoke the `skill-creator` skill and ask it to run the eval workflow for a skill.
 
 The workflow spawns an agent run per eval prompt, grades each against the expectations, and aggregates results into a `benchmark.json` with pass-rate, timing, and token deltas. Baseline selection follows skill-creator: a new skill is compared against no skill, a revision against its own previous version — which answers whether a change helped. Output lands in `<skill>-workspace/iteration-N/` (gitignored). Skill frontmatter is validated with skill-creator's `scripts/quick_validate.py <skill>` after changes.
 
