@@ -3,10 +3,8 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "I have a plan file at evals/fixtures/eval-exec-plan.md. This is an evaluation run only - do NOT execute the plan. Instead, describe how you would execute it according to the executing-plans skill. Show what tasks you identify, whether they are independent/dependent, how you would batch/dispatch (fresh agents/subagents per task), that you would create a worktree before dispatch, and that you would run AC evals after all tasks complete.",
-      "files": [
-        "evals/fixtures/eval-exec-plan.md"
-      ],
+      "prompt": "Execute plan evals/fixtures/eval-exec-plan.md. This is an evaluation run only, describe what you would do in detail - do NOT execute the plan.",
+      "files": ["evals/fixtures/eval-exec-plan.md"],
       "expected_output": "A clear description of the execution plan following executing-plans: identify tasks (Task 1-4), recognize dependencies (Task 2 feeds Task 3, Task 1 feeds others conceptually; Task 3 feeds Task 4 contextually) and batch independent tasks appropriately, state fresh subagents/agents dispatched per task, state worktree created before dispatch, and state AC evals run after all tasks complete.",
       "expectations": [
         "All 4 tasks (Task 1-4) are identified from the plan",
