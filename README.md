@@ -104,23 +104,9 @@ Replace `<TARGET_PATH>` with your tool's global skills path (see the per-tool ta
 
 ### OpenCode
 
-Add [using-skills](./instructions/using-skills.md) instruction file to your config:
+Append the content of [using-skills](./instructions/using-skills.md) to `~/.config/opencode/AGENTS.md`.
 
-```json
-{
-  "instructions": ["~/.config/opencode/instructions/using-skills.md"]
-}
-```
-
-Then copy the instructions file to that path:
-
-```bash
-mkdir -p ~/.config/opencode/instructions/
-curl -o ~/.config/opencode/instructions/using-skills.md \
-  https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md
-```
-
-The `instructions` field injects the file content into every session automatically. See [opencode config docs](https://opencode.ai/docs/config) for more details.
+Opencode global rules apply across all opencode session. See [Opencode Rules](https://opencode.ai/docs/rules/) for more details.
 
 ### Claude Code
 
