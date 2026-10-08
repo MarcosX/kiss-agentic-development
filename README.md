@@ -164,6 +164,8 @@ Run `npx skills update -g -y` if you installed with `npx skills`. If you install
 
 ## Contributing
 
+Skill-development vocabulary (value-add, conformance, hook vs rule, shipped artifact) is defined in [CONTEXT.md](CONTEXT.md).
+
 For local development setup, adding new skills, and validation strategy, see [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md).
 
 ## References

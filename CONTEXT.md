@@ -45,11 +45,11 @@ _Avoid_: red herring (one specific decoy for debugging misdirection)
 **skill-creator**:
 The external dev-only skill that drives skill validation, evals, and grading (scripts, grader
 agent, review viewer). Not shipped; install separately.
-Not shipped; install it separately before running evals.
 _Avoid_: the eval tooling, "the skill" (ambiguous with domain skills)
 
 **Shipped artifact**:
 Skills (their SKILL.md, references, evals, and scripts) — what version tags track and consumers
-install. Dev-only tooling (.opencode/, .agents/, plans, workspaces) is never shipped and does
-not trigger version bumps.
+install. Evals ship with the skills (the `npx skills` CLI installs them) but are only relevant to
+skill development. Dev-only tooling (.opencode/, .agents/, plans, workspaces) is never shipped and
+does not trigger version bumps.
 _Avoid_: tooling, the framework (reserved for the whole repo)
