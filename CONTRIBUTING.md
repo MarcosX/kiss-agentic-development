@@ -5,7 +5,7 @@
 Clone the repo and work from it. The repo includes:
 
 - `.opencode/skills → ../skills` — symlink for native OpenCode skill discovery (domain skills only)
-- `.opencode/opencode.json` — loads `instructions/using-skills.md` into every session via `instructions`
+- `.opencode/opencode.json` — local dev config (schema only; the config `instructions` array is not resolved). The global `~/.config/opencode/AGENTS.md` (installed from `instructions/using-skills.md`) loads the `using-skills` instruction into every session
 
 Skill validation runs through skill-creator's `scripts/quick_validate.py <skill>`, which checks SKILL.md frontmatter (`name`, `description`). Run it after every skill change.
 

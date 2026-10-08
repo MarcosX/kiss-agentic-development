@@ -27,16 +27,11 @@ This installs only the 6 domain skills. The old `using-skills/` directory will n
 
 Replace the old "load the `using-skills` skill" pattern with the content of `instructions/using-skills.md` directly in your tool's global instructions.
 
-**OpenCode** — `~/.config/opencode/opencode.json`:
-- Remove `"~/.agents/skills/using-skills/SKILL.md"` from the `instructions` array
-- Add `"~/.config/opencode/instructions/using-skills.md"`
-- Copy the instructions file:
+**OpenCode** — `~/.config/opencode/AGENTS.md` (OpenCode v2 loads instructions from `AGENTS.md` only):
+- Append the content of `instructions/using-skills.md` to `~/.config/opencode/AGENTS.md`
+- Remove any `using-skills` entry from the `instructions` array in `~/.config/opencode/opencode.json` and delete the array — v2 accepts but silently ignores it
 
-```bash
-mkdir -p ~/.config/opencode/instructions/
-curl -o ~/.config/opencode/instructions/using-skills.md \
-  https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/tags/latest/instructions/using-skills.md
-```
+If you still have files under `~/.config/opencode/instructions/`, follow `migrations/opencode-v2.md` to remove the v1 mechanism.
 
 **Claude Code** — `~/.claude/CLAUDE.md`:
 - Remove the `<CRITICAL>...using-skills skill...</CRITICAL>` block
