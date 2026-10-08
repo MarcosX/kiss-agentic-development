@@ -14,9 +14,40 @@ Determine which tool is running this prompt:
 - **Cursor** — User Rules in Settings > Rules, or `.cursor/rules/*.mdc` with `alwaysApply: true`
 - **Other** — find where your tool reads global instructions, then follow the same pattern below
 
+Then check whether Node.js is available:
+
+```bash
+command -v npx
+```
+
+Steering rule for steps 2, 4, and 5: if `npx` is available, use the `npx skills` path (2A, and later 5A). If Node.js is not installed or the user prefers not to use `npx skills`, use the manual path (2B, and later 5B). Both paths are complete — either one fully installs the skills.
+
 ---
 
 ## 2. Install domain skills
+
+Both paths install the skills to your tool's global skills path:
+
+| Agent          | Global skills path                          |
+| -------------- | ------------------------------------------- |
+| OpenCode       | `~/.config/opencode/skills/`                |
+| Claude Code    | `~/.claude/skills/`                         |
+| GitHub Copilot | `~/.copilot/skills/` or `~/.agents/skills/` |
+| Cursor         | `~/.cursor/skills/` or `~/.agents/skills/`  |
+
+### 2A. Install with `npx skills` (requires Node.js)
+
+The [skills CLI](https://github.com/vercel-labs/skills) installs every skill in this repo to your agent's global skills directory:
+
+```bash
+npx skills add MarcosX/kiss-agentic-development -g -y -a <AGENT>
+```
+
+Replace `<AGENT>` with the CLI name for the tool detected in step 1: `opencode`, `claude-code`, `github-copilot`, or `cursor`. Omit `-a` to let the CLI install to every agent it detects. The CLI creates symlinks to a canonical copy by default — that is fine; pass `--copy` only if symlinks are not supported on your system.
+
+Known difference from the manual path: the CLI copies each skill directory as-is, so each skill's `evals/` directory may be installed too. Evaluation fixtures are development-only and no skill references them at runtime.
+
+### 2B. Install manually (git clone + copy)
 
 Clone the repo and copy the skills to your agent's skills path:
 
@@ -39,18 +70,11 @@ done
 
 The loop skips each skill's `evals/` directory; evaluation fixtures are development-only and no skill references them at runtime.
 
-| Agent          | Global skills path                          |
-| -------------- | ------------------------------------------- |
-| OpenCode       | `~/.config/opencode/skills/`                |
-| Claude Code    | `~/.claude/skills/`                         |
-| GitHub Copilot | `~/.copilot/skills/` or `~/.agents/skills/` |
-| Cursor         | `~/.cursor/skills/` or `~/.agents/skills/`  |
-
 ---
 
 ## 3. Install the using-skills global instruction
 
-Copy the following content into your tool's global instructions file:
+The skills CLI manages skill files only — this step is manual in both paths. Copy the following content into your tool's global instructions file:
 
 ```
 # Using Skills
@@ -128,20 +152,36 @@ Then run this self-check prompt:
 
 **Expected behavior**: The agent explains that it checks for and invokes skills before acting. It does NOT mention loading a skill called "using-skills" — the behavior is automatic, not something it loads on demand.
 
-You can also confirm the domain skills are installed:
+You can also confirm the domain skills are installed — use the check for the path you used in step 2:
 
 ```bash
+# Path 2A (npx skills)
+npx skills list -g
+
+# Path 2B (manual)
 ls <TARGET_PATH>/
 # Expected: brainstorming  debugging  executing-plans  practicing-tdd  reviewing-code  writing-plans
 ```
 
-Replace `<TARGET_PATH>` with the path you copied skills to in step 2.
+For the manual check, replace `<TARGET_PATH>` with the path you copied skills to (see table in section 2).
 
 ---
 
 ## 5. Updating
 
 ### Domain skills
+
+Use the same path you used in step 2.
+
+#### 5A. With `npx skills`
+
+```bash
+npx skills update -g -y
+```
+
+Updates every skill installed from this repo. Pass a skill name (e.g. `npx skills update -g brainstorming`) to update only that one.
+
+#### 5B. Manually (git clone + copy)
 
 ```bash
 cd /tmp/kiss-agentic-dev && git pull

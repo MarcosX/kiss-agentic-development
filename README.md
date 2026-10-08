@@ -93,6 +93,16 @@ Install https://raw.githubusercontent.com/MarcosX/kiss-agentic-development/refs/
 
 The agent will detect your tool, install domain skills, and configure global [using-skills](./instructions/using-skills.md) instruction.
 
+### With `npx skills`
+
+If you have Node.js installed, the [skills CLI](https://github.com/vercel-labs/skills) manages the domain skills:
+
+```bash
+npx skills add MarcosX/kiss-agentic-development -g -y -a <AGENT>
+```
+
+Replace `<AGENT>` with your tool's CLI name (`opencode`, `claude-code`, `github-copilot`, `cursor`) or omit `-a` to install to every detected agent. Update later with `npx skills update -g -y`.
+
 ### Manual: clone the repo
 
 ```bash
@@ -144,7 +154,11 @@ ls <TARGET_PATH>/
 # Expected: brainstorming  debugging  executing-plans  practicing-tdd  reviewing-code  writing-plans
 ```
 
-Where `<TARGET_PATH>` is your tool's global skills path from the manual install section.
+Where `<TARGET_PATH>` is your tool's global skills path from the manual install section. If you installed with `npx skills`, run `npx skills list -g` instead.
+
+## Updating
+
+Run `npx skills update -g -y` if you installed with `npx skills`. If you installed manually, re-run the clone-and-copy steps in [INSTALL.prompt.md](INSTALL.prompt.md) section 5B. In both cases, keep your global [using-skills](./instructions/using-skills.md) instruction matching the canonical copy, then restart your session.
 
 ## Contributing
 
