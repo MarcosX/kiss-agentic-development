@@ -13,11 +13,13 @@ Collection of AI agent skills that enforce skill-first workflows.
 │   │   └── evals/evals.json          # Evaluations for the skill
 │   ├── [skill name]-workspace/      # workspace for skill evals (not to be used, unless running or reviewing evals)
 ├── migrations/
-│   └── before-1.0.0.md              # Migration steps for users upgrading from pre-1.0
-└── .opencode/
-    ├── skills/ → ../skills           # Symlink for native discovery (domain skills only)
-    ├── opencode.json                 # Local dev config (schema only; global AGENTS.md loads using-skills)
-    └── plans/                        # Plans, specs, and short-term artifacts (gitignored)
+│   ├── before-1.0.0.md              # Migration steps for users upgrading from pre-1.0
+│   └── opencode-v2.md               # Migration for OpenCode v2 AGENTS.md instruction loading
+├── .opencode/
+│   ├── skills/ → ../skills           # Symlink for native discovery (domain skills only)
+│   ├── opencode.json                 # Local dev config (schema only; global AGENTS.md loads using-skills)
+│   └── plans/                        # Plans, specs, and short-term artifacts (gitignored)
+└── CONTEXT.md                        # Glossary of skill-development terms
 ```
 
 ## Local development
@@ -62,15 +64,13 @@ The `skill-creator` skill drives skill validation and evals. It is dev-only tool
 You MUST NOT add, edit, or port a skill that violates the rules below. If any rule is being broken, STOP and challenge the user before proceeding. "The user asked for it" is not a valid exception.
 </HARD-GATE>
 
-### Ongoing investigation: hooks vs rules
+### Hooks over rules
 
-Discipline skills are being evaluated for a hooks style (cognitive reframes with observable completion bars) over enforced rules (HARD-GATEs, red flags, MUSTs). `practicing-tdd` is the completed prototype. See `docs/hooks-vs-rules-investigation.md` for the per-skill classification and how to continue.
+This framework's settled direction is hooks over rules: discipline skills present cognitive reframes with observable completion bars — adopted by the agent — rather than enforced directives. `practicing-tdd` is the reference implementation. The per-skill vocabulary lives in `CONTEXT.md` (hook vs rule, open-field vs narrow-bridge).
 
-While this investigation is ACTIVE:
-
-- The doc's per-skill classification governs: open-field skills may be hooks; narrow-bridge skills (e.g. `executing-plans`) stay enforced rules.
-- A converted (hooks) skill is the source of truth for its own content. If it conflicts with guidance in this file, do NOT re-rule-ify it — flag the conflict to the user.
-- Do not mass-port hooks to skills not classified open-field, and do not rework this file's rules-shaped guidance (REFACTOR "close loopholes" wording, checklist mandate) until the decision is made. The eval-doctrine reduction in this file is a sanctioned exception to this freeze; the checklist's RED and REFACTOR phases were cut with PRD approval. The pressure-testing mandate was reworked before this investigation began.
+- Open-field skills (single agent's judgment) may run on hooks; narrow-bridge skills (a contract a downstream actor depends on, e.g. `executing-plans`) keep enforced rules.
+- A hooks-style skill is the source of truth for its own content. If it conflicts with guidance in this file, do NOT re-rule-ify it — flag the conflict to the user.
+- When adding or editing a skill, default to hooks-style content for open-field skills unless a narrow-bridge contract requires enforced rules.
 
 Guidelines for writing skills that agents can discover, understand, and follow reliably. These apply regardless of the coding agent or model.
 
