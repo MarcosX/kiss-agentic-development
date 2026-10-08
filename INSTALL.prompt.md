@@ -45,8 +45,6 @@ npx skills add MarcosX/kiss-agentic-development -g -y -a <AGENT>
 
 Replace `<AGENT>` with the CLI name for the tool detected in step 1: `opencode`, `claude-code`, `github-copilot`, or `cursor`. Omit `-a` to let the CLI install to every agent it detects. The CLI creates symlinks to a canonical copy by default — that is fine; pass `--copy` only if symlinks are not supported on your system.
 
-Known difference from the manual path: the CLI copies each skill directory as-is, so each skill's `evals/` directory may be installed too. Evaluation fixtures are development-only and no skill references them at runtime.
-
 ### 2B. Install manually (git clone + copy)
 
 Clone the repo and copy the skills to your agent's skills path:
@@ -58,17 +56,9 @@ git clone https://github.com/MarcosX/kiss-agentic-development.git /tmp/kiss-agen
 Then pick the target path for your tool and copy the skills:
 
 ```bash
-for skill in /tmp/kiss-agentic-dev/skills/*/; do
-  name=$(basename "$skill")
-  mkdir -p "<TARGET_PATH>/$name"
-  for item in "$skill"*; do
-    [ "$(basename "$item")" = "evals" ] && continue
-    cp -r "$item" "<TARGET_PATH>/$name/"
-  done
-done
+mkdir -p "<TARGET_PATH>"
+cp -r /tmp/kiss-agentic-dev/skills/* "<TARGET_PATH>/"
 ```
-
-The loop skips each skill's `evals/` directory; evaluation fixtures are development-only and no skill references them at runtime.
 
 ---
 
@@ -185,19 +175,9 @@ Updates every skill installed from this repo. Pass a skill name (e.g. `npx skill
 
 ```bash
 cd /tmp/kiss-agentic-dev && git pull
-for skill in skills/*/; do
-  name=$(basename "$skill")
-  mkdir -p "<TARGET_PATH>/$name"
-  for item in "$skill"*; do
-    [ "$(basename "$item")" = "evals" ] && continue
-    cp -r "$item" "<TARGET_PATH>/$name/"
-  done
-done
+mkdir -p "<TARGET_PATH>"
+cp -r skills/* "<TARGET_PATH>/"
 ```
-
-The loop skips each skill's `evals/` directory; evaluation fixtures are development-only and no skill references them at runtime.
-
-The copy runs from the clone directory, which the `cd` above sets up.
 
 Replace `<TARGET_PATH>` with your tool's skills path (see table in section 2).
 

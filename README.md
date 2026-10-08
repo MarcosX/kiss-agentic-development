@@ -11,6 +11,8 @@ Drop them into any coding agent — OpenCode, Claude Code, Cursor — and the ag
 - [Why use it?](#why-use-it)
 - [Skills](#skills)
 - [Installation](#installation)
+  - [With `npx skills`](#with-npx-skills)
+  - [Manual: clone the repo](#manual-clone-the-repo)
   - [OpenCode](#opencode)
   - [Claude Code](#claude-code)
   - [GitHub Copilot CLI](#github-copilot-cli)
